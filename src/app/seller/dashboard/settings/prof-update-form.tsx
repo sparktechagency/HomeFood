@@ -112,8 +112,12 @@ export default function ProfUpdateForm() {
             </div>
             <DialogFooter>
               <DialogClose>
-                <Button variant="destructive" className="text-sm" asChild>
-                  <Link href="/login"> Delete account</Link>
+                <Button
+                  variant="outline"
+                  className="text-sm border-destructive text-destructive"
+                  asChild
+                >
+                  <Link href="/login"> Deactivate account</Link>
                 </Button>
               </DialogClose>
             </DialogFooter>
