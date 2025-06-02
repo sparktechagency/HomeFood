@@ -151,7 +151,6 @@ export default function Listing() {
           ))}
         </div>
       </section>
-
       <section className="!mt-12">
         <div className="flex flex-row justify-between items-center">
           <h2 className="!pb-6 text-4xl font-semibold text-primary">

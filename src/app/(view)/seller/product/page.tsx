@@ -9,6 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import ProductTabs from "./product-tabs";
+import ProductCard from "@/components/core/prod-card";
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -115,14 +118,35 @@ export default function Page() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-[30dvw]">
-                    lol
+                    <div className="!space-y-4 !p-2">
+                      <div className="">
+                        <h2 className="font-semibold">Available Dates</h2>
+                        <p>Today, Tomorrow, June 15</p>
+                      </div>
+
+                      <div>
+                        <h2 className="font-semibold">Pickup Time</h2>
+                        <p>11:00 AM - 9:00 PM</p>
+                      </div>
+
+                      <div>
+                        <h2 className="font-semibold">Advance Order</h2>
+                        <p>Recommended for orders &gt;4 portions</p>
+                      </div>
+
+                      <div>
+                        <h2 className="font-semibold">Packaging</h2>
+                        <p>Eco-friendly containers</p>
+                      </div>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button
                   className="w-full rounded-full flex flex-row justify-center items-center font-semibold"
                   size="lg"
+                  asChild
                 >
-                  Buy Food
+                  <Link href="/seller/product/order">Buy Food</Link>
                 </Button>
                 <Button
                   className="w-full rounded-full flex flex-row justify-center items-center font-semibold"
@@ -132,40 +156,16 @@ export default function Page() {
                 </Button>
               </div>
             </div>
-            <div className="col-span-2 grid grid-cols-5 gap-6">
-              <Button
-                className="w-full rounded-full flex flex-row justify-center items-center font-semibold"
-                size="lg"
-              >
-                Description
-              </Button>
-              <Button
-                className="w-full rounded-full flex flex-row justify-center items-center font-semibold"
-                size="lg"
-                variant="outline"
-              >
-                Ingredients
-              </Button>
-              <Button
-                className="w-full rounded-full flex flex-row justify-center items-center font-semibold"
-                size="lg"
-                variant="outline"
-              >
-                Reviews
-              </Button>
-            </div>
-            <p className="col-span-2">
-              A legendary dish from the royal kitchens of Hyderabad, this
-              biryani is a perfect blend of fragrant basmati rice, marinated
-              meat (usually chicken or mutton), and aromatic spices like
-              saffron, cardamom, cloves, and cinnamon. Cooked using the
-              traditional dum method (slow-cooked in a sealed pot), the flavors
-              are deeply infused, making every bite rich, flavorful, and layered
-              with taste. Served with cooling raita or spicy mirchi ka salan,
-              Hyderabadi Biryani is not just food—it’s an experience of Mughal
-              heritage and South Indian flair.
-            </p>
+            <ProductTabs />
           </div>
+        </div>
+      </div>
+      <div className="col-span-11 !mt-12">
+        <h2 className="text-3xl font-semibold !pb-4 border-b">Similar Food</h2>
+        <div className="w-full grid grid-cols-5 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductCard key={i} />
+          ))}
         </div>
       </div>
     </div>

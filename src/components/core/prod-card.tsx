@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import {
   Card,
+  CardAction,
   CardContent,
   CardFooter,
   CardHeader,
@@ -26,9 +27,11 @@ import {
 export default function ProductCard({
   fromProfile,
   activable,
+  control,
 }: {
   fromProfile?: boolean;
   activable?: boolean;
+  control?: boolean;
 }) {
   const [active, setActive] = useState(true);
 
@@ -93,30 +96,39 @@ export default function ProductCard({
             Min. order $60/-
           </span>
         </div>
+        <Link
+          href="/seller"
+          className="w-full flex flex-row justify-between items-center group !mt-6"
+        >
+          <div className="flex flex-row justify-start items-center gap-2">
+            <Avatar className="size-10">
+              <AvatarImage src="https://avatar.iran.liara.run/public" />
+              <AvatarFallback>UI</AvatarFallback>
+            </Avatar>
+            <div className="h-full">
+              <h4 className="font-bold group-hover:text-green-600 transition-colors">
+                Food Mania
+              </h4>
+              <p className="text-xs text-muted-foreground">Sasha</p>
+            </div>
+          </div>
+          <div className="flex gap-1 text-sm items-center">
+            4.8
+            <StarIcon className="size-4 fill-amber-400 text-amber-400" />
+          </div>
+        </Link>
       </CardContent>
       {!fromProfile ? (
         <CardFooter className="">
-          <Link
-            href="/seller"
-            className="w-full flex flex-row justify-between items-center group"
-          >
-            <div className="flex flex-row justify-start items-center gap-2">
-              <Avatar className="size-10">
-                <AvatarImage src="https://avatar.iran.liara.run/public" />
-                <AvatarFallback>UI</AvatarFallback>
-              </Avatar>
-              <div className="h-full">
-                <h4 className="font-bold group-hover:text-green-600 transition-colors">
-                  Food Mania
-                </h4>
-                <p className="text-xs text-muted-foreground">Sasha</p>
-              </div>
-            </div>
-            <div className="flex gap-1 text-sm items-center">
-              4.8
-              <StarIcon className="size-4 fill-amber-400 text-amber-400" />
-            </div>
-          </Link>
+          {control && (
+            <CardAction className="grid grid-cols-3 gap-6 w-full">
+              <Button variant="outline" asChild>
+                <Link href="/seller/dashboard/food-items/add">Edit</Link>
+              </Button>
+              <Button variant="destructive">Delete</Button>
+              <Button>Active</Button>
+            </CardAction>
+          )}
         </CardFooter>
       ) : (
         ""
@@ -124,7 +136,7 @@ export default function ProductCard({
       {activable && (
         <div className="flex flex-row justify-center items-center">
           <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
               <Button>Request to Activate</Button>
             </DialogTrigger>
             <DialogContent>
