@@ -95,8 +95,11 @@ export default function ProfUpdateForm() {
       <div className="!mt-6">
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="w-full" variant="destructive">
-              Delete Account
+            <Button
+              className="w-full text-sm border-destructive text-destructive"
+              variant="outline"
+            >
+              Deactivate account
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -112,11 +115,7 @@ export default function ProfUpdateForm() {
             </div>
             <DialogFooter>
               <DialogClose>
-                <Button
-                  variant="outline"
-                  className="text-sm border-destructive text-destructive"
-                  asChild
-                >
+                <Button variant="outline" className="text-sm" asChild>
                   <Link href="/login"> Deactivate account</Link>
                 </Button>
               </DialogClose>
