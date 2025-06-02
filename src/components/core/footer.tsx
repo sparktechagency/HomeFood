@@ -76,6 +76,7 @@ export default function Footer() {
           <div className="flex flex-col justify-start items-start gap-2 !pt-4 font-semibold text-black/70">
             <Link href={"/"}>Log in</Link>
             <Link href={"/"}>Register</Link>
+            <Link href={"/"}>Imprint</Link>
           </div>
         </div>
         <div className="">
