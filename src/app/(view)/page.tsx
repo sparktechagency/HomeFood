@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <main className="!py-12 !px-4 md:!px-12">
-        <section className="w-1/2 !p-2 grid grid-cols-2 gap-6 border !mx-auto rounded-xl">
+        <section className="w-full sm:w-3/4 lg:w-1/2 !p-2 grid grid-cols-1 md:grid-cols-2 gap-6 border !mx-auto rounded-xl">
           <div className="w-full flex flex-col !p-4 justify-center items-start gap-2 bg-secondary rounded-lg">
             <Label className="font-semibold text-zinc-600">Where</Label>
             <Input placeholder="Search Destination" />

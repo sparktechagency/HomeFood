@@ -14,7 +14,7 @@ export default function Page() {
         alt="about_us_image"
       />
       <div className="w-4/5 !mx-auto !my-24">
-        {`HomeBites was founded in 2023 with a simple idea: everyone deserves
+        {`HomeBites was founded in 2023 with a simple idea: everyone deservess
         access to authentic, homemade food made with love. What began as a small
         local initiative has grown into a thriving community of food lovers and
         talented home chefs across the country. We're more than just a food
@@ -25,7 +25,7 @@ export default function Page() {
       <h1 className="text-center font-bold text-3xl text-primary">
         Quick Stats
       </h1>
-      <div className="!mt-12 !px-4 md:!px-12 grid grid-cols-3 gap-6">
+      <div className="!mt-12 !px-4 md:!px-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {aboutCards.map((x, i) => (
           <Card key={i}>
             <CardHeader>

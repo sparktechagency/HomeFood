@@ -12,6 +12,7 @@ import {
 import {
   CalendarIcon,
   ChevronDown,
+  FunnelIcon,
   Grid3X3Icon,
   MapPinIcon,
 } from "lucide-react";
@@ -33,6 +34,7 @@ export default function Listing() {
   const [values, setValues] = useState([0, 1000]);
   const [showGrid, setShowGrid] = useState(true); // Renamed for clarity
   const [showMap, setShowMap] = useState(true); // Renamed for clarity
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleToggleGrid = () => {
     // If showGrid is currently true and showMap is currently false (meaning grid is the only one visible),
@@ -60,7 +62,21 @@ export default function Listing() {
         <Categories />
       </section>
       <section className="!mt-12">
-        <div className="!py-6 grid grid-cols-10 gap-2 ">
+        <div className="flex flex-row justify-end items-center sm:hidden">
+          <Button
+            variant="outline"
+            className="border text-sm"
+            onClick={() => setShowFilters((prev) => !prev)}
+          >
+            Filters <FunnelIcon />
+          </Button>
+        </div>
+        <div
+          className={`
+          !py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-10 gap-2 
+          ${showFilters ? "block" : "hidden"} sm:grid
+        `}
+        >
           {sorts.map((x, i) => (
             <div key={i} className="w-full">
               {x.kind ? (
@@ -177,9 +193,9 @@ export default function Listing() {
         <div
           className={`grid ${
             showGrid && showMap
-              ? "grid-cols-10 gap-10"
+              ? "lg:grid-cols-10 md:gap-2 lg:gap-10"
               : showGrid
-              ? "grid-cols-5 gap-12"
+              ? "grid-cols-5 gap-4 md:gap-12"
               : showMap
               ? "grid-cols-1"
               : ""
@@ -189,11 +205,10 @@ export default function Listing() {
             <div
               className={`${
                 showMap
-                  ? "col-span-4 grid grid-cols-2"
-                  : "col-span-full grid grid-cols-5"
-              } gap-12 self-start`}
+                  ? "col-span-full md:col-span-6 2xl:col-span-4 grid grid-cols-1 sm:grid-cols-2"
+                  : "col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+              } gap-6 lg:gap-12 self-start`}
             >
-              {/* Render all product cards when the grid is active */}
               {Array.from({ length: showGrid && showMap ? 5 : 24 }).map(
                 (_, i) => (
                   <ProductCard key={i} />
@@ -201,8 +216,15 @@ export default function Listing() {
               )}
             </div>
           )}
+
           {showMap && (
-            <div className={`${showGrid ? "col-span-6" : "col-span-full"}`}>
+            <div
+              className={`${
+                showGrid
+                  ? "col-span-6 md:col-span-4 2xl:col-span-6"
+                  : "col-span-full"
+              }`}
+            >
               <iframe
                 width="1200"
                 height="650"

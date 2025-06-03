@@ -5,7 +5,7 @@ export default function Page() {
     <main className="!py-12 !space-y-6">
       <h1 className="text-center font-bold text-4xl text-primary">Imprint</h1>
 
-      <div className="max-w-6xl !mx-auto !space-y-6">
+      <div className="max-w-6xl !p-6 md:!p-0 !mx-auto !space-y-6">
         <p>
           For inquiries regarding legal matters, compliance, or business
           operations, please contact us using the details provided below

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Page() {
   return (
-    <main className="!py-12 !space-y-6">
+    <main className="!py-12 !space-y-6 !p-6">
       <h1 className="text-center font-bold text-4xl text-primary">
         Data Privacy
       </h1>

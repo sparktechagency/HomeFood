@@ -7,12 +7,12 @@ import ProductCard from "@/components/core/prod-card";
 
 export default function Page() {
   return (
-    <div className="!py-12 !px-4 md:!px-12 grid grid-cols-11 gap-6">
-      <div className="col-span-3 border-2 rounded-lg !p-6 self-start">
+    <div className="!py-12 !px-4 md:!px-12 grid md:grid-cols-11 md:gap-6">
+      <div className="md:col-span-3 border-2 rounded-lg !p-6 md:self-start">
         <ProfilePart />
       </div>
 
-      <div className="col-span-8">
+      <div className="!mt-24 md:col-span-8">
         <div className="">
           <div className="flex flex-row justify-between items-center">
             <h2 className="text-3xl font-semibold">All Listing</h2>
@@ -29,7 +29,7 @@ export default function Page() {
               </Tabs>
             </div>
           </div>
-          <div className="w-full grid grid-cols-3 gap-6 !mt-12">
+          <div className="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 !mt-12">
             {Array.from({ length: 11 }).map((_, i) => (
               <ProductCard key={i} fromProfile activable />
             ))}

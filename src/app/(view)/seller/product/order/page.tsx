@@ -36,7 +36,7 @@ export default function Page() {
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
   return (
-    <div className="!py-8 !px-4 w-4/5 !mx-auto">
+    <div className="!py-8 !px-4 md:w-4/5 !mx-auto">
       {/* Header */}
       <div className="!mb-8 text-center">
         <h1 className="text-3xl font-bold !mb-2">Checkout</h1>
@@ -97,7 +97,7 @@ export default function Page() {
                   {/* Quantity Controls */}
                   <div className="!space-y-3">
                     <label className="text-sm font-medium">Quantity</label>
-                    <div className="flex items-center gap-3">
+                    <div className="flex justify-end sm:justify-start items-center gap-3">
                       <Button
                         variant="outline"
                         size="icon"
@@ -120,7 +120,7 @@ export default function Page() {
                   </div>
                   {deliveryFee > 0 && deliveryMethod === "delivery" && (
                     <div className="!mt-4 !p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center gap-2 text-sm text-blue-700">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-blue-700">
                         <div className="size-2 bg-blue-500 rounded-full" />
                         Add{" "}
                         <span className="font-semibold">
@@ -254,7 +254,7 @@ export default function Page() {
 
       <div className="col-span-11 !mt-12">
         <h2 className="text-3xl font-semibold !pb-4 border-b">Similar Food</h2>
-        <div className="w-full grid grid-cols-3 gap-6">
+        <div className="w-full grid sm:grid-cols-2 md:grid-cols-3 gap-6 !mt-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <ProductCard key={i} />
           ))}

@@ -10,7 +10,7 @@ export default function Page() {
     <main className="!py-12 !space-y-6">
       <h1 className="text-center font-bold text-4xl text-primary">Jobs</h1>
 
-      <div className="w-4/5 !mx-auto !space-y-6 grid grid-cols-2 gap-6 items-stretch">
+      <div className="w-4/5 !mx-auto !space-y-6 grid md:grid-cols-2 gap-6 items-stretch">
         {jobs.map((x, i) => (
           <Card key={i} className="h-full">
             {" "}

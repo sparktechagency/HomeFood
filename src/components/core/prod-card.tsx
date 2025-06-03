@@ -24,6 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+
 export default function ProductCard({
   fromProfile,
   activable,
@@ -40,22 +41,21 @@ export default function ProductCard({
   }
 
   return (
-    <Card className="!pt-0 overflow-hidden">
-      <Link href="/seller/product">
+    <Card className="!pt-0 overflow-hidden flex flex-col h-full w-full max-w-sm sm:max-w-md md:max-w-full !mx-auto">
+      <Link href="/seller/product" className="block h-full">
         <CardHeader className="!p-0 relative !gap-0">
-          <div className="h-full w-full">
+          <div className="relative w-full aspect-video sm:aspect-square md:aspect-video lg:aspect-square xl:aspect-video overflow-hidden">
             <Image
               src="/image/prod.jpg"
-              className="object-cover h-full w-full"
-              height={600}
-              width={800}
               alt="product"
+              fill
+              className="object-cover w-full h-full"
             />
           </div>
-          <div className="absolute top-0 left-0 text-background text-xs !p-2 bg-[#FF6A0050] rounded-br-lg">
+          <div className="hidden md:block absolute top-0 left-0 text-background text-xs !p-2 bg-[#FF6A0050] rounded-br-lg z-10">
             Tomorrow 12:00 am - 8:00 am
           </div>
-          <div className="absolute top-0 right-0 !space-x-2 !p-1">
+          <div className="absolute top-0 right-0 flex !space-x-1 md:!space-x-2 !p-1 z-10">
             <Badge className="text-xs !px-2 !py-1">Pickup</Badge>
             <Badge
               variant="outline"
@@ -66,86 +66,102 @@ export default function ProductCard({
           </div>
           {activable &&
             (active ? (
-              <div className="absolute bottom-0 right-0 bg-green-600 !px-4 text-background text-sm !p-1 rounded-tl-lg">
+              <div className="absolute bottom-0 right-0 bg-green-600 !px-4 text-background text-sm !p-1 rounded-tl-lg z-10">
                 Active
               </div>
             ) : (
-              <div className="absolute bottom-0 right-0 bg-zinc-300 !px-4 text-foreground !p-1 rounded-tl-lg text-sm">
+              <div className="absolute bottom-0 right-0 bg-zinc-300 !px-4 text-foreground !p-1 rounded-tl-lg text-sm z-10">
                 Disabled
               </div>
             ))}
         </CardHeader>
       </Link>
-      <CardContent className="!space-y-2">
-        <div className=" flex flex-row justify-start items-center gap-2">
-          <UtensilsCrossed className="text-destructive size-5" />{" "}
-          <span className="text-ellipsis line-clamp-1 text-sm">
-            Hyderabadi Biryani, Lucknowi Biryani
+
+      <CardContent className="!space-y-4 flex-grow !p-6">
+        {/* Food Type */}
+        <div className="flex items-start !gap-3">
+          <UtensilsCrossed className="text-destructive size-5 flex-shrink-0 !mt-0.5 " />
+          <span className="text-sm leading-relaxed text-muted-foreground line-clamp-1">
+            Hyderabadi Biryani, Lucknowi Biryani, Authentic Indian Cuisine,
+            North Indian Delicacies
           </span>
         </div>
-        <div className=" flex flex-row justify-start items-center gap-2">
-          <MapPin className="text-destructive size-5" />{" "}
-          <span className="text-ellipsis line-clamp-1 text-sm">
-            Olympiapark, Munich, EMEA 90763
+
+        {/* Location */}
+        <div className="flex items-start !gap-3">
+          <MapPin className="text-destructive size-5 flex-shrink-0 !mt-0.5" />
+          <span className="text-sm leading-relaxed text-muted-foreground line-clamp-1">
+            Olympiapark, Munich, EMEA 90763, Germany, Bavaria
           </span>
         </div>
-        <div className=" flex flex-row justify-start items-center gap-2">
-          <BikeIcon className="text-destructive size-5" />{" "}
-          <span className="text-ellipsis line-clamp-1 text-sm font-semibold italic text-green-600 flex flex-row justify-start items-center gap-1">
-            Free delivery <div className="size-1.5 bg-green-600 rounded-full" />
-            Min. order $60/-
-          </span>
+
+        {/* Delivery Info */}
+        <div className="flex items-start !gap-3">
+          <BikeIcon className="hidden md:block text-destructive size-5 flex-shrink-0 !mt-0.5" />
+          <div className="flex flex-col md:flex-row w-full items-center !gap-2 text-xs md:text-sm font-medium text-green-600">
+            <span>Free delivery</span>
+            <div className="hidden md:block size-1 bg-green-600 rounded-full" />
+            <span>Min. order $60/-</span>
+          </div>
         </div>
-        <Link
-          href="/seller"
-          className="w-full flex flex-row justify-between items-center group !mt-6"
-        >
-          <div className="flex flex-row justify-start items-center gap-2">
-            <Avatar className="size-10">
-              <AvatarImage src="https://avatar.iran.liara.run/public" />
-              <AvatarFallback>UI</AvatarFallback>
-            </Avatar>
-            <div className="h-full">
-              <h4 className="font-bold group-hover:text-green-600 transition-colors">
-                Food Mania
-              </h4>
-              <p className="text-xs text-muted-foreground">Sasha</p>
+
+        {/* Restaurant Info */}
+        <div className="!pt-2 !border-t border-border/50">
+          <Link
+            href="/seller"
+            className="flex items-center justify-between group hover:bg-muted/50 !p-3 !-m-3 rounded-lg transition-all duration-200"
+          >
+            <div className="flex items-center !gap-3 min-w-0 flex-1">
+              <Avatar className="size-8 md:size-12 flex-shrink-0 ring-2 ring-background shadow-sm">
+                <AvatarImage src="https://avatar.iran.liara.run/public" />
+                <AvatarFallback className="bg-muted text-muted-foreground font-medium">
+                  UI
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <h4 className="font-semibold text-base group-hover:text-green-600 transition-colors duration-200 truncate">
+                  Food Mania Restaurant Name
+                </h4>
+                <p className="text-sm text-muted-foreground truncate !mt-0.5">
+                  Sasha John Doe
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-1 text-sm items-center">
-            4.8
-            <StarIcon className="size-4 fill-amber-400 text-amber-400" />
-          </div>
-        </Link>
+            <div className="flex items-center !gap-1.5 text-sm font-medium flex-shrink-0 !ml-4">
+              <span className="text-foreground">4.8</span>
+              <StarIcon className="size-4 fill-amber-400 text-amber-400" />
+            </div>
+          </Link>
+        </div>
       </CardContent>
-      {!fromProfile ? (
-        <CardFooter className="">
-          {control && (
-            <CardAction className="grid grid-cols-3 gap-6 w-full">
-              <Button variant="outline" asChild>
-                <Link href="/seller/dashboard/food-items/add">Edit</Link>
-              </Button>
-              <Button variant="destructive">Delete</Button>
-              <Button>Active</Button>
-            </CardAction>
-          )}
+
+      {!fromProfile && control && (
+        <CardFooter className="!p-4 pt-0">
+          <CardAction className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+            <Button variant="outline" asChild className="w-full">
+              <Link href="/seller/dashboard/food-items/add">Edit</Link>
+            </Button>
+            <Button variant="destructive" className="w-full">
+              Delete
+            </Button>
+            <Button className="w-full">Active</Button>
+          </CardAction>
         </CardFooter>
-      ) : (
-        ""
       )}
+
       {activable && (
-        <div className="flex flex-row justify-center items-center">
+        <div className="flex justify-center items-center !p-4 pt-0">
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Request to Activate</Button>
+              <Button className="w-full">Request to Activate</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Send Activation Request?</DialogTitle>
                 <DialogDescription>
-                  You&apos;re about to send a request to the seller to
-                  **activate this food item**. Once sent, the seller will be
-                  notified.
+                  You&apos;re about to send a request to the seller to{" "}
+                  <strong>activate this food item</strong>. Once sent, the
+                  seller will be notified.
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>

@@ -9,7 +9,7 @@ export default function ProductTabs() {
   const [active, setActive] = useState("description");
   return (
     <>
-      <div className="col-span-2 grid grid-cols-5 gap-6">
+      <div className="md:col-span-2 grid md:grid-cols-5 gap-6 !mt-6">
         <Button
           onClick={() => {
             setActive("description");

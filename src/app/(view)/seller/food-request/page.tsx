@@ -175,17 +175,19 @@ export default function Page() {
   }
 
   return (
-    <div className="!py-12 !px-4 md:!px-12 grid grid-cols-11 gap-6">
-      <div className="col-span-3 border-2 rounded-lg !p-6 self-start">
+    <div className="!py-12 !px-4 md:!px-12 grid md:grid-cols-11 gap-6">
+      <div className="md:col-span-3 border-2 rounded-lg !p-6 self-start">
         <ProfilePart />
       </div>
 
-      <div className="col-span-8">
+      <div className="!mt-12 md:!mt-0 md:col-span-8">
         <div>
           <div className="flex flex-row justify-between items-center">
-            <h2 className="text-3xl font-semibold text-green-700">
-              Create Food Request
-            </h2>
+            <div className="w-full">
+              <h2 className="text-xl md:text-3xl font-semibold text-green-700 text-center md:text-start">
+                Create Food Request
+              </h2>
+            </div>
           </div>
           <div className="w-full !mt-6">
             <Form {...form}>
@@ -199,15 +201,15 @@ export default function Page() {
                     control={form.control}
                     name={config.name}
                     render={({ field }) => (
-                      <FormItem className="grid grid-cols-7 items-center">
+                      <FormItem className="flex flex-col md:grid md:grid-cols-7 items-start md:items-center">
                         <FormLabel
-                          className={`col-span-2 font-semibold ${
+                          className={`md:col-span-2 font-semibold ${
                             config.selfStartLabel ? "self-start" : ""
                           }`}
                         >
                           {config.label}:
                         </FormLabel>
-                        <FormControl className="col-span-5">
+                        <FormControl className="md:col-span-5">
                           <config.component
                             placeholder={config.placeholder}
                             type={config.type}

@@ -12,18 +12,19 @@ import { Button } from "@/components/ui/button";
 import ProductTabs from "./product-tabs";
 import ProductCard from "@/components/core/prod-card";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
   return (
-    <div className="!py-12 !px-4 md:!px-12 grid grid-cols-11 gap-6">
-      <div className="col-span-3 border-2 rounded-lg !p-6 self-start">
+    <div className="!py-12 !px-4 md:!px-12 grid md:grid-cols-11 gap-6">
+      <div className="md:col-span-3 border-2 rounded-lg !p-6 self-start">
         <ProfilePart />
       </div>
 
-      <div className="col-span-8">
+      <div className="md:col-span-8">
         <div className="">
           <div className="flex flex-row justify-between items-center"></div>
-          <div className="w-full grid grid-cols-2 gap-6">
+          <div className="w-full md:grid md:grid-cols-2 gap-6">
             <div className="grid grid-cols-4 gap-4">
               <Image
                 src="/image/prod.jpg"
@@ -75,7 +76,7 @@ export default function Page() {
                 className="col-span-2 w-full aspect-[16/6] object-cover rounded-xl"
               />
             </div>
-            <div className="!space-y-6">
+            <div className="!space-y-6 !mt-12 md:!mt-0">
               <h1 className="text-3xl font-bold">VERY SPECIAL BURGIR</h1>
               <p className="flex items-center">
                 <MapPinIcon className="size-5 text-primary !mr-2" />{" "}
@@ -117,7 +118,7 @@ export default function Page() {
                       <ChevronDown className="size-5 " />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-[30dvw]">
+                  <DropdownMenuContent className="w-[90dvw] md:w-[240px] lg:w-[30dvw]">
                     <div className="!space-y-4 !p-2">
                       <div className="">
                         <h2 className="font-semibold">Available Dates</h2>
@@ -137,6 +138,15 @@ export default function Page() {
                       <div>
                         <h2 className="font-semibold">Packaging</h2>
                         <p>Eco-friendly containers</p>
+                      </div>
+                      <div>
+                        <h2 className="font-semibold">Delivery option</h2>
+                        <div className="flex items-center gap-2">
+                          <Badge className="text-sm">Pickup</Badge>
+                          <Badge className="text-sm" variant="outline">
+                            Delivery
+                          </Badge>
+                        </div>
                       </div>
                     </div>
                   </DropdownMenuContent>
@@ -160,9 +170,11 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="col-span-11 !mt-12">
-        <h2 className="text-3xl font-semibold !pb-4 border-b">Similar Food</h2>
-        <div className="w-full grid grid-cols-5 gap-6">
+      <div className="md:col-span-11 !mt-12">
+        <h2 className="text-xl md:text-3xl font-semibold !pb-4 border-b">
+          Similar Food
+        </h2>
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 !mt-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <ProductCard key={i} />
           ))}

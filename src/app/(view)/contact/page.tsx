@@ -144,7 +144,7 @@ export default function Page() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="block !mx-auto font-semibold w-1/3"
+                  className="block !mx-auto font-semibold  w-full sm:w-1/2 lg:w-1/3"
                 >
                   Submit
                 </Button>

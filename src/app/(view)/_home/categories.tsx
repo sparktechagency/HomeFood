@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Categories() {
   return (
-    <div className="w-full grid grid-cols-12 gap-2">
+    <div className="w-full grid grid-cols-3 md:grid-cols-6 2xl:grid-cols-12 gap-2">
       {menuCategories.map((x, i) => (
         <div
           key={i}
