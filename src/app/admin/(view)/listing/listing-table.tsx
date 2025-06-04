@@ -198,12 +198,19 @@ export default function ListingTable() {
                   <div className="w-full flex flex-col justify-center items-center gap-2">
                     <h2 className="text-2xl font-bold">{customer.creator}</h2>
                     <div className="w-full flex justify-between items-center">
-                      <span className="font-bold">Service name:</span>{" "}
-                      <span className="text-sm">{customer.service}</span>
+                      <span className="font-bold">Reported by:</span>{" "}
+                      <span className="text-sm">Willy Wonka</span>
                     </div>
                     <div className="w-full flex justify-between items-center">
-                      <span className="font-bold">Category</span>
-                      <span className="text-sm">{customer.category}</span>
+                      <span className="font-bold">Date: </span>
+                      <span className="text-sm">
+                        {new Date().toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
                     </div>
                     <div className="w-full flex flex-col justify-start items-start gap-2">
                       <span className="font-bold">Reason:</span>
