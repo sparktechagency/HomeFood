@@ -137,7 +137,7 @@ export default function Page() {
       <h1 className="text-center font-bold text-4xl text-primary">
         Frequently Asked Questions
       </h1>
-      <div className="!mt-24">
+      <div className="!mt-12">
         <div className="container !mx-auto bg-zinc-100 rounded-lg !p-6">
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq) => (
