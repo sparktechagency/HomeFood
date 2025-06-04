@@ -11,7 +11,7 @@ export default function Page() {
           Activities summary at a glance{" "}
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-6 !pr-6">
+      <div className="grid grid-cols-4 gap-6 !pr-6">
         {Array.from({ length: 7 }).map((_, i) => (
           <div
             className="aspect-video border rounded-lg flex flex-col justify-around items-start !p-6"
