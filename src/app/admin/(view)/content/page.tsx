@@ -16,11 +16,8 @@ export default function Page() {
               <Link href="/admin/content/about">Manage About Us</Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/contact">Manage Contact Us</Link>
-            </Button>
-            <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/how-it-works">
-                Manage How it works
+              <Link href="/admin/content/data-privacy">
+                Manage Data Privacy
               </Link>
             </Button>
           </CardContent>

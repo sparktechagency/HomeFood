@@ -57,7 +57,7 @@ export default function RegisterForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-bold">Brand Name</FormLabel>
+                <FormLabel className="text-lg font-bold">Full Name</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="John Doe"
@@ -146,8 +146,8 @@ export default function RegisterForm() {
             )}
           />
 
-          <div className="flex items-center gap-2 !mt-12">
-            <Checkbox />
+          <div className="flex items-center gap-2 !mt-12 text-blue-600">
+            <Checkbox className="border-2 border-blue-600" />
             <Label className="!space-x-0 gap-1">
               Please accept the
               <Link href={"/tnc"} className="underline">
@@ -155,8 +155,14 @@ export default function RegisterForm() {
               </Link>
             </Label>
           </div>
+          <div className="flex items-center gap-2 !my-6 ">
+            <Checkbox className="border-2 border-primary" />
+            <Label className="!space-x-0 gap-1 font-bold text-primary">
+              Register as Seller
+            </Label>
+          </div>
 
-          <Button className="w-full" type="submit">
+          <Button className="w-full !mt-12" type="submit">
             Register
           </Button>
         </form>

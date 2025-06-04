@@ -13,7 +13,7 @@ import LoginForm from "./login-form";
 export default function Page() {
   return (
     <div className="!p-12">
-      <Card>
+      <Card className="">
         <CardHeader>
           <CardTitle className="text-3xl font-bold">Log in</CardTitle>
           <CardDescription className="text-lg font-semibold">
@@ -23,7 +23,7 @@ export default function Page() {
             </Link>
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-6">
+        <CardContent className="">
           <div className="">
             <LoginForm />
           </div>

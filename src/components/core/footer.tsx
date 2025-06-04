@@ -29,6 +29,7 @@ const linkSections = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "How it works", href: "/how-it-works" },
+      { label: "FAQ", href: "/faq" },
       { label: "Jobs", href: "/jobs" },
       { label: "Terms and conditions", href: "/tnc" },
       { label: "Data Privacy", href: "/data-privacy" },

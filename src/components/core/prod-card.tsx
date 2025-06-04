@@ -8,7 +8,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { BikeIcon, MapPin, StarIcon, UtensilsCrossed } from "lucide-react";
+import { MapPin, StarIcon, UtensilsCrossed } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Badge } from "../ui/badge";
@@ -77,7 +77,8 @@ export default function ProductCard({
         </CardHeader>
       </Link>
 
-      <CardContent className="!space-y-4 flex-grow !p-6">
+      <CardContent className="!space-y-2 flex-grow !p-6 !py-0">
+        <h4 className="text-2xl text-primary">$49.00</h4>
         {/* Food Type */}
         <div className="flex items-start !gap-3">
           <UtensilsCrossed className="text-destructive size-5 flex-shrink-0 !mt-0.5 " />
@@ -93,16 +94,6 @@ export default function ProductCard({
           <span className="text-sm leading-relaxed text-muted-foreground line-clamp-1">
             Olympiapark, Munich, EMEA 90763, Germany, Bavaria
           </span>
-        </div>
-
-        {/* Delivery Info */}
-        <div className="flex items-start !gap-3">
-          <BikeIcon className="hidden md:block text-destructive size-5 flex-shrink-0 !mt-0.5" />
-          <div className="flex flex-col md:flex-row w-full items-center !gap-2 text-xs md:text-sm font-medium text-green-600">
-            <span>Free delivery</span>
-            <div className="hidden md:block size-1 bg-green-600 rounded-full" />
-            <span>Min. order $60/-</span>
-          </div>
         </div>
 
         {/* Restaurant Info */}

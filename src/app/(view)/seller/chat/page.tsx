@@ -5,9 +5,9 @@ import React from "react";
 
 export default function Page() {
   return (
-    <div className="md:!px-[7%] !px-4 !py-12 min-h-screen h-auto">
-      <div className="w-full h-full grid md:grid-cols-7 gap-6">
-        <div className="h-[50vh] overflow-y-scroll md:h-full md:col-span-2 border rounded-lg">
+    <div className="h-[90dvh] !p-4 md:!p-12">
+      <div className="w-full h-full grid grid-cols-7 gap-6">
+        <div className="h-full col-span-2 border rounded-lg">
           <div className="!p-4">
             <Input placeholder="Search" />
           </div>
@@ -27,7 +27,7 @@ export default function Page() {
             </div>
           ))}
         </div>
-        <div className="h-full md:col-span-5 border rounded-lg flex flex-col justify-between items-start">
+        <div className="h-full col-span-5 border rounded-lg flex flex-col justify-between items-start">
           <div className="flex flex-row justify-start items-center gap-3 !px-4 !py-3 border-b w-full">
             <Avatar className="!size-12">
               <AvatarImage src="https://avatar.iran.liara.run/public" />
@@ -43,7 +43,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <div className="h-dvh"></div>
+          <div className=""></div>
           <div className="flex flex-row justify-between w-full !p-6 gap-6">
             <Input />
             <Button>Send</Button>

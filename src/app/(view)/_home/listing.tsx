@@ -9,13 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  CalendarIcon,
-  ChevronDown,
-  FunnelIcon,
-  Grid3X3Icon,
-  MapPinIcon,
-} from "lucide-react";
+import { CalendarIcon, ChevronDown, FunnelIcon } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -27,34 +21,14 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { DualRangeSlider } from "@/components/ui/dual-slider";
-import ProductCard from "@/components/core/prod-card";
+
+import { sorts } from "./sorts";
+import ProdSection from "./product-section";
 
 export default function Listing() {
   const [date, setDate] = React.useState<Date>();
   const [values, setValues] = useState([0, 1000]);
-  const [showGrid, setShowGrid] = useState(true); // Renamed for clarity
-  const [showMap, setShowMap] = useState(true); // Renamed for clarity
   const [showFilters, setShowFilters] = useState(false);
-
-  const handleToggleGrid = () => {
-    // If showGrid is currently true and showMap is currently false (meaning grid is the only one visible),
-    // then prevent turning off the grid.
-    if (showGrid && !showMap) {
-      // Optionally, you could show a toast message or visually indicate this.
-      return; // Do nothing
-    }
-    setShowGrid(!showGrid);
-  };
-
-  const handleToggleMap = () => {
-    // If showMap is currently true and showGrid is currently false (meaning map is the only one visible),
-    // then prevent turning off the map.
-    if (showMap && !showGrid) {
-      // Optionally, you could show a toast message or visually indicate this.
-      return; // Do nothing
-    }
-    setShowMap(!showMap);
-  };
 
   return (
     <>
@@ -167,190 +141,7 @@ export default function Listing() {
           ))}
         </div>
       </section>
-      <section className="!mt-12">
-        <div className="flex flex-row justify-between items-center">
-          <h2 className="!pb-6 text-4xl font-semibold text-primary">
-            Listings
-          </h2>
-          <div className="">
-            <Button
-              variant="ghost"
-              className={`text-primary ${showGrid ? "bg-accent" : ""}`}
-              onClick={handleToggleGrid}
-            >
-              <Grid3X3Icon />
-            </Button>
-            <Button
-              variant="ghost"
-              className={`text-primary ${showMap ? "bg-accent" : ""}`}
-              onClick={handleToggleMap}
-            >
-              <MapPinIcon />
-            </Button>
-          </div>
-        </div>
-
-        <div
-          className={`grid ${
-            showGrid && showMap
-              ? "lg:grid-cols-10 md:gap-2 lg:gap-10"
-              : showGrid
-              ? "grid-cols-5 gap-4 md:gap-12"
-              : showMap
-              ? "grid-cols-1"
-              : ""
-          }`}
-        >
-          {showGrid && (
-            <div
-              className={`${
-                showMap
-                  ? "col-span-full md:col-span-6 2xl:col-span-4 grid grid-cols-1 sm:grid-cols-2"
-                  : "col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-              } gap-6 lg:gap-12 self-start`}
-            >
-              {Array.from({ length: showGrid && showMap ? 5 : 24 }).map(
-                (_, i) => (
-                  <ProductCard key={i} />
-                )
-              )}
-            </div>
-          )}
-
-          {showMap && (
-            <div
-              className={`${
-                showGrid
-                  ? "col-span-6 md:col-span-4 2xl:col-span-6"
-                  : "col-span-full"
-              }`}
-            >
-              <iframe
-                width="1200"
-                height="650"
-                loading="lazy"
-                className="border-0 w-full h-[80dvh] rounded-lg"
-                src="https://www.google.com/maps/embed/v1/search?q=Murfreesboro&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-              ></iframe>
-            </div>
-          )}
-        </div>
-      </section>
+      <ProdSection />
     </>
   );
 }
-
-const sorts = [
-  {
-    title: "Date",
-    child: null,
-    kind: "date",
-  },
-  {
-    title: "Meal",
-    child: [
-      "Breakfast",
-      "Brunch",
-      "Lunch",
-      "Snacks",
-      "Dinner",
-      "Dessert",
-      "Drinks",
-    ],
-    kind: "list",
-  },
-  {
-    title: "Special Features",
-    child: [
-      "Vegetarian",
-      "Vegan",
-      "Bio",
-      "Lactose-free",
-      "Halal",
-      "Gluten-free",
-      "Alcohol-free",
-      "Nut-free",
-      "Sugar-free",
-      "Low-carb / Keto",
-      "High Protein",
-      "Organic",
-      "Low-fat",
-      "Dairy-free",
-      "Egg-free",
-      "Soy-free",
-      "No added preservatives",
-      "Calorie-conscious",
-    ],
-    kind: "checkbox",
-  },
-
-  {
-    title: "Pickup Time",
-    child: [
-      "7.00-8.00",
-      "8.00-9.00",
-      "9.00-10.00",
-      "10.00-11.00",
-      "11.00-12.00",
-      "12.00-01.00",
-    ],
-    kind: "checkbox",
-  },
-  { title: "Price", child: [0, 1000], kind: "dual-slider" },
-  {
-    title: "Location",
-    child: ["Munich", "Berlin", "Dormund", "Hamburg", "Leipzig", "Heidelberg"],
-    kind: "list",
-  },
-  {
-    title: "Rating",
-    child: [
-      "1 star and higher",
-      "2 star and higher",
-      "3 star and higher",
-      "4 star and higher",
-    ],
-    kind: "checkbox",
-  },
-  {
-    title: "Listing by Seller",
-    child: [
-      "Fatema's Kitchen",
-      "HomeTaste By Nisa",
-      "Biryani Bros",
-      "Vegan Delight",
-      "Shumi's Food",
-      "Hungry Panda",
-      "Subway Saga",
-    ],
-    kind: "list",
-  },
-  {
-    title: "Listing by Buyer",
-    child: [
-      "Randy Orton",
-      "John Cena",
-      "Brock Lesner",
-      "Ryback",
-      "R-Truth",
-      "Dom Dom",
-      "Triple H",
-    ],
-    kind: "list",
-  },
-  {
-    title: "Sort By",
-    child: [
-      "Top Picks",
-      "Price (lowest first)",
-      "Price (highest first)",
-      "Best Rated & Affordable",
-      "Rating (high to low)",
-      "Rating (low to high)",
-      "Most Ordered",
-      "New arrivals",
-      "Recently added",
-    ],
-    kind: "list",
-  },
-];
