@@ -12,7 +12,7 @@ export default function Page() {
         <ProfilePart />
       </div>
 
-      <div className="!mt-24 md:col-span-8">
+      <div className="!mt-24 md:!m-0 md:col-span-8">
         <div className="">
           <div className="flex flex-row justify-between items-center">
             <h2 className="text-3xl font-semibold">All Listing</h2>

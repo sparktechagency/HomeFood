@@ -9,13 +9,10 @@ export default function Page() {
       <p className="text-center text-muted-foreground !pt-4 !pb-12">
         Enter valid information to update a new password
       </p>
-      <Card>
-        <CardContent className="grid grid-cols-2 gap-6 !py-12">
-          <div className="">
+      <Card className="w-full md:w-1/2 !mx-auto">
+        <CardContent className="grid grid-cols-1 gap-6 !py-12">
+          <div>
             <ForgotForm />
-          </div>
-          <div className="w-full h-full">
-            {/* <Image src="" height={} width={} /> */}
           </div>
         </CardContent>
       </Card>

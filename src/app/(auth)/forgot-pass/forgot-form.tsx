@@ -53,7 +53,10 @@ export default function ForgotForm() {
               </FormItem>
             )}
           />
-          <Button className="w-full" type="submit">
+          <Button
+            className="w-full md:w-1/2 col-span-2 !mx-auto block"
+            type="submit"
+          >
             Send OTP
           </Button>
         </form>

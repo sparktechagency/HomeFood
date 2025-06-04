@@ -13,7 +13,7 @@ import LoginForm from "./login-form";
 export default function Page() {
   return (
     <div className="!p-12">
-      <Card className="">
+      <Card className="container mx-auto!">
         <CardHeader>
           <CardTitle className="text-3xl font-bold">Log in</CardTitle>
           <CardDescription className="text-lg font-semibold">

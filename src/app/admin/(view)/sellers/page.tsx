@@ -10,7 +10,7 @@ export default function Page() {
           <Input placeholder="Search brands" inputMode="search" />
         </div>
       </div>
-      <div className="!mt-12">
+      <div className="!mt-12 ">
         <CreatorsTable />
       </div>
     </div>
