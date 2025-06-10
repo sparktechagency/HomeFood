@@ -52,11 +52,11 @@ export default function ProductCard({
               className="object-cover w-full h-full"
             />
           </div>
-          <div className="hidden md:block absolute top-0 left-0 text-background text-xs !p-2 bg-[#FF6A0050] rounded-br-lg z-10">
+          <div className="hidden md:block absolute top-0 left-0 text-background text-[10px] !p-2 bg-[#FF6A0050] rounded-br-lg z-10">
             Tomorrow 12:00 am - 8:00 am
           </div>
-          <div className="absolute top-0 right-0 flex !space-x-1 md:!space-x-2 !p-1 z-10">
-            <Badge className="text-xs !px-2 !py-1">Pickup</Badge>
+          <div className="absolute top-0 right-0 flex !space-x-1 md:!space-x-1 !p-1 z-10">
+            <Badge className="text-[10px] !px-2 !py-1">Pickup</Badge>
             <Badge
               variant="outline"
               className="text-xs !px-2 !py-1 text-background"
@@ -78,7 +78,6 @@ export default function ProductCard({
       </Link>
 
       <CardContent className="!space-y-2 flex-grow !p-6 !py-0">
-        <h4 className="text-2xl text-primary">$49.00</h4>
         {/* Food Type */}
         <div className="flex items-start !gap-3">
           <UtensilsCrossed className="text-destructive size-5 flex-shrink-0 !mt-0.5 " />
@@ -95,7 +94,7 @@ export default function ProductCard({
             Olympiapark, Munich, EMEA 90763, Germany, Bavaria
           </span>
         </div>
-
+        <h4 className="text-base text-primary">$49.00</h4>
         {/* Restaurant Info */}
         <div className="!pt-2 !border-t border-border/50">
           <Link
@@ -103,17 +102,17 @@ export default function ProductCard({
             className="flex items-center justify-between group hover:bg-muted/50 !p-3 !-m-3 rounded-lg transition-all duration-200"
           >
             <div className="flex items-center !gap-3 min-w-0 flex-1">
-              <Avatar className="size-8 md:size-12 flex-shrink-0 ring-2 ring-background shadow-sm">
+              <Avatar className="size-6 md:size-8 flex-shrink-0 ring-2 ring-background shadow-sm">
                 <AvatarImage src="https://avatar.iran.liara.run/public" />
                 <AvatarFallback className="bg-muted text-muted-foreground font-medium">
                   UI
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <h4 className="font-semibold text-base group-hover:text-green-600 transition-colors duration-200 truncate">
+                <h4 className="text-xs font-semibold group-hover:text-green-600 transition-colors duration-200 truncate">
                   Food Mania Restaurant Name
                 </h4>
-                <p className="text-sm text-muted-foreground truncate !mt-0.5">
+                <p className="text-xs text-muted-foreground truncate !mt-0.5">
                   Sasha John Doe
                 </p>
               </div>

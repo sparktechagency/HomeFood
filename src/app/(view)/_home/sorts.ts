@@ -1,22 +1,22 @@
 export const sorts = [
-  {
-    title: "Date",
-    child: null,
-    kind: "date",
-  },
-  {
-    title: "Meal",
-    child: [
-      "Breakfast",
-      "Brunch",
-      "Lunch",
-      "Snacks",
-      "Dinner",
-      "Dessert",
-      "Drinks",
-    ],
-    kind: "list",
-  },
+  // {
+  //   title: "Date",
+  //   child: null,
+  //   kind: "date",
+  // },
+  // {
+  //   title: "Meal",
+  //   child: [
+  //     "Breakfast",
+  //     "Brunch",
+  //     "Lunch",
+  //     "Snacks",
+  //     "Dinner",
+  //     "Dessert",
+  //     "Drinks",
+  //   ],
+  //   kind: "list",
+  // },
   {
     title: "Special Features",
     child: [
@@ -55,11 +55,11 @@ export const sorts = [
     kind: "checkbox",
   },
   { title: "Price", child: [0, 1000], kind: "dual-slider" },
-  {
-    title: "Location",
-    child: ["Munich", "Berlin", "Dormund", "Hamburg", "Leipzig", "Heidelberg"],
-    kind: "list",
-  },
+  // {
+  //   title: "Location",
+  //   child: ["Munich", "Berlin", "Dormund", "Hamburg", "Leipzig", "Heidelberg"],
+  //   kind: "list",
+  // },
   {
     title: "Rating",
     child: [

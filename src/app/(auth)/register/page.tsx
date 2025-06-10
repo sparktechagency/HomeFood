@@ -8,7 +8,7 @@ export default function Page() {
       <h1 className="text-center !py-12 text-4xl font-bold">
         Create an account
       </h1>
-      <Card className="container !mx-auto">
+      <Card className="w-full lg:w-1/2 mx-auto!">
         <CardContent className="">
           <div className="">
             <RegisterForm />

@@ -47,7 +47,7 @@ export default function Listing() {
         </div>
         <div
           className={`
-          !py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-10 gap-2 
+          !py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-7 gap-2 
           ${showFilters ? "block" : "hidden"} sm:grid
         `}
         >

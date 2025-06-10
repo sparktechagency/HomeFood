@@ -93,7 +93,7 @@ export default function Page() {
   ];
 
   return (
-    <main className="container !mx-auto !px-4 !py-8 md:!px-6 mt-12!">
+    <main className="container !mx-auto !px-4 !py-8 md:!px-[14%] mt-12!">
       <h1 className="text-3xl font-semibold text-green-600 !mb-10">
         How It Works
       </h1>

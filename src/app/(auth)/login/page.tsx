@@ -12,11 +12,13 @@ import LoginForm from "./login-form";
 
 export default function Page() {
   return (
-    <div className="!p-12">
-      <Card className="container mx-auto!">
+    <div className="!p-12 flex justify-center items-center">
+      <Card className="w-full lg:w-1/2 mx-auto">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">Log in</CardTitle>
-          <CardDescription className="text-lg font-semibold">
+          <CardTitle className="text-3xl font-bold text-center">
+            Log in
+          </CardTitle>
+          <CardDescription className="text-base font-semibold text-center">
             Not registered?{" "}
             <Link href={"/register"} className="text-pretty text-primary">
               Register

@@ -21,7 +21,6 @@ const formSchema = z
   .object({
     name: z.string().min(1, "Name is required"),
     email: z.string().email("Invalid email address"),
-    address: z.string().min(1, "Address is required"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPass: z
       .string()
@@ -38,7 +37,6 @@ export default function RegisterForm() {
     defaultValues: {
       name: "",
       email: "",
-      address: "",
       password: "",
       confirmPass: "",
     },
@@ -88,7 +86,7 @@ export default function RegisterForm() {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="address"
             render={({ field }) => (
@@ -104,7 +102,7 @@ export default function RegisterForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <FormField
             control={form.control}
