@@ -35,7 +35,9 @@ export default function Categories() {
                   alt={`${category} icon`}
                   className="size-12"
                 />
-                <span className="text-center">{category}</span>{" "}
+                <span className="text-center line-clamp-2 text-ellipsis">
+                  {category}
+                </span>{" "}
                 {/* Added text-center for text alignment */}
               </div>
             ))}
