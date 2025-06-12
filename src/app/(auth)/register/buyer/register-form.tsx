@@ -144,19 +144,13 @@ export default function RegisterForm() {
             )}
           />
 
-          <div className="flex items-center gap-2 !mt-12 text-blue-600">
+          <div className="flex items-center gap-2 !mt-12 text-blue-600/80">
             <Checkbox className="border-2 border-blue-600" />
-            <Label className="!space-x-0 gap-1">
+            <Label className="!space-x-0 gap-1 font-semibold">
               Please accept the
               <Link href={"/tnc"} className="underline">
                 Terms and conditions
               </Link>
-            </Label>
-          </div>
-          <div className="flex items-center gap-2 !my-6 ">
-            <Checkbox className="border-2 border-primary" />
-            <Label className="!space-x-0 gap-1 font-bold text-primary">
-              Register as Seller
             </Label>
           </div>
 

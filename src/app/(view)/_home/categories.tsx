@@ -9,7 +9,7 @@ import Image from "next/image";
 import React from "react";
 
 export default function Categories() {
-  const itemsPerSlide = 12; // Define how many categories you want per slide
+  const itemsPerSlide = 17; // Define how many categories you want per slide
   const totalCategories = menuCategories.length;
   const numberOfSlides = Math.ceil(totalCategories / itemsPerSlide);
 
@@ -21,12 +21,12 @@ export default function Categories() {
       const categoriesForSlide = menuCategories.slice(startIndex, endIndex);
 
       slides.push(
-        <CarouselItem key={i} className="px-4">
-          <div className="w-full grid grid-cols-3 md:grid-cols-6 2xl:grid-cols-12 gap-2">
+        <CarouselItem key={i} className="px-4!">
+          <div className="w-full grid grid-cols-4 md:grid-cols-8 2xl:grid-cols-17 gap-2">
             {categoriesForSlide.map((category, index) => (
               <div
                 key={index}
-                className="w-full select-none !p-2 border hover:bg-secondary/50 rounded-lg flex flex-col justify-center items-center gap-2 text-sm font-semibold h-32" // Added h-32 for fixed height
+                className="w-full select-none !p-2 hover:bg-secondary/50 rounded-lg flex flex-col justify-center items-center gap-2 text-sm font-semibold h-32" // Added h-32 for fixed height
               >
                 <Image
                   src={"/icon/food-ico.png"}
