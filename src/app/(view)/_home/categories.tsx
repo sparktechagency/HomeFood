@@ -26,7 +26,7 @@ export default function Categories() {
             {categoriesForSlide.map((category, index) => (
               <div
                 key={index}
-                className="w-full select-none !p-2 hover:bg-secondary/50 rounded-lg flex flex-col justify-center items-center gap-2 text-sm font-semibold h-32" // Added h-32 for fixed height
+                className="w-full select-none !p-2 hover:bg-secondary/50 rounded-lg flex flex-col justify-start items-center gap-2 text-sm font-semibold h-32" // Added h-32 for fixed height
               >
                 <Image
                   src={"/icon/food-ico.png"}
@@ -37,8 +37,7 @@ export default function Categories() {
                 />
                 <span className="text-center line-clamp-2 text-ellipsis">
                   {category}
-                </span>{" "}
-                {/* Added text-center for text alignment */}
+                </span>
               </div>
             ))}
           </div>
