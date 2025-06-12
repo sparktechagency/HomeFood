@@ -60,6 +60,7 @@ const formSchema = z
     name: z.string().min(1, "Name is required"),
     email: z.string().email("Invalid email address"),
     city: z.string().min(1, "City is required"),
+    address: z.string().min(1, "Address is required"),
     postal_code: z
       .string()
       .min(1, "Postal code is required")
@@ -106,10 +107,22 @@ export default function RegisterForm() {
             control={form.control}
             name="email"
             label="E-mail"
+            placeholder=""
             type="email"
           />
 
-          <InputField control={form.control} name="city" label="City" />
+          <InputField
+            control={form.control}
+            name="city"
+            label="City"
+            placeholder=""
+          />
+          <InputField
+            control={form.control}
+            name="address"
+            label="Address"
+            placeholder=""
+          />
 
           <InputField
             control={form.control}
