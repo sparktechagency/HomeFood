@@ -91,7 +91,7 @@ export default function Page() {
   );
 }
 
-export function StatCard({ value, label }: { value: string; label: string }) {
+function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <Card>
       <CardContent className="space-y-6!">
