@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+
 import {
   Form,
   FormControl,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +21,8 @@ const formSchema = z.object({
   name: z.string(),
   email: z.string(),
   address: z.string(),
+  postal_code: z.string(),
+  city: z.string(),
 });
 export default function ProfUpdateForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -73,6 +77,32 @@ export default function ProfUpdateForm() {
                 <FormLabel>Location</FormLabel>
                 <FormControl>
                   <Input placeholder="Location" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="postal_code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Postal Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="New york" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

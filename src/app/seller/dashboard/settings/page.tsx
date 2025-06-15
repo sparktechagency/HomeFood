@@ -5,7 +5,17 @@ import { EditIcon } from "lucide-react";
 import React from "react";
 import ProfUpdateForm from "./prof-update-form";
 import { Input } from "@/components/ui/input";
-
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Link from "next/link";
 export default function Page() {
   return (
     <div className="!pb-12 !pr-6">
@@ -35,6 +45,42 @@ export default function Page() {
       </div>
       <div className="">
         <ProfUpdateForm />
+      </div>
+      <div className="!mt-12 w-2/3 !mx-auto rounded-lg border-2 !p-6">
+        <Button className="w-full text-sm" variant="secondary" asChild>
+          <Link href="settings/change-pass">Change Password</Link>
+        </Button>
+        <div className="!mt-6">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="w-full text-sm border-destructive text-destructive"
+                variant="outline"
+              >
+                Deactivate account
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you sure?</DialogTitle>
+                <DialogDescription>
+                  Write your name &quot;Raven&quot; below to confirm and delete
+                  this account
+                </DialogDescription>
+              </DialogHeader>
+              <div className="">
+                <Input placeholder="" className="" />
+              </div>
+              <DialogFooter>
+                <DialogClose>
+                  <Button variant="outline" className="text-sm" asChild>
+                    <Link href="/login"> Deactivate account</Link>
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     </div>
   );

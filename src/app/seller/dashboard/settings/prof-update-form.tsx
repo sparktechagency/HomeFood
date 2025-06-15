@@ -1,15 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   Form,
   FormControl,
@@ -20,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -30,6 +21,8 @@ const formSchema = z.object({
   name: z.string(),
   email: z.string(),
   address: z.string(),
+  postal_code: z.string(),
+  city: z.string(),
 });
 export default function ProfUpdateForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -89,40 +82,35 @@ export default function ProfUpdateForm() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="postal_code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Postal Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="New york" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button className="w-full !mt-6">Update Profile</Button>
         </form>
       </Form>
-      <div className="!mt-6">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              className="w-full text-sm border-destructive text-destructive"
-              variant="outline"
-            >
-              Deactivate account
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Are you sure?</DialogTitle>
-              <DialogDescription>
-                Write your name &quot;Raven&quot; below to confirm and delete
-                this account
-              </DialogDescription>
-            </DialogHeader>
-            <div className="">
-              <Input placeholder="" className="" />
-            </div>
-            <DialogFooter>
-              <DialogClose>
-                <Button variant="outline" className="text-sm" asChild>
-                  <Link href="/login"> Deactivate account</Link>
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
     </div>
   );
 }

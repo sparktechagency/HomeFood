@@ -66,8 +66,10 @@ export default function ProdSection() {
                 : "col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             } gap-6 lg:gap-12 self-start`}
           >
-            {Array.from({ length: showGrid && showMap ? 5 : 24 }).map(
-              (_, i) => (
+            {Array.from({ length: showGrid && showMap ? 5 : 24 }).map((_, i) =>
+              Math.random() < 0.5 ? (
+                <ProductCard key={i} requested />
+              ) : (
                 <ProductCard key={i} />
               )
             )}

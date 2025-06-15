@@ -15,6 +15,7 @@ import {
 
 const navlinks = [
   { title: "How it works", to: "/how-it-works" },
+  { title: "Seller", to: "/how-it-works-seller" },
   { title: "Listing", to: "/" },
   { title: "About Us", to: "/about" },
   { title: "Contact us", to: "/contact" },

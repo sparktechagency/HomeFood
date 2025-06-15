@@ -158,11 +158,13 @@ export default function ListingTable() {
     <Table>
       <TableHeader className="bg-zinc-100">
         <TableRow>
-          <TableHead className="w-[100px] text-center">Seller Name</TableHead>
-          <TableHead className="text-center">Service</TableHead>
-          <TableHead className="text-center">Category</TableHead>
-          <TableHead className="text-center">Date</TableHead>
-          <TableHead className="text-center">Action</TableHead>
+          <TableHead className="w-[100px] text-center font-semibold!">
+            User name
+          </TableHead>
+          <TableHead className="text-center font-semibold!">Service</TableHead>
+          <TableHead className="text-center font-semibold!">Category</TableHead>
+          <TableHead className="text-center font-semibold!">Date</TableHead>
+          <TableHead className="text-center font-semibold!">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

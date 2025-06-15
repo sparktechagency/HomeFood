@@ -10,7 +10,7 @@ export default function Page() {
       {" "}
       <div className="grid grid-cols-4 gap-6 !pb-12">
         {Array.from({ length: 6 }).map((_, i) => (
-          <ProductCard key={i} control />
+          <ProductCard key={i} control activer />
         ))}
       </div>
       <Button className="fixed bottom-4 right-4" asChild>

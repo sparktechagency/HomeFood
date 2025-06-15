@@ -32,7 +32,7 @@ export default function RootLayout({
                 <AvatarFallback>AV</AvatarFallback>
               </Avatar>
               <Button size={"icon"} variant="ghost" asChild>
-                <Link href="/creator/notifications">
+                <Link href="/seller/dashboard/notifications">
                   <BellIcon fill="" />
                 </Link>
               </Button>

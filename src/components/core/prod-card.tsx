@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardAction,
@@ -24,20 +24,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { Skeleton } from "../ui/skeleton";
 
 export default function ProductCard({
   fromProfile,
   activable,
   control,
+  activer,
+  requested,
 }: {
   fromProfile?: boolean;
   activable?: boolean;
   control?: boolean;
+  activer?: boolean;
+  requested?: boolean;
 }) {
   const [active, setActive] = useState(true);
 
   function handleActive() {
     setActive(!active);
+  }
+  const [isMounted, setIsMounted] = useState(false); // New state
+
+  useEffect(() => {
+    setIsMounted(true); // Set to true after component mounts on client
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <Skeleton className="h-[300px] !pt-0 overflow-hidden flex flex-col w-full max-w-sm sm:max-w-md md:max-w-full !mx-auto"></Skeleton>
+    );
   }
 
   return (
@@ -64,7 +80,7 @@ export default function ProductCard({
               Delivery
             </Badge>
           </div>
-          {activable &&
+          {(activable || activer) &&
             (active ? (
               <div className="absolute bottom-0 right-0 bg-green-600 !px-4 text-background text-sm !p-1 rounded-tl-lg z-10">
                 Active
@@ -98,7 +114,7 @@ export default function ProductCard({
         {/* Restaurant Info */}
         <div className="!pt-2 !border-t border-border/50">
           <Link
-            href="/seller"
+            href={requested ? "/buyer" : "/seller"}
             className="flex items-center justify-between group hover:bg-muted/50 !p-3 !-m-3 rounded-lg transition-all duration-200"
           >
             <div className="flex items-center !gap-3 min-w-0 flex-1">
@@ -134,13 +150,15 @@ export default function ProductCard({
             <Button variant="destructive" className="w-full">
               Delete
             </Button>
-            <Button className="w-full">Active</Button>
+            <Button className="w-full" onClick={handleActive}>
+              Active
+            </Button>
           </CardAction>
         </CardFooter>
       )}
 
       {activable && (
-        <div className="flex justify-center items-center !p-4 pt-0">
+        <div className="flex justify-center items-center !p-4 pt-0!">
           <Dialog>
             <DialogTrigger asChild>
               <Button className="w-full">Request to Activate</Button>
@@ -164,6 +182,14 @@ export default function ProductCard({
               </DialogFooter>
             </DialogContent>
           </Dialog>
+        </div>
+      )}
+      {requested && (
+        <div
+          className="flex justify-center items-center pt-0!"
+          suppressHydrationWarning
+        >
+          <Button className="text-xs rounded-full">Fulfill This Request</Button>
         </div>
       )}
     </Card>

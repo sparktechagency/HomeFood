@@ -5,8 +5,7 @@ import { BellIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 export const metadata: Metadata = {
-  title: "Fitfluencex Creator Panel",
-  description: "Create and Manage your own profile and contents",
+  title: "HomeFood Admin Panel",
 };
 
 export default function RootLayout({
