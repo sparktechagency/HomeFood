@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Categories from "./categories";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,7 +20,6 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { DualRangeSlider } from "@/components/ui/dual-slider";
-
 import { sorts } from "./sorts";
 import ProdSection from "./product-section";
 

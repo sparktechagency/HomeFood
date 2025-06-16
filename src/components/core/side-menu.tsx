@@ -15,12 +15,19 @@ export default function SideMenu() {
   const router = useRouter();
   const pathname = usePathname();
   const [current, setCurrent] = useState("dashboard");
+  const [userType, setUserType] = useState("");
+  const path = usePathname();
 
   useEffect(() => {
     const pathParts = pathname.split("/");
     const extractedKey = pathParts[pathParts.length - 1] || "dashboard";
     setCurrent(extractedKey);
-  }, [pathname]);
+    if (path.match("seller")) {
+      setUserType("seller");
+    } else {
+      setUserType("buyer");
+    }
+  }, [path, pathname]);
 
   const handleClick = (key: string) => {
     if (key === "/home") {
@@ -28,12 +35,12 @@ export default function SideMenu() {
       return;
     }
     setCurrent(key);
-    router.push(`/seller/dashboard/${key}`);
+    router.push(`/${userType}/dashboard/${key}`);
   };
 
   const items = [
     {
-      label: "Pending Orders",
+      label: `Pending Orders`,
       key: "pending",
       icon: <CustomOrdersIcon className="size-6" />,
     },

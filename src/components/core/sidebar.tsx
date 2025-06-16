@@ -9,7 +9,7 @@ export default function Sidebar({ by }: { by: "admin" | "creator" }) {
     <div className="!p-6 h-full flex flex-col justify-between">
       <div className="">
         <h1 className="text-2xl font-bold text-center">HomeFood</h1>
-        <div className="">
+        <div className="" suppressHydrationWarning>
           {by === "admin" ? <AdminSideMenu /> : <SideMenu />}
         </div>
       </div>

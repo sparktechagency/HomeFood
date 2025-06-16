@@ -53,7 +53,7 @@ export default function Page() {
         you!
       </p>
 
-      <div className="!mt-12">
+      <div className="!mt-12 w-full xl:w-1/2 mx-auto!">
         <h2 className="text-2xl font-semibold">✍️ Feedback Form</h2>
         <Card className="!mt-12">
           <CardContent className="!pt-6">

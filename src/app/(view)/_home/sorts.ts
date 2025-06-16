@@ -51,6 +51,7 @@ export const sorts = [
       "10.00-11.00",
       "11.00-12.00",
       "12.00-01.00",
+      "All Hours",
     ],
     kind: "checkbox",
   },
