@@ -44,16 +44,7 @@ export const sorts = [
 
   {
     title: "Pickup Time",
-    child: [
-      "7.00-8.00",
-      "8.00-9.00",
-      "9.00-10.00",
-      "10.00-11.00",
-      "11.00-12.00",
-      "12.00-01.00",
-      "All Hours",
-    ],
-    kind: "checkbox",
+    kind: "time",
   },
   { title: "Price", child: [0, 1000], kind: "dual-slider" },
   // {

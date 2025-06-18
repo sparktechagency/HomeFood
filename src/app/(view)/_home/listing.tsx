@@ -22,9 +22,11 @@ import { cn } from "@/lib/utils";
 import { DualRangeSlider } from "@/components/ui/dual-slider";
 import { sorts } from "./sorts";
 import ProdSection from "./product-section";
+import { Input } from "@/components/ui/input";
 
 export default function Listing() {
   const [date, setDate] = React.useState<Date>();
+  const [time, setTime] = React.useState("");
   const [values, setValues] = useState([0, 1000]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -105,6 +107,61 @@ export default function Listing() {
                           <span>${values[0]}</span>
                           <span>-</span>
                           <span>${values[1]}</span>
+                        </div>
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : x.kind === "time" ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+                      {x.title} <ChevronDown className="size-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
+                      <div className="!mt-6 !px-4">
+                        <h4 className="text-sm mb-4! font-medium">
+                          Select Pickup time:
+                        </h4>
+                        <Input
+                          type="time"
+                          value={time}
+                          onChange={(e) => {
+                            setTime(e.target.value);
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-row justify-center items-center !mt-6 !px-4">
+                        <div className="space-x-2 py-1 px-2 rounded-lg">
+                          {time &&
+                            (() => {
+                              const [hours, minutes] = time
+                                .split(":")
+                                .map(Number);
+                              const now = new Date();
+                              const from = new Date(
+                                now.getFullYear(),
+                                now.getMonth(),
+                                now.getDate(),
+                                hours,
+                                minutes
+                              );
+                              const to = new Date(from);
+                              to.setHours(to.getHours() + 1);
+
+                              const format = (date: Date) =>
+                                date.toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: false,
+                                });
+
+                              return (
+                                <>
+                                  <span>From: {format(from)}</span>
+                                  <span className="mx-1!">-</span>
+                                  <span>To: {format(to)}</span>
+                                </>
+                              );
+                            })()}
                         </div>
                       </div>
                     </DropdownMenuContent>

@@ -126,7 +126,7 @@ export default function ProductCard({
               </Avatar>
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold group-hover:text-green-600 transition-colors duration-200 truncate">
-                  Food Mania Restaurant Name
+                  {requested ? "Raven the buyer" : "Food Mania Restaurant Name"}
                 </h4>
                 <p className="text-xs text-muted-foreground truncate !mt-0.5">
                   Sasha John Doe
@@ -145,13 +145,19 @@ export default function ProductCard({
         <CardFooter className="!p-4 pt-0">
           <CardAction className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
             <Button variant="outline" asChild className="w-full">
-              <Link href="/seller/dashboard/food-items/add">Edit</Link>
+              <Link href="/seller/dashboard/food-items/edit">Edit</Link>
             </Button>
             <Button variant="destructive" className="w-full">
               Delete
             </Button>
-            <Button className="w-full" onClick={handleActive}>
-              Active
+            <Button
+              className="w-full"
+              variant={!active ? "default" : "secondary"}
+              asChild
+            >
+              <Link href="/seller/dashboard/food-items/edit">
+                {active ? "Deactivate" : "Active"}
+              </Link>
             </Button>
           </CardAction>
         </CardFooter>

@@ -89,7 +89,7 @@ export default function Page() {
   return (
     <div className="w-full p-6!">
       <div className="mb-6!">
-        <h1 className="text-2xl! font-bold!">Add your food item</h1>
+        <h1 className="text-2xl! font-bold!">Edit your food item</h1>
       </div>
 
       <Form {...form}>

@@ -23,7 +23,7 @@ import ProductCard from "@/components/core/prod-card";
 export default function Page() {
   const [quantity, setQuantity] = useState(1);
   const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">(
-    "delivery"
+    "pickup"
   );
 
   const itemPrice = 45;
@@ -144,6 +144,19 @@ export default function Page() {
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
                 <Button
+                  variant={deliveryMethod === "pickup" ? "default" : "outline"}
+                  className="h-auto !p-4 flex-col gap-2"
+                  onClick={() => setDeliveryMethod("pickup")}
+                >
+                  <div className="flex items-center gap-2">
+                    <HandPlatterIcon className="size-5" />
+                    <span className="font-semibold">Pickup</span>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm opacity-80">Ready in 8-12 mins</p>
+                  </div>
+                </Button>
+                <Button
                   variant={
                     deliveryMethod === "delivery" ? "default" : "outline"
                   }
@@ -156,20 +169,6 @@ export default function Page() {
                   </div>
                   <div className="text-center w-full">
                     <p className="text-sm opacity-80">Standard (10-15 mins)</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant={deliveryMethod === "pickup" ? "default" : "outline"}
-                  className="h-auto !p-4 flex-col gap-2"
-                  onClick={() => setDeliveryMethod("pickup")}
-                >
-                  <div className="flex items-center gap-2">
-                    <HandPlatterIcon className="size-5" />
-                    <span className="font-semibold">Pickup</span>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm opacity-80">Ready in 8-12 mins</p>
                   </div>
                 </Button>
               </div>
@@ -221,7 +220,7 @@ export default function Page() {
               )}
 
               <Button className="w-full !mt-6" size="lg" asChild>
-                <Link href="/">
+                <Link href="order/payment">
                   <CreditCard className="size-4 !mr-2" />
                   Proceed to Payment
                 </Link>

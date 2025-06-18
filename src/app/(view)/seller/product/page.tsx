@@ -31,7 +31,7 @@ export default function Page() {
                 height={600}
                 width={800}
                 alt="product-image"
-                className="w-full aspect-[16/6] object-cover rounded-xl col-span-4"
+                className="w-full aspect-[2/1.5] object-cover rounded-xl col-span-4"
               />
               <Image
                 src="/image/prod.jpg"
@@ -58,22 +58,8 @@ export default function Page() {
                 src="/image/prod.jpg"
                 height={600}
                 width={800}
+                alt="product-image"
                 className="object-cover rounded-xl"
-                alt="product-image"
-              />
-              <Image
-                src="/image/prod.jpg"
-                height={600}
-                width={800}
-                alt="product-image"
-                className="col-span-2 w-full aspect-[16/6] object-cover rounded-xl"
-              />
-              <Image
-                src="/image/prod.jpg"
-                height={600}
-                width={800}
-                alt="product-image"
-                className="col-span-2 w-full aspect-[16/6] object-cover rounded-xl"
               />
             </div>
             <div className="!space-y-6 !mt-12 md:!mt-0">
@@ -107,6 +93,11 @@ export default function Page() {
                 <span className="font-semibold">Packaging:</span> Eco-friendly
                 packaging
               </h5>
+
+              <h5>
+                <span className="font-semibold">Dietary Aspects: </span> Halal,
+                Gluten-Free, Non-Veg
+              </h5>
               <div className="grid grid-cols-2 gap-6">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="col-span-2" asChild>
@@ -138,6 +129,14 @@ export default function Page() {
                       <div>
                         <h2 className="font-semibold">Packaging</h2>
                         <p>Eco-friendly containers</p>
+                      </div>
+                      <div className="">
+                        <h5>
+                          <span className="font-semibold">
+                            Dietary Aspects:{" "}
+                          </span>{" "}
+                          Halal, Gluten-Free, Non-Veg
+                        </h5>
                       </div>
                       <div>
                         <h2 className="font-semibold">Delivery option</h2>
