@@ -155,7 +155,7 @@ export default function ProductCard({
               variant={!active ? "default" : "secondary"}
               asChild
             >
-              <Link href="/seller/dashboard/food-items/edit">
+              <Link href="/seller/dashboard/food-items/update-status">
                 {active ? "Deactivate" : "Active"}
               </Link>
             </Button>

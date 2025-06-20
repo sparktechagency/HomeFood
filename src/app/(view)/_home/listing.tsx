@@ -103,7 +103,7 @@ export default function Listing() {
                         />
                       </div>
                       <div className="flex flex-row justify-center items-center !mt-6 !px-4">
-                        <div className="!space-x-2 !py-1 !px-2 rounded-lg ">
+                        <div className="!space-x-2 !py-1 !px-2 rounded-lg">
                           <span>${values[0]}</span>
                           <span>-</span>
                           <span>${values[1]}</span>
@@ -157,8 +157,6 @@ export default function Listing() {
                               return (
                                 <>
                                   <span>From: {format(from)}</span>
-                                  <span className="mx-1!">-</span>
-                                  <span>To: {format(to)}</span>
                                 </>
                               );
                             })()}

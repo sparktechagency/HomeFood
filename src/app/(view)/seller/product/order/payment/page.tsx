@@ -1,25 +1,32 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
 import React from "react";
-import StripeCard from "./stripe-card";
+import { toast } from "sonner";
+// import StripeCard from "./stripe-card";
 
 export default function Page() {
+  const navig = useRouter();
   return (
     <main className="py-12!">
       <section className="w-4/5 py-12! mx-auto! grid grid-cols-5 gap-6">
-        <Card className="col-span-3 px-4!">
+        {/* <Card className="col-span-3 px-4!">
           <h1 className="text-2xl text-center font-semibold">
             Finalize your delivery and payment
           </h1>
-          <Label className="font-semibold">Select Delivery Time</Label>
-          <Input type="time" />
           <div className="mt-12!">
             <StripeCard />
           </div>
-        </Card>
-        <Card className="col-span-2 self-baseline!">
+        </Card> */}
+        <Card className="col-span-5 self-baseline!">
           <CardHeader>
             <CardTitle>Order Summary</CardTitle>
           </CardHeader>
@@ -38,6 +45,16 @@ export default function Page() {
               </div>
             </div>
           </CardContent>
+          <CardFooter>
+            <Button
+              onClick={() => {
+                toast.success("Your order request was sent to Food mania");
+                navig.push("/");
+              }}
+            >
+              Confirm order
+            </Button>
+          </CardFooter>
         </Card>
       </section>
     </main>

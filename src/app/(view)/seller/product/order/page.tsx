@@ -19,6 +19,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import ProductCard from "@/components/core/prod-card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Page() {
   const [quantity, setQuantity] = useState(1);
@@ -137,6 +144,25 @@ export default function Page() {
           </Card>
 
           {/* Delivery Options */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Delivery Time</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select your delivery time" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="appetizers">12:00 - 13:00</SelectItem>
+                  <SelectItem value="main-course">13:00 - 14:00</SelectItem>
+                  <SelectItem value="desserts">15:00 - 16:00</SelectItem>
+                  <SelectItem value="beverages">16:00 - 17:00</SelectItem>
+                  <SelectItem value="snacks">19:00 - 20:00</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle>Delivery Options</CardTitle>

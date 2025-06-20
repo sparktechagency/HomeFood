@@ -199,13 +199,13 @@ export function ChartPart() {
               <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-red-500)"
-                  stopOpacity={0.8}
+                  stopColor="var(--color-teal-800)"
+                  stopOpacity={0.9}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-red-500)"
-                  stopOpacity={0.1}
+                  stopColor="var(--color-teal-800)"
+                  stopOpacity={0.5}
                 />
               </linearGradient>
             </defs>
