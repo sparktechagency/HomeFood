@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 export default function Page() {
   const [quantity, setQuantity] = useState(1);
@@ -140,6 +141,14 @@ export default function Page() {
                   )}
                 </div>
               </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Delivery Date</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Input type="date" />
             </CardContent>
           </Card>
 

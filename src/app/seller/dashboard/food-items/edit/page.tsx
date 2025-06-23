@@ -408,23 +408,42 @@ export default function Page() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="deliveryTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery Time</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Please enter delivery time"
-                    {...field}
-                    type="time"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="deliveryTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Delivery From</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Please enter delivery time"
+                      {...field}
+                      type="time"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="deliveryTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Delivery To</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Please enter delivery time"
+                      {...field}
+                      type="time"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <Button type="submit" className="w-full! bg-primary">
             Add
