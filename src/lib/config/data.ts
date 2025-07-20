@@ -1,0 +1,1 @@
+export const BASE_API_ENDPOINT = "http://103.186.20.110:8080/api"

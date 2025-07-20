@@ -16,13 +16,18 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-
+import { toast } from "sonner";
+import howl from "@/lib/howl";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/navigation";
 const formSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
 
 export default function LoginForm() {
+  const [, setCookie] = useCookies(["token"]);
+  const navig = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,8 +36,20 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const call = await howl({ link: "/login", method: "post", data: values });
+      if (!call.data.token) {
+        toast.error(call.error ?? call.message ?? "");
+      } else {
+        toast.success(call.message);
+        setCookie("token", call.data.token);
+        navig.push("/");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
   }
   return (
     <div>
@@ -66,6 +83,7 @@ export default function LoginForm() {
                     placeholder="Abc123..."
                     {...field}
                     className="bg-secondary"
+                    type="password"
                   />
                 </FormControl>
                 <FormMessage />

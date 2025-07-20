@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 // --- Reusable InputField Component ---
 interface InputFieldProps {
@@ -68,6 +68,9 @@ const formSchema = z
     confirmPass: z
       .string()
       .min(6, "Confirm Password must be at least 6 characters"),
+    acceptedTnC: z.boolean().refine((val) => val === true, {
+      message: "You must accept the terms and conditions",
+    }),
   })
   .refine((data) => data.password === data.confirmPass, {
     message: "Passwords do not match",
@@ -84,11 +87,24 @@ export default function RegisterForm() {
       postal_code: "",
       password: "",
       confirmPass: "",
+      acceptedTnC: false,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const finalizer = {
+        full_name: values.name,
+        email: values.email,
+        password: values.password,
+        password_confirmation: values.confirmPass,
+        city: values.city,
+      };
+      console.log(finalizer);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
   }
 
   return (
@@ -115,6 +131,7 @@ export default function RegisterForm() {
             control={form.control}
             name="postal_code"
             label="Postal Code"
+            type="number"
           />
 
           <InputField
@@ -131,15 +148,35 @@ export default function RegisterForm() {
             type="password"
           />
 
-          <div className="flex items-center gap-2 !mt-12 text-blue-600/80">
-            <Checkbox className="border-2 border-blue-600" />
-            <Label className="!space-x-0 gap-1 font-semibold">
-              Please accept the
-              <Link href={"/tnc"} className="underline">
-                Terms and conditions
-              </Link>
-            </Label>
-          </div>
+          <FormField
+            control={form.control}
+            name="acceptedTnC"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center gap-3 mt-10">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="border-2 border-blue-600 mt-0.5"
+                  />
+                </FormControl>
+                <div className="space-y-0.5">
+                  <FormLabel className="font-medium text-sm text-blue-600/80">
+                    <span>
+                      Please accept the{" "}
+                      <Link
+                        href="/tnc"
+                        className="underline text-blue-700 hover:text-blue-800 transition-colors"
+                      >
+                        Terms and Conditions
+                      </Link>
+                    </span>
+                  </FormLabel>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
 
           <Button className="w-full !mt-12" type="submit">
             Register

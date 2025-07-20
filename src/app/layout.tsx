@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import CookieProv from "@/hooks/cookie-prov";
 
 export const metadata: Metadata = {
   title: "HomeFood",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
-        <Toaster richColors />
+        <CookieProv>
+          {children}
+          <Toaster richColors />
+        </CookieProv>
       </body>
     </html>
   );

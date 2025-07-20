@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +14,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import CartSection from "./cart-section";
 
 const navlinks = [
   { title: "How it works", to: "/how-it-works" },
@@ -22,8 +26,14 @@ const navlinks = [
 ];
 
 export default function Navbar() {
-  const signedIn = false;
   const [isOpen, setIsOpen] = useState(false);
+  const [cookies, , removeCookie] = useCookies(["token"]);
+  const pathname = usePathname();
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    setSignedIn(!!cookies.token);
+  }, [cookies.token, pathname]); // re-check on path change or token change
 
   return (
     <nav className="h-16 w-full bg-background flex justify-between items-center !px-4 md:!px-8 border-b">
@@ -34,7 +44,7 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Desktop Navigation - Hidden on mobile */}
+      {/* Desktop Navigation */}
       <div className="hidden md:flex flex-1 justify-center">
         {navlinks.map((link, index) => (
           <Button
@@ -48,9 +58,9 @@ export default function Navbar() {
         ))}
       </div>
 
-      {/* Right: User actions */}
+      {/* Right: Actions */}
       <div className="flex-shrink-0 flex items-center gap-2 md:gap-4">
-        {/* Mobile Menu Button - Only visible on mobile */}
+        {/* Mobile Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -77,8 +87,6 @@ export default function Navbar() {
                   <Link href={link.to}>{link.title}</Link>
                 </Button>
               ))}
-
-              {/* Mobile Auth Buttons */}
               {!signedIn && (
                 <div className="flex flex-col gap-2 !mt-6">
                   <Button asChild onClick={() => setIsOpen(false)}>
@@ -93,12 +101,36 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
 
-        {/* Desktop Auth Buttons - Hidden on mobile */}
+        {/* Desktop Auth Buttons */}
         {signedIn ? (
-          <Avatar>
-            <AvatarImage src="/image/icon.jpg" />
-            <AvatarFallback>UI</AvatarFallback>
-          </Avatar>
+          <>
+            <CartSection />
+            <Popover>
+              <PopoverTrigger className="cursor-pointer" asChild>
+                <Avatar>
+                  <AvatarImage src="/image/icon.jpg" />
+                  <AvatarFallback>UI</AvatarFallback>
+                </Avatar>
+              </PopoverTrigger>
+              <PopoverContent className="bg-background/10 backdrop-blur-xs space-y-2">
+                <Button className="w-full" asChild>
+                  <Link href={"/me"}>My Account</Link>
+                </Button>
+                <Button className="w-full" asChild>
+                  <Link href={"/change-pass"}>Change Password</Link>
+                </Button>
+                <Button
+                  className="w-full !bg-transparent text-destructive! border !border-destructive"
+                  variant="destructive"
+                  onClick={() => {
+                    removeCookie("token");
+                  }}
+                >
+                  Logout
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </>
         ) : (
           <div className="hidden md:flex items-center gap-4">
             <Button asChild>
@@ -110,7 +142,7 @@ export default function Navbar() {
           </div>
         )}
 
-        {/* Mobile Avatar - Only show if signed in */}
+        {/* Mobile Avatar */}
         {signedIn && (
           <Avatar className="md:hidden">
             <AvatarImage src="/image/icon.jpg" />
