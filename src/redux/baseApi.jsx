@@ -2,8 +2,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // 1. You are importing the 'Cookies' class correctly
 import Cookies from "js-cookie";
 
-
-
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -25,4 +23,4 @@ export const api = createApi({
   endpoints: () => ({}),
 });
 
-export const imageUrl = "http://103.186.20.110:8123";
+export const imageUrl = "http://103.186.20.110:8123/";
