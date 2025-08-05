@@ -1,12 +1,23 @@
-import howl from "@/lib/howl";
-import { cookies } from "next/headers";
+'use client';
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const token = (await cookies()).get("token")?.value;
-  const call = await howl({ link: `/profile`, token });
+  const {
+    data: userInfo,
+    isLoading: isProfileLoading,
+  } = useGetOwnprofileQuery({});
 
-  if (call.data.role === "SELLER") {
+
+  // Extract nested user data
+  const userProfile = userInfo?.data;
+
+
+  console.log('userProfile', userProfile);
+
+
+
+  if (userProfile?.role === "SELLER") {
     redirect("/seller/dashboard");
   } else {
     redirect("/buyer/dashboard");

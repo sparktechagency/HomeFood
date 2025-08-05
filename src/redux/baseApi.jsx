@@ -9,7 +9,6 @@ export const api = createApi({
     prepareHeaders: (headers) => {
       // 3. Use the 'cookies' instance to call the .get() method
       const token = Cookies.get("token");
-      console.log("tokenFromBaseApi", token);
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);

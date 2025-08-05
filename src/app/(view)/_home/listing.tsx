@@ -32,9 +32,7 @@ export default function Listing() {
 
   return (
     <>
-      <section className="!mt-12">
-        <Categories />
-      </section>
+
       <section className="!mt-12">
         <div className="flex flex-row justify-end items-center sm:hidden">
           <Button
@@ -172,13 +170,13 @@ export default function Listing() {
                     <DropdownMenuContent className="w-[180px]">
                       {x.kind === "checkbox"
                         ? x.child?.map((item, i) => (
-                            <DropdownMenuItem key={i}>
-                              <Checkbox /> {item}
-                            </DropdownMenuItem>
-                          ))
+                          <DropdownMenuItem key={i}>
+                            <Checkbox /> {item}
+                          </DropdownMenuItem>
+                        ))
                         : x.child?.map((item, i) => (
-                            <DropdownMenuItem key={i}>{item}</DropdownMenuItem>
-                          ))}
+                          <DropdownMenuItem key={i}>{item}</DropdownMenuItem>
+                        ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )

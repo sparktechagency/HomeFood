@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ["avatar.iran.liara.run"],
+    domains: ["avatar.iran.liara.run", "103.186.20.110"],
   },
 };
 
