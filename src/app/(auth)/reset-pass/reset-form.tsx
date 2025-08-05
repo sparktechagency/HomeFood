@@ -13,7 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCreateNewPassMutation, useTakeEmailForForgetpassMutation } from "@/redux/features/AuthApi";
+import { toast } from "sonner";
 
 // schema with validation
 const formSchema = z
@@ -32,6 +34,9 @@ const formSchema = z
   });
 
 export default function ResetForm() {
+  const params = useSearchParams();
+  const email = params.get("email");
+  const [createNewPass, { isLoading }] = useCreateNewPassMutation()
   const navig = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,11 +46,23 @@ export default function ResetForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Submitted data:", values);
-    // implement password reset logic here
+    try {
+      const response = await createNewPass({ new_password: values?.newPass, new_password_confirmation: values.confirmPass, email: email }).unwrap()
+      console.log('response', response);
+      if (response?.success) {
+        toast.success(response?.message || "otp verify success")
+        navig.push('/')
+      }
 
-    navig.push("/");
+    } catch (error: any) {
+      console.log('error', error);
+      toast.error(error.message)
+
+    }
+
+
   }
 
   return (

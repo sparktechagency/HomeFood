@@ -1,3 +1,4 @@
+'use client'
 import {
   Card,
   CardContent,
@@ -7,8 +8,13 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 import OtpForm from "./forgot-form";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
+  const params = useSearchParams();
+
+  const email = params.get("email");
+  const isRegisterpage = params.get("isRegisterpage");
   return (
     <div className="!p-12">
       <h1 className="text-center !pt-12 text-4xl font-bold">Forget Password</h1>
@@ -21,13 +27,13 @@ export default function Page() {
             Verification code
           </CardTitle>
           <CardDescription className="text-center">
-            We sent a reset link to contact@dscode.com enter 6 digit code that
+            We sent a reset link to <strong>{email}</strong> enter 6 digit code that
             is mentioned in the email
           </CardDescription>
         </CardHeader>
         <CardContent className="">
           <div className="">
-            <OtpForm />
+            <OtpForm otpemail={email} isRegisterpage={isRegisterpage} />
           </div>
         </CardContent>
       </Card>
