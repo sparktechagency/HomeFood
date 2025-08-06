@@ -12,7 +12,7 @@ import LoginForm from "./login-form";
 
 export default function Page() {
   return (
-    <div className="!p-12 flex justify-center items-center">
+    <div className="!p-12 mt-16 flex justify-center items-center">
       <Card className="w-full lg:w-1/2 mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">

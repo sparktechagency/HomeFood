@@ -1,4 +1,5 @@
-// OrderTable.js (Original data, now compatible with modified table-badge.tsx)
+"use client";
+
 import React from "react";
 import {
   Table,
@@ -9,146 +10,145 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import TableBadge from "@/components/ui/table-badge";
-import { Button } from "@/components/ui/button";
-import { EditIcon } from "lucide-react";
+import { useGetOrderHistoryQuery } from "@/redux/features/Seller/SellerApi";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+// This import path is correct based on your previous code.
+import UpdateStatusDialog from "@/components/ui/UpdateStatusDialog";
+import StatusBadge from "@/components/ui/status-badge";
+import { Order } from "@/lib/types/api";
+
+
+// Define a type for your order object for better type safety and code completion.
+// Adjust the properties based on your actual API response.
+
+
+
+
 
 export default function OrderTable() {
-  const orders = [
-    {
-      orderId: "#001",
-      customer: "Ali Hasan",
-      price: "$50.00",
-      items: "1 item",
-      status: "complete",
-    },
-    {
-      orderId: "#002",
-      customer: "Fatima Khan",
-      price: "$120.50",
-      items: "3 items",
-      status: "pending",
-    },
-    {
-      orderId: "#003",
-      customer: "Ahmed Raza",
-      price: "$75.20",
-      items: "2 items",
-      status: "processing", // This will now work
-    },
-    {
-      orderId: "#004",
-      customer: "Sara Begum",
-      price: "$30.00",
-      items: "1 item",
-      status: "cancelled", // This will now work
-    },
-    {
-      orderId: "#005",
-      customer: "Usman Ghani",
-      price: "$200.00",
-      items: "5 items",
-      status: "complete",
-    },
-    {
-      orderId: "#006",
-      customer: "Aisha Bibi",
-      price: "$99.99",
-      items: "2 items",
-      status: "pending",
-    },
-    {
-      orderId: "#007",
-      customer: "Omar Farooq",
-      price: "$15.75",
-      items: "1 item",
-      status: "processing",
-    },
-    {
-      orderId: "#008",
-      customer: "Zainab Ali",
-      price: "$85.00",
-      items: "3 items",
-      status: "complete",
-    },
-  ] as const;
+  const [page, setPage] = React.useState(1);
+  const per_page = 8;
+
+  // Fetch data using the RTK Query hook
+  const { data: ordersResponse, isLoading } = useGetOrderHistoryQuery({
+    page,
+    per_page,
+  });
+
+  // Extract the array of orders and pagination metadata
+  const orders: Order[] = ordersResponse?.data?.data || [];
+  const meta = ordersResponse?.data;
+
+  // Pagination handlers
+  const handlePrevious = () => {
+    if (meta?.current_page > 1) {
+      setPage(meta.current_page - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (meta?.current_page < meta?.last_page) {
+      setPage(meta.current_page + 1);
+    }
+  };
+
+  // Handle loading state
+  if (isLoading) {
+    return <div className="text-center p-10">Loading orders...</div>;
+  }
+
+  console.log('orders', orders);
+
 
   return (
-    <Table className="">
-      <TableHeader className="bg-zinc-100 ">
-        <TableRow className="">
-          <TableHead className="w-[100px] text-center">Order</TableHead>
-          <TableHead className="text-center">Customer</TableHead>
-          <TableHead className="text-center">Price</TableHead>
-          <TableHead className="text-center">Items</TableHead>
-          <TableHead className="text-center">Status</TableHead>
-          <TableHead className="text-center">Action</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {orders.map((order) => (
-          <TableRow key={order.orderId}>
-            <TableCell className="font-medium text-center">
-              {order.orderId}
-            </TableCell>
-            <TableCell className="text-center">{order.customer}</TableCell>
-            <TableCell className="text-center">{order.price}</TableCell>
-            <TableCell className="text-center">{order.items}</TableCell>
-            <TableCell className="text-center">
-              <TableBadge type={order.status} />
-            </TableCell>
-            <TableCell className="text-center">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="icon" variant="ghost">
-                    <EditIcon />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Change Status</DialogTitle>
-                  </DialogHeader>
-                  <div className="!mt-6">
-                    <RadioGroup defaultValue="option-one">
-                      <div className="flex items-center !space-x-2">
-                        <RadioGroupItem value="option-one" id="option-one" />
-                        <Label htmlFor="option-one">Pending</Label>
-                      </div>
-                      <div className="flex items-center !space-x-2">
-                        <RadioGroupItem value="option-two" id="option-two" />
-                        <Label htmlFor="option-two">Processing</Label>
-                      </div>
-                      <div className="flex items-center !space-x-2">
-                        <RadioGroupItem
-                          value="option-three"
-                          id="option-three"
-                        />
-                        <Label htmlFor="option-three">Completed</Label>
-                      </div>
-                      <div className="flex items-center !space-x-2">
-                        <RadioGroupItem value="option-four" id="option-four" />
-                        <Label htmlFor="option-four">Canceled</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  <DialogFooter className="!mt-6">
-                    <Button className="w-full">Update</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </TableCell>
+    <>
+      <Table className="">
+        <TableHeader className="bg-zinc-100 dark:bg-zinc-800">
+          <TableRow>
+            <TableHead className="w-[100px] text-center">Order ID</TableHead>
+            <TableHead className="text-center">Customer</TableHead>
+            <TableHead className="text-center">Price</TableHead>
+            <TableHead className="text-center">Items</TableHead>
+            <TableHead className="text-center">order_status</TableHead>
+            <TableHead className="text-center">payment_status</TableHead>
+            <TableHead className="text-center">delivery_status</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {orders.length > 0 ? (
+            orders.map((order: Order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium text-center">
+                  #{order.id}
+                </TableCell>
+                <TableCell className="text-center">
+                  {order.user?.full_name || "N/A"}
+                </TableCell>
+                <TableCell className="text-center">
+                  ${Number(order.total_price || 0).toFixed(2)}
+                </TableCell>
+                <TableCell className="text-center">
+                  {order.items?.length || 0}
+                </TableCell>
+                <TableCell className="text-center">
+                  <StatusBadge status={order.order_status} />
+                </TableCell>
+                <TableCell className="text-center">
+                  <StatusBadge status={order?.payment_status} />
+                </TableCell>
+                <TableCell className="text-center">
+                  <StatusBadge status={order.delivery_status} />
+                </TableCell>
+                <TableCell className="text-center">
+                  <UpdateStatusDialog order={order} />
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center h-24">
+                No order history found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      {/* Render pagination only if there are orders */}
+      {orders.length > 0 && meta && (
+        <div className="!pt-4 !pb-12 flex flex-row justify-between items-center w-full">
+          <p className="text-sm font-semibold">
+            Showing {meta.from} to {meta.to} of {meta.total} results
+          </p>
+          <Pagination className="w-min">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={handlePrevious}
+                  // Add the disabled prop for better accessibility and functionality
+
+                  className={!meta.prev_page_url ? "cursor-not-allowed text-muted-foreground" : ""}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={handleNext}
+                  // Add the disabled prop for better accessibility and functionality
+
+                  className={!meta.next_page_url ? "cursor-not-allowed text-muted-foreground" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+    </>
   );
 }

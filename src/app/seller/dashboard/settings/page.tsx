@@ -16,7 +16,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Link from "next/link";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 export default function Page() {
+
+  const { data: userData, isLoading } = useGetOwnprofileQuery({});
+  console.log('userData', userData);
+
+
+
   return (
     <div className="!pb-12 !pr-6">
       <div className="flex flex-row justify-center items-center">

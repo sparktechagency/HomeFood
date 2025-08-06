@@ -13,145 +13,150 @@ import TableBadge from "@/components/ui/table-badge";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, TrashIcon } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useGetrequestedFoodItemsQuery } from "@/redux/features/Seller/SellerApi";
 
 export default function PendingTable() {
-  const orders = [
-    {
-      orderId: "#001",
-      date: "20/06/2025",
-      customer: "Ali Hasan",
-      payment: "complete",
-      price: "$50.00",
-      delivery: "N/A",
-      items: "1 item",
-      status: "complete",
-    },
-    {
-      orderId: "#002",
-      date: "19/06/2025",
-      customer: "Fatima Khan",
-      payment: "pending",
-      price: "$120.50",
-      delivery: "21/06/2025",
-      items: "3 items",
-      status: "pending",
-    },
-    {
-      orderId: "#003",
-      date: "18/06/2025",
-      customer: "Ahmed Raza",
-      payment: "complete",
-      price: "$75.20",
-      delivery: "20/06/2025",
-      items: "2 items",
-      status: "processing",
-    },
-    {
-      orderId: "#004",
-      date: "17/06/2025",
-      customer: "Sara Begum",
-      payment: "cancelled",
-      price: "$30.00",
-      delivery: "N/A",
-      items: "1 item",
-      status: "cancelled",
-    },
-    {
-      orderId: "#005",
-      date: "16/06/2025",
-      customer: "Usman Ghani",
-      payment: "complete",
-      price: "$200.00",
-      delivery: "18/06/2025",
-      items: "5 items",
-      status: "complete",
-    },
-    {
-      orderId: "#006",
-      date: "15/06/2025",
-      customer: "Aisha Bibi",
-      payment: "pending",
-      price: "$99.99",
-      delivery: "17/06/2025",
-      items: "2 items",
-      status: "pending",
-    },
-    {
-      orderId: "#007",
-      date: "14/06/2025",
-      customer: "Omar Farooq",
-      payment: "complete",
-      price: "$15.75",
-      delivery: "16/06/2025",
-      items: "1 item",
-      status: "processing",
-    },
-    {
-      orderId: "#008",
-      date: "13/06/2025",
-      customer: "Zainab Ali",
-      payment: "complete",
-      price: "$85.00",
-      delivery: "15/06/2025",
-      items: "3 items",
-      status: "complete",
-    },
-  ] as const;
+  const [page, setPage] = React.useState(1);
+  const per_page = 8; // Or any number you prefer
+
+  // Fetch data using the RTK Query hook
+  const { data: foodItemsResponse, isLoading } = useGetrequestedFoodItemsQuery({
+    page,
+    per_page,
+  });
+
+  // Extract the array of requests and pagination metadata
+  const requests = foodItemsResponse?.data?.data || [];
+  const meta = foodItemsResponse?.data;
+
+  // Pagination handlers
+  const handlePrevious = () => {
+    if (meta?.current_page > 1) {
+      setPage(meta.current_page - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (meta?.current_page < meta?.last_page) {
+      setPage(meta.current_page + 1);
+    }
+  };
+
+  // Handle loading state
+  if (isLoading) {
+    return <div className="text-center p-10">Loading...</div>;
+  }
 
   return (
-    <Table className="">
-      <TableHeader className="bg-zinc-100 ">
-        <TableRow className="">
-          <TableHead className="w-[100px] text-center">Order</TableHead>
-          <TableHead className="text-center">Date</TableHead>
-          <TableHead className="text-center">Customer</TableHead>
-          <TableHead className="text-center">Payment</TableHead>
-          <TableHead className="text-center">Price</TableHead>
-          <TableHead className="text-center">Delivery</TableHead>
-          <TableHead className="text-center">Items</TableHead>
-          <TableHead className="text-center">Status</TableHead>
-          <TableHead className="text-center">Action</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {orders.map((order) => (
-          <TableRow key={order.orderId}>
-            <TableCell className="font-medium text-center">
-              {order.orderId}
-            </TableCell>
-            <TableCell className="text-center">{order.date}</TableCell>
-            <TableCell className="text-center">{order.customer}</TableCell>
-            <TableCell className="text-center">{order.payment}</TableCell>
-            <TableCell className="text-center">{order.price}</TableCell>
-            <TableCell className="text-center">{order.delivery}</TableCell>
-            <TableCell className="text-center">{order.items}</TableCell>
-            <TableCell className="text-center">
-              <TableBadge type={order.status} />
-            </TableCell>
-            <TableCell className="text-center !space-x-2">
-              <Button
-                size="icon"
-                className="text-green-600"
-                variant="outline"
-                onClick={() => {
-                  toast.success("Order marked as COMPLETE!");
-                }}
-              >
-                <CheckIcon />
-              </Button>
-              <Button
-                size="icon"
-                variant="destructive"
-                onClick={() => {
-                  toast.success("Order Canceled!");
-                }}
-              >
-                <TrashIcon />
-              </Button>
-            </TableCell>
+    <div>
+      <Table className="">
+        <TableHeader className="bg-zinc-100">
+          <TableRow>
+            <TableHead className="w-[100px] text-center">Order ID</TableHead>
+            <TableHead className="text-center">Preferred Date</TableHead>
+            <TableHead className="text-center">Customer</TableHead>
+            <TableHead className="text-center">Dish Name</TableHead>
+            <TableHead className="text-center">Price</TableHead>
+            <TableHead className="text-center">Location</TableHead>
+            <TableHead className="text-center">Quantity</TableHead>
+            <TableHead className="text-center">Status</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {requests.length > 0 ? (
+            requests.map((request: any) => (
+              <TableRow key={request.id}>
+                <TableCell className="font-medium text-center">
+                  #{request.id}
+                </TableCell>
+                <TableCell className="text-center">
+                  {request.preferred_date}
+                </TableCell>
+                <TableCell className="text-center">
+                  {request.user?.full_name || "N/A"}
+                </TableCell>
+                <TableCell className="text-center">{request.dish_name}</TableCell>
+                <TableCell className="text-center">
+                  ${request.preferred_price}
+                </TableCell>
+                <TableCell className="text-center">{request.location}</TableCell>
+                <TableCell className="text-center">
+                  {request.quantity_needed}
+                </TableCell>
+                <TableCell className="text-center">
+                  <TableBadge type={request.status} />
+                </TableCell>
+                <TableCell className="text-center !space-x-2">
+                  <Button
+                    size="icon"
+                    className="text-green-600"
+                    variant="outline"
+                    onClick={() => {
+                      // Add your logic to accept the request, perhaps using a mutation hook
+                      toast.success(`Request #${request.id} accepted!`);
+                    }}
+                  >
+                    <CheckIcon />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    onClick={() => {
+                      // Add your logic to delete/cancel the request
+                      toast.error(`Request #${request.id} canceled!`);
+                    }}
+                  >
+                    <TrashIcon />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={9} className="text-center h-24">
+                No food requests found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      {/* Render pagination only if there are requests */}
+      {requests.length > 0 && meta && (
+        <div className="!pt-4 !pb-12 flex flex-row justify-between items-center w-full">
+          <p className="text-sm font-semibold">
+            Showing {meta.from} to {meta.to} of {meta.total} results
+          </p>
+          <Pagination className="w-min">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={handlePrevious}
+                  // Disable button if there's no previous page
+
+                  className={!meta.prev_page_url ? "cursor-not-allowed text-muted-foreground" : ""}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={handleNext}
+                  // Disable button if there's no next page
+
+                  className={!meta.next_page_url ? "cursor-not-allowed text-muted-foreground" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+    </div>
   );
 }

@@ -30,6 +30,9 @@ import CartSection from "./cart-section";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { imageUrl } from "@/redux/baseApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import MyCustomLogo from "../ui/MyCustomLogo";
+
+
 
 const navlinks = [
   { title: "How it works", to: "/how-it-works" },
@@ -58,6 +61,7 @@ export default function Navbar() {
 
   // Extract nested user data
   const userProfile = userInfo?.data;
+  console.log('userProfile', userProfile);
 
   // Helper function to get initials from a full name
   const getInitials = (name?: string) => {
@@ -76,13 +80,7 @@ export default function Navbar() {
 
   return (
     <nav className="h-16 w-full bg-background flex justify-between items-center !px-4 md:!px-8 border-b fixed top-0 z-50 ">
-      <div className="flex-shrink-0">
-        <Link href="/" className="text-3xl font-extrabold tracking-tight flex items-center space-x-1">
-          <span className="text-gray-900">Home</span>
-          <span className="text-[#4F986F]">Food</span>
-          <span className="text-xl font-semibold text-green-400">🍽️</span> {/* Optional icon */}
-        </Link>
-      </div>
+      <MyCustomLogo />
 
 
       {/* Desktop Navigation */}

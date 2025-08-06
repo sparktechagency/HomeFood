@@ -1,27 +1,23 @@
-'use client';
+"use client";
+
+import { useEffect } from "react";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default async function Page() {
-  const {
-    data: userInfo,
-    isLoading: isProfileLoading,
-  } = useGetOwnprofileQuery({});
+export default function Page() {
+  const router = useRouter();
 
-
-  // Extract nested user data
+  const { data: userInfo, isLoading } = useGetOwnprofileQuery({});
   const userProfile = userInfo?.data;
-
-
   console.log('userProfile', userProfile);
 
-
-
-  if (userProfile?.role === "SELLER") {
-    redirect("/seller/dashboard");
-  } else {
-    redirect("/buyer/dashboard");
-  }
+  useEffect(() => {
+    if (!isLoading && userProfile?.role === "BUYER") {
+      router.push("/buyer/dashboard/pending");
+    } else if (!isLoading && userProfile?.role === "SELLER") {
+      router.push("/seller/dashboard/pending");
+    }
+  }, [userProfile, isLoading, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
