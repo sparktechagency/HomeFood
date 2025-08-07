@@ -14,6 +14,7 @@ import { EditIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import { useUpdateDaliveryStatusMutation } from "@/redux/features/Seller/SellerApi";
 // If you have a mutation hook for updating the order, you would import it here.
 // e.g., import { useUpdateOrderStatusMutation } from "@/redux/features/Seller/SellerApi";
 
@@ -23,26 +24,31 @@ export default function UpdateStatusDialog({ order }: any) {
     const [status, setStatus] = React.useState(order.status);
     const [isOpen, setIsOpen] = React.useState(false);
 
+    const [updateDaliveryStatus, { isLoading }] = useUpdateDaliveryStatusMutation();
+    const [selectedStatusLoadingId, setSelectedStatusLoadingId] = React.useState(null);
     // Example of using a mutation hook (currently commented out)
     // const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
 
     const handleUpdate = async () => {
-        console.log(`Updating order #${order.id} to status: ${status}`);
-        // Example of how you would call the mutation
-        /*
-        try {
-          await updateOrderStatus({ orderId: order.id, status }).unwrap();
-          toast.success("Order status updated successfully!");
-          setIsOpen(false); // Close the dialog on success
-        } catch (error) {
-          toast.error("Failed to update order status.");
-          console.error(error);
-        }
-        */
+        const confirmed = window.confirm("Are you sure you want to approve this order?");
+        if (!confirmed) return;
+        setSelectedStatusLoadingId(order.id);
 
-        // Placeholder toast notification
-        toast.success(`Order #${order.id} status changed to "${status}"`);
-        setIsOpen(false); // Close the dialog
+        try {
+            const res = await updateDaliveryStatus({ id: order.id, status }).unwrap();
+            if (res?.success) {
+                toast.success(res?.message || "Status updated successfully");
+                setIsOpen(false);
+                setSelectedStatusLoadingId(null);
+                toast.success(res?.message || "Status updated successfully");
+            }
+            setIsOpen(false);
+        } catch (error) {
+            console.error("Update error:", error);
+        } finally {
+            setSelectedStatusLoadingId(null);
+        }
+
     };
 
     return (
@@ -62,19 +68,23 @@ export default function UpdateStatusDialog({ order }: any) {
                         {/* The `value` of each item should match the status strings from your API */}
                         <div className="flex items-center !space-x-2">
                             <RadioGroupItem value="pending" id={`pending-${order.id}`} />
-                            <Label htmlFor={`pending-${order.id}`}>Pending</Label>
+                            <Label htmlFor={`pending-${order.id}`}>pending</Label>
                         </div>
                         <div className="flex items-center !space-x-2">
-                            <RadioGroupItem value="processing" id={`processing-${order.id}`} />
-                            <Label htmlFor={`processing-${order.id}`}>Processing</Label>
+                            <RadioGroupItem value="preparing" id={`preparing-${order.id}`} />
+                            <Label htmlFor={`preparing-${order.id}`}>preparing</Label>
                         </div>
                         <div className="flex items-center !space-x-2">
-                            <RadioGroupItem value="completed" id={`completed-${order.id}`} />
-                            <Label htmlFor={`completed-${order.id}`}>Completed</Label>
+                            <RadioGroupItem value="shipped" id={`shipped-${order.id}`} />
+                            <Label htmlFor={`shipped-${order.id}`}>shipped</Label>
                         </div>
                         <div className="flex items-center !space-x-2">
-                            <RadioGroupItem value="canceled" id={`canceled-${order.id}`} />
-                            <Label htmlFor={`canceled-${order.id}`}>Canceled</Label>
+                            <RadioGroupItem value="delivered" id={`delivered-${order.id}`} />
+                            <Label htmlFor={`delivered-${order.id}`}>delivered</Label>
+                        </div>
+                        <div className="flex items-center !space-x-2">
+                            <RadioGroupItem value="cancelled" id={`cancelled-${order.id}`} />
+                            <Label htmlFor={`cancelled-${order.id}`}>cancelled</Label>
                         </div>
                     </RadioGroup>
                 </div>

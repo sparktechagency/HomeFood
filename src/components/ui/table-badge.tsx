@@ -31,12 +31,16 @@ const styles = {
     container: "bg-[#E6F5FF] border-2 border-[#10BEE1] text-[#10BEE1]",
     dot: "bg-[#10BEE1]",
   },
+  COD: {
+    container: "bg-[#FFF9E6] border-2 border-[#E1BE10] text-[#E1BE10]",
+    dot: "bg-[#E1BE10]",
+  }
 } as const;
 
 export default function TableBadge({
   type,
 }: {
-  type: "complete" | "canceled" | "pending" | "processing" | "cancelled" | "approved"; // Updated type
+  type: "complete" | "canceled" | "pending" | "processing" | "cancelled" | "approved" | "COD"; // Updated type
 }) {
   const { container, dot } = styles[type];
 

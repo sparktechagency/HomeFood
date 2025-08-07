@@ -97,11 +97,12 @@ export default function OrderTable() {
                 <TableCell className="text-center">
                   {order.items?.length || 0}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-center ">
                   <StatusBadge status={order.order_status} />
                 </TableCell>
-                <TableCell className="text-center">
-                  <StatusBadge status={order?.payment_status} />
+                <TableCell className="text-center ">
+                  {/* <StatusBadge status={order.payment_status} /> */}
+                  {order.payment_status}
                 </TableCell>
                 <TableCell className="text-center">
                   <StatusBadge status={order.delivery_status} />

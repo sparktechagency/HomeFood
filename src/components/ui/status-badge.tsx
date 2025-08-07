@@ -13,6 +13,10 @@ interface StatusBadgeProps {
 // Define the styles for each status in a map.
 // Using a map like this makes the component easy to update and maintain.
 const statusMap: Record<string, { className: string; text: string }> = {
+    COD: {
+        className: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400",
+        text: "COD",
+    },
     pending: {
         className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-400",
         text: "Pending",
@@ -32,7 +36,16 @@ const statusMap: Record<string, { className: string; text: string }> = {
     delivered: {
         className: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400",
         text: "Delivered",
-    }
+    },
+    shipped: {
+        className: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-400",
+        text: "Shipped",
+    },
+    preparing: {
+        className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-400",
+        text: "Preparing",
+    },
+
     // You can easily add more statuses here
     // delivered: {
     //   className: "bg-purple-100 text-purple-800",

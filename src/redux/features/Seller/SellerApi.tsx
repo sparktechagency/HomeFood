@@ -42,6 +42,7 @@ export const SellerApi = api.injectEndpoints({
 
         getOrderHistory: builder.query<any, any>({
             query: ({ page = 1, perPage = 8 }) => `/order-history?per_page=${perPage}&page=${page}`,
+            providesTags: ["food", "order"],
         }),
         getDashboard: builder.query<any, any>({
             query: () => `/dashboard`,
@@ -117,10 +118,18 @@ export const SellerApi = api.injectEndpoints({
                 method: "DELETE",
             })
         }),
+        updateDaliveryStatus: builder.mutation<any, { id: string; status: string }>({
+            query: ({ id, status }) => ({
+                url: `/delivery-status/${id}?delivery_status=${status}`,
+                method: "PATCH",
+            }),
+            invalidatesTags: ["order"],
+        }),
+
 
 
 
     }),
 });
 
-export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation } = SellerApi;
+export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation } = SellerApi;
