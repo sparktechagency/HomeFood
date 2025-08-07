@@ -31,6 +31,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useAddAfooditemMutation } from "@/redux/features/Seller/SellerApi";
+import { toast } from "sonner";
+import { useGetAllCategorysQuery } from "@/redux/features/categorys/CategoryApi";
 
 const formSchema = z.object({
   category: z.string().min(1, "Please select a category"),
@@ -53,7 +56,17 @@ const formSchema = z.object({
 });
 
 export default function Page() {
+
+  const [addAfooditem, { isLoading }] = useAddAfooditemMutation();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const { data: allCategorys } = useGetAllCategorysQuery({});
+  console.log('allCategorys', allCategorys?.data?.data);
+  // This creates an array of objects, e.g., [{id: 1, name: "Vegetables"}, {id: 2, name: "Fruits"}]
+  const categories = allCategorys?.data?.data?.map((category: any) => ({
+    id: category.id,
+    name: category.name
+  })) || [];
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,9 +87,6 @@ export default function Page() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,6 +95,54 @@ export default function Page() {
       form.setValue("image", file);
     }
   };
+
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const formData = new FormData();
+
+    formData.append("category_id", values.category);
+    formData.append("title", values.title);
+    formData.append("ingredients", values.ingredients);
+    formData.append("description", values.description);
+    formData.append("dietary_info", values.dietaryInfo);
+    formData.append("price", values.price.toString());
+    formData.append("quantity", values.quantityAvailability.toString());
+    formData.append("container_size", values.containerSize?.toString() || "");
+    formData.append("container_weight", values.containerWeight?.toString() || "");
+    formData.append("delivery_option", values.deliveryOption);
+    formData.append("minimum_order", values.minimumOrder.toString());
+    formData.append("delivery_fee", values.deliveryFee.toString());
+    formData.append("delivery_time", values.deliveryTime);
+
+
+    if (selectedImage) {
+      formData.append("images[]", selectedImage);
+    }
+
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value, `(type: ${typeof value})`);
+    });
+
+    try {
+
+
+      const response = await addAfooditem(formData).unwrap();
+      console.log('response', response);
+
+      if (response?.success) {
+        toast.success(response?.message || "Registration successful!");
+        form.reset();
+
+      } else {
+        toast.error(response?.message || "Registration failed. Please try again.");
+      }
+
+    } catch (error) {
+      console.log('error', error);
+
+    }
+  };
+
 
   return (
     <div className="w-full p-6!">
@@ -110,11 +168,25 @@ export default function Page() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="appetizers">Appetizers</SelectItem>
-                    <SelectItem value="main-course">Main Course</SelectItem>
-                    <SelectItem value="desserts">Desserts</SelectItem>
-                    <SelectItem value="beverages">Beverages</SelectItem>
-                    <SelectItem value="snacks">Snacks</SelectItem>
+                    {/* Check if categories are loaded before trying to map */}
+                    {categories.length > 0 ? (
+                      categories.map((category: { id: number; name: string }) => (
+                        <SelectItem
+                          key={category.id}
+                          // The value submitted to the form must be the ID.
+                          // It's important to convert the ID to a string.
+                          value={String(category.id)}
+                        >
+                          {/* This is the name the user sees in the dropdown */}
+                          {category.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      // Optional: Show a loading or empty message
+                      <SelectItem value="loading" disabled>
+                        Loading categories...
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -202,6 +274,7 @@ export default function Page() {
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                   <Input
+
                     placeholder="Please enter service price"
                     type="number"
                     {...field}
@@ -427,7 +500,7 @@ export default function Page() {
           />
 
           <Button type="submit" className="w-full! bg-primary">
-            Add
+            {isLoading ? "Adding..." : "Add"}
           </Button>
         </form>
       </Form>

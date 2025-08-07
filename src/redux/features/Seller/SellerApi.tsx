@@ -1,5 +1,25 @@
 import { api } from "@/redux/baseApi";
 
+
+interface FormValues {
+    category_id: number;
+    title: string;
+    ingredients: string;
+    description: string;
+    dietaryInfo: string;
+    price: number;
+    quantityAvailability: number;
+    containerSize?: number;
+    containerWeight?: number;
+    deliveryOption: string;
+    minimumOrder: number;
+    deliveryFee: number;
+    deliveryTime: string;
+    images?: File; // or image: string if you're using URL
+}
+
+
+
 export const SellerApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getAllPendingRequests: builder.query<any, any>({
@@ -44,7 +64,33 @@ export const SellerApi = api.injectEndpoints({
             invalidatesTags: ["food"],
         }),
 
+        addAfooditem: builder.mutation<any, any>({
+            query: (formData) => ({
+                url: `/create-food`,
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ["food"],
+        }),
+
+
+        getFoodDetaisById: builder.query<any, any>({
+            query: (id) => `/food-details/${id}`,
+        }),
+
+        updateFooditem: builder.mutation<any, any>({
+            query: ({ id, formData }) => ({
+                url: `/update-food/${id}`,
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ["food"],
+        }),
+
+
+
+
     }),
 });
 
-export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation } = SellerApi;
+export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation } = SellerApi;
