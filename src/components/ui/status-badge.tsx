@@ -29,6 +29,10 @@ const statusMap: Record<string, { className: string; text: string }> = {
         className: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400",
         text: "Cancelled",
     },
+    delivered: {
+        className: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400",
+        text: "Delivered",
+    }
     // You can easily add more statuses here
     // delivered: {
     //   className: "bg-purple-100 text-purple-800",

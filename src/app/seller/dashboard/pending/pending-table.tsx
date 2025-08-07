@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { CheckIcon, TrashIcon } from "lucide-react";
+import { CheckIcon, Loader2, TrashIcon } from "lucide-react";
 import { toast } from "sonner";
 import {
   Pagination,
@@ -21,7 +21,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetAllPendingRequestsQuery } from "@/redux/features/Seller/SellerApi";
+import { useApprovefooditemMutation, useDeleteFoodRequestMutation, useGetAllPendingRequestsQuery } from "@/redux/features/Seller/SellerApi";
 import { format } from "date-fns";
 import StatusBadge from "@/components/ui/status-badge";
 
@@ -30,14 +30,20 @@ import StatusBadge from "@/components/ui/status-badge";
 
 const PendingTable = () => {
   const [page, setPage] = useState(1);
-  const perPage = 8;
-  const { data, isLoading, isError } = useGetAllPendingRequestsQuery({
+  const perPage = 10;
+  const { data, isLoading, isError, refetch } = useGetAllPendingRequestsQuery({
     page,
     perPage,
   });
 
+  const [approvefooditem, { isLoading: isApproving }] = useApprovefooditemMutation();
+  const [deleteFoodRequest, { isLoading: isDeleting }] = useDeleteFoodRequestMutation();
+
+  const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
+  const [isApprovingId, setIsApprovingId] = useState<string | null>(null);
   const orders = data?.data?.data || [];
   const pagination = data?.data || {};
+  console.log('orders', orders);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= (pagination.last_page || 1)) {
@@ -61,6 +67,52 @@ const PendingTable = () => {
     );
   }
 
+
+
+  const handleCompleteOrder = async (orderId: string) => {
+    const confirmed = window.confirm("Are you sure you want to approve this order?");
+    if (!confirmed) return;
+
+    setIsApprovingId(orderId);
+    try {
+      console.log('Approving food item with ID:', orderId);
+      const res = await approvefooditem({ id: orderId }).unwrap();
+      console.log('Approve success:', res);
+      if (res?.success) {
+        toast.success(res?.message || "Item approved successfully");
+        refetch();
+        setIsApprovingId(null);
+      }
+    } catch (error) {
+      console.error('Approve error:', error);
+    } finally {
+      setIsApprovingId(null);
+    }
+  };
+
+
+  // Delete Handler
+  const handeDeleteOrder = async (orderId: string) => {
+    const confirmed = window.confirm("Are you sure you want to cancelled this order?");
+    if (!confirmed) return;
+
+    setIsDeletingId(orderId);
+    try {
+      console.log('Deleting food item with ID:', orderId);
+      const res = await deleteFoodRequest({ id: orderId }).unwrap();
+      console.log('Delete success:', res);
+      if (res?.success) {
+        toast.success(res?.message || "Item deleted successfully");
+        refetch();
+        setIsDeletingId(null);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+    } finally {
+      setIsDeletingId(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="rounded-md border">
@@ -71,6 +123,8 @@ const PendingTable = () => {
               <TableHead>Date</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Payment</TableHead>
+              <TableHead>Delivery</TableHead>
+              <TableHead>Items</TableHead>
               <TableHead className="text-right">Amount</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
@@ -114,6 +168,10 @@ const PendingTable = () => {
                   <TableCell>{formatDate(order.created_at)}</TableCell>
                   <TableCell>{order.user?.full_name || "N/A"}</TableCell>
                   <TableCell>{order.payment_status}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={order.delivery_status} />
+                  </TableCell>
+                  <TableCell>{order.total_items || "N/A"}</TableCell>
                   <TableCell className="text-right">
                     ${order.total_price}
                   </TableCell>
@@ -126,19 +184,17 @@ const PendingTable = () => {
                         size="sm"
                         variant="outline"
                         className="h-8 w-8 p-0 text-green-600 hover:bg-green-50"
-                        onClick={() =>
-                          toast.success("Order marked as complete!")
-                        }
+                        onClick={() => handleCompleteOrder(order?.id)}
                       >
-                        <CheckIcon className="h-4 w-4" />
+                        {isApprovingId === order?.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckIcon className="h-4 w-4" />}
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         className="h-8 w-8 p-0 text-red-600 hover:bg-red-50"
-                        onClick={() => toast.error("Order cancelled!")}
+                        onClick={() => handeDeleteOrder(order?.id)}
                       >
-                        <TrashIcon className="h-4 w-4" />
+                        {isDeletingId === order?.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <TrashIcon className="h-4 w-4" />}
                       </Button>
                     </div>
                   </TableCell>

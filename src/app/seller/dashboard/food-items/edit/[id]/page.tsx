@@ -145,11 +145,7 @@ export default function Page() {
   // 5. Form submission handler
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formData = new FormData();
-
-    // Append _method PUT for Laravel or other frameworks that need it
     formData.append("_method", "PUT");
-
-    // Append all form data
     formData.append("category_id", values.category);
     formData.append("title", values.title);
     formData.append("ingredients", values.ingredients);
