@@ -26,12 +26,17 @@ const styles = {
     container: "bg-[#E6F5FF] border-2 border-[#10BEE1] text-[#10BEE1]",
     dot: "bg-[#10BEE1]",
   },
+  approved: {
+    // Added new style for 'approved'
+    container: "bg-[#E6F5FF] border-2 border-[#10BEE1] text-[#10BEE1]",
+    dot: "bg-[#10BEE1]",
+  },
 } as const;
 
 export default function TableBadge({
   type,
 }: {
-  type: "complete" | "canceled" | "pending" | "processing" | "cancelled"; // Updated type
+  type: "complete" | "canceled" | "pending" | "processing" | "cancelled" | "approved"; // Updated type
 }) {
   const { container, dot } = styles[type];
 
