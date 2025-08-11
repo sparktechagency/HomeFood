@@ -49,11 +49,11 @@ export default function AdminSideMenu() {
       key: "sellers",
       icon: <WithdrawIcon className="size-6" />,
     },
-    {
-      label: "Transactions",
-      key: "transactions",
-      icon: <CategoriesIcon className="size-6" />,
-    },
+    // {
+    //   label: "Transactions",
+    //   key: "transactions",
+    //   icon: <CategoriesIcon className="size-6" />,
+    // },
     {
       label: "Listing Reporting",
       key: "listing",

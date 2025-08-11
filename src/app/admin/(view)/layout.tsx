@@ -1,6 +1,7 @@
 import Sidebar from "@/components/core/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import UserAvater from "@/components/ui/UserAvater";
 import { BellIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -26,10 +27,7 @@ export default function RootLayout({
             {/* <h3 className="text-2xl font-bold">Hello, Rick</h3> */}
             <div className=""></div>
             <div className="flex items-center gap-2">
-              <Avatar>
-                <AvatarImage src="https://avatar.iran.liara.run/public" />
-                <AvatarFallback>AV</AvatarFallback>
-              </Avatar>
+              <UserAvater />
               <Button size={"icon"} variant="ghost" asChild>
                 <Link href="/creator/notifications">
                   <BellIcon fill="" />

@@ -74,15 +74,7 @@ const AuthApi = api.injectEndpoints({
 
 
 
-    // CREATE NEW PASSWORD ===============================================
-    createNewpassword: builder.mutation({
-      query: (formdata) => ({
-        url: `/forgot-password`,
-        method: "POST",
-        body: formdata,
-      }),
-      invalidatesTags: ["user"],
-    }),
+
 
 
     // GET LOGDIN USER PASSWORD ==============================================
@@ -104,6 +96,29 @@ const AuthApi = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
 
+    updateProfileImage: builder.mutation({
+      query: (formdata) => ({
+        url: `/update-profile-image`,
+        method: "POST",
+        body: formdata,
+      }),
+      invalidatesTags: ["user"],
+    }),
+
+
+    changePassword: builder.mutation({
+      query: (body) => {
+        console.log("changePassword body:", body);
+        return {
+          url: `/create-new-password`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["user"],
+    }),
+
+
 
 
   }),
@@ -114,7 +129,9 @@ export const {
   useRegisterMutation,
   useVerifyemailMutation,
   useTakeEmailForForgetpassMutation,
-  useCreateNewpasswordMutation,
   useGetOwnprofileQuery,
-  useCreateNewPassMutation
+  useUpdateProfileMutation,
+  useCreateNewPassMutation,
+  useUpdateProfileImageMutation,
+  useChangePasswordMutation,
 } = AuthApi;

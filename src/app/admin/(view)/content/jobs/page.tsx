@@ -13,22 +13,22 @@ export default function Page() {
           </CardTitle>
           <CardContent className="!mt-6 !space-y-6 grid grid-cols-2 gap-6">
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/operational">
+              <Link href="/admin/content/jobs/add?type=operational">
                 Operational Roles
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/technical">
+              <Link href="/admin/content/jobs/add?type=technical">
                 Technical & Support Roles
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/marketing">
+              <Link href="/admin/content/jobs/add?type=marketing">
                 Marketing & Business Roles
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/finance">
+              <Link href="/admin/content/jobs/add?type=finance">
                 Finance & Legal Roles
               </Link>
             </Button>

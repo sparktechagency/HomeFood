@@ -40,6 +40,11 @@ export default function SideMenu() {
 
   const items = [
     {
+      label: "Order History",
+      key: "orders",
+      icon: <OrdersIcon className="size-6" />,
+    },
+    {
       label: `Pending Orders`,
       key: "pending",
       icon: <CustomOrdersIcon className="size-6" />,
@@ -54,11 +59,7 @@ export default function SideMenu() {
       key: "requests",
       icon: <CustomOrdersIcon className="size-6" />,
     },
-    {
-      label: "Order History",
-      key: "orders",
-      icon: <OrdersIcon className="size-6" />,
-    },
+
 
     { label: "Chat", key: "chat", icon: <ChatsIcon className="size-6" /> },
     {

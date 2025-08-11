@@ -12,10 +12,14 @@ export default function Page() {
   console.log('userProfile', userProfile);
 
   useEffect(() => {
-    if (!isLoading && userProfile?.role === "BUYER") {
-      router.push("/buyer/dashboard/pending");
-    } else if (!isLoading && userProfile?.role === "SELLER") {
-      router.push("/seller/dashboard/pending");
+    if (!isLoading) {
+      if (userProfile?.role === "BUYER") {
+        router.push("/buyer/dashboard/pending");
+      } else if (userProfile?.role === "SELLER") {
+        router.push("/seller/dashboard/pending");
+      } else if (userProfile?.role === "ADMIN") {
+        router.push("/admin/dashboard");
+      }
     }
   }, [userProfile, isLoading, router]);
 

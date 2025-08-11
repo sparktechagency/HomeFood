@@ -36,9 +36,7 @@ interface SidebarProps {
 export default function Sidebar({ by }: SidebarProps) {
   const router = useRouter();
 
-  /**
-   * Handles the user logout process.
-   */
+
   const handleLogout = () => {
     Cookies.remove("token");
     toast.success("You have been logged out successfully.");

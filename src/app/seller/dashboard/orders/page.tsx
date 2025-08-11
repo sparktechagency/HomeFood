@@ -9,13 +9,9 @@ export default function Page() {
 
   return (
     <div className="!pr-6">
-
       <Dashboard />
-
       <div className="!pt-12">
         <OrderTable />
-
-
       </div>
     </div>
   );

@@ -13,32 +13,32 @@ export default function Page() {
           </CardTitle>
           <CardContent className="!mt-6 !space-y-6 grid grid-cols-2 gap-6">
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/about">Manage About Us</Link>
+              <Link href="/admin/content/add?type=about">Manage About Us</Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/data-privacy">
+              <Link href="/admin/content/add?type=privacy">
                 Manage Data Privacy
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/faq">Manage FAQ</Link>
+              <Link href="/admin/content/add?type=faq">Manage FAQ</Link>
             </Button>
-            <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/how-it-works">
+            {/* <Button className="w-full text-sm" variant="outline" asChild>
+              <Link href="/admin/content/add?type=howitworks">
                 Manage How it Works
               </Link>
-            </Button>
-            <Button className="w-full text-sm" variant="outline" asChild>
+            </Button> */}
+            {/* <Button className="w-full text-sm" variant="outline" asChild>
               <Link href="/admin/content/imprint">Manage Imprint</Link>
-            </Button>
+            </Button> */}
             <Button className="w-full text-sm" variant="outline" asChild>
               <Link href="/admin/content/jobs">Manage Jobs</Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/seller">Manage Seller</Link>
+              <Link href="/admin/content/add?type=seller">Manage Seller</Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/tnc">Manage Terms and Conditions</Link>
+              <Link href="/admin/content/add?type=terms">Manage Terms and Conditions</Link>
             </Button>
           </CardContent>
         </CardHeader>
