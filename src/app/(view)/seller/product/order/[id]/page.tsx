@@ -1,0 +1,642 @@
+// "use client";
+// import { Button } from "@/components/ui/button";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Separator } from "@/components/ui/separator";
+// import { Badge } from "@/components/ui/badge";
+// import {
+//   BikeIcon,
+//   HandPlatterIcon,
+//   MapPin,
+//   MinusIcon,
+//   PlusIcon,
+//   StoreIcon,
+//   Clock,
+//   ShoppingCart,
+//   CreditCard,
+//   CheckCircle,
+// } from "lucide-react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useState } from "react";
+// import ProductCard from "@/components/core/prod-card";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+// import { Input } from "@/components/ui/input";
+// import { useParams } from "next/navigation";
+// import { useGetFoodDetaisByIdQuery } from "@/redux/features/Seller/SellerApi";
+
+// export default function Page() {
+//   const { id } = useParams();
+//   const { data, isLoading, isError } = useGetFoodDetaisByIdQuery(id as string, { skip: !id });
+
+
+//   const food = data?.data?.food;
+//   const similarFoods = data?.data?.similar_foods;
+
+//   console.log('food', food)
+//   console.log('similarFoods', similarFoods);
+
+
+//   const [quantity, setQuantity] = useState(1);
+//   const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">(
+//     "pickup"
+//   );
+
+//   const itemPrice = 45;
+//   const originalPrice = 50;
+//   const deliveryFee = quantity * itemPrice >= 60 ? 0 : 5;
+//   const subtotal = quantity * itemPrice;
+//   const total = subtotal + deliveryFee;
+
+//   const incrementQuantity = () => setQuantity((prev) => prev + 1);
+//   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+
+//   return (
+//     <div className="!py-8 !px-4 md:w-4/5 !mx-auto">
+//       {/* Header */}
+//       <div className="!mb-8 text-center">
+//         <h1 className="text-3xl font-bold !mb-2">Checkout</h1>
+//         <p className="text-muted-foreground">
+//           Review your order and complete your purchase
+//         </p>
+//       </div>
+
+//       <div className="grid lg:grid-cols-3 gap-8">
+//         {/* Product Details - Left Side */}
+//         <div className="lg:col-span-2 !space-y-6">
+//           <Card>
+//             <CardHeader>
+//               <CardTitle className="flex items-center gap-2">
+//                 <ShoppingCart className="size-5" />
+//                 Your Order
+//               </CardTitle>
+//             </CardHeader>
+//             <CardContent>
+//               <div className="grid md:grid-cols-2 gap-6">
+//                 <div className="relative">
+//                   <Image
+//                     height={400}
+//                     width={400}
+//                     src="/image/prod.jpg"
+//                     alt="Very Yummy Burger"
+//                     className="w-full aspect-square object-cover rounded-lg"
+//                   />
+//                   <Badge className="absolute !top-2 !right-2 bg-primary/50 text-sm font-semibold">
+//                     10% OFF
+//                   </Badge>
+//                 </div>
+
+//                 <div className="!space-y-4">
+//                   <div>
+//                     <h2 className="text-2xl font-bold !mb-2">
+//                       VERY YUMMY BURGIR
+//                     </h2>
+//                     <p className="flex items-center gap-2 text-muted-foreground">
+//                       <MapPin className="size-4" />
+//                       Olympiapark, Munich (2.3km away)
+//                     </p>
+//                     <p className="flex items-center gap-2 text-muted-foreground !mt-1">
+//                       <Clock className="size-4" />
+//                       Ready in 10-15 mins
+//                     </p>
+//                   </div>
+
+//                   <div className="flex items-center gap-3">
+//                     <span className="text-3xl font-bold text-primary">
+//                       ${itemPrice}
+//                     </span>
+//                     <span className="line-through text-xl text-muted-foreground">
+//                       ${originalPrice}
+//                     </span>
+//                   </div>
+
+//                   {/* Quantity Controls */}
+//                   <div className="!space-y-3">
+//                     <label className="text-sm font-medium">Quantity</label>
+//                     <div className="flex justify-end sm:justify-start items-center gap-3">
+//                       <Button
+//                         variant="outline"
+//                         size="icon"
+//                         onClick={decrementQuantity}
+//                         disabled={quantity <= 1}
+//                       >
+//                         <MinusIcon className="size-4" />
+//                       </Button>
+//                       <span className="text-xl font-semibold !px-4">
+//                         {quantity}
+//                       </span>
+//                       <Button
+//                         variant="outline"
+//                         size="icon"
+//                         onClick={incrementQuantity}
+//                       >
+//                         <PlusIcon className="size-4" />
+//                       </Button>
+//                     </div>
+//                   </div>
+//                   {deliveryFee > 0 && deliveryMethod === "delivery" && (
+//                     <div className="!mt-4 !p-3 bg-blue-50 border border-blue-200 rounded-lg">
+//                       <div className="flex items-center gap-2 text-xs sm:text-sm text-blue-700">
+//                         <div className="size-2 bg-blue-500 rounded-full" />
+//                         Add{" "}
+//                         <span className="font-semibold">
+//                           ${60 - subtotal}
+//                         </span>{" "}
+//                         more to get{" "}
+//                         <span className="font-semibold">free delivery!</span>
+//                       </div>
+//                     </div>
+//                   )}
+//                 </div>
+//               </div>
+//             </CardContent>
+//           </Card>
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Delivery Date</CardTitle>
+//             </CardHeader>
+//             <CardContent>
+//               <Input type="date" />
+//             </CardContent>
+//           </Card>
+
+//           {/* Delivery Options */}
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Delivery Time</CardTitle>
+//             </CardHeader>
+//             <CardContent>
+//               <Select>
+//                 <SelectTrigger className="w-full">
+//                   <SelectValue placeholder="Select your delivery time" />
+//                 </SelectTrigger>
+//                 <SelectContent>
+//                   <SelectItem value="appetizers">12:00 - 13:00</SelectItem>
+//                   <SelectItem value="main-course">13:00 - 14:00</SelectItem>
+//                   <SelectItem value="desserts">15:00 - 16:00</SelectItem>
+//                   <SelectItem value="beverages">16:00 - 17:00</SelectItem>
+//                   <SelectItem value="snacks">19:00 - 20:00</SelectItem>
+//                 </SelectContent>
+//               </Select>
+//             </CardContent>
+//           </Card>
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Delivery Options</CardTitle>
+//             </CardHeader>
+//             <CardContent>
+//               <div className="grid md:grid-cols-2 gap-4">
+//                 <Button
+//                   variant={deliveryMethod === "pickup" ? "default" : "outline"}
+//                   className="h-auto !p-4 flex-col gap-2"
+//                   onClick={() => setDeliveryMethod("pickup")}
+//                 >
+//                   <div className="flex items-center gap-2">
+//                     <HandPlatterIcon className="size-5" />
+//                     <span className="font-semibold">Pickup</span>
+//                   </div>
+//                   <div className="text-center">
+//                     <p className="text-sm opacity-80">Ready in 8-12 mins</p>
+//                   </div>
+//                 </Button>
+//                 <Button
+//                   variant={
+//                     deliveryMethod === "delivery" ? "default" : "outline"
+//                   }
+//                   className="h-auto !p-4 flex-col gap-2"
+//                   onClick={() => setDeliveryMethod("delivery")}
+//                 >
+//                   <div className="flex items-center gap-2">
+//                     <BikeIcon className="size-5" />
+//                     <span className="font-semibold">Delivery</span>
+//                   </div>
+//                   <div className="text-center w-full">
+//                     <p className="text-sm opacity-80">Standard (10-15 mins)</p>
+//                   </div>
+//                 </Button>
+//               </div>
+//             </CardContent>
+//           </Card>
+//         </div>
+//         {/* Order Summary - Right Side */}
+//         <div className="lg:col-span-1">
+//           <Card className="sticky top-4">
+//             <CardHeader>
+//               <CardTitle>Order Summary</CardTitle>
+//             </CardHeader>
+//             <CardContent className="!space-y-4">
+//               <div className="!space-y-3">
+//                 <div className="flex justify-between">
+//                   <span>
+//                     Subtotal ({quantity} item{quantity > 1 ? "s" : ""})
+//                   </span>
+//                   <span>${subtotal}</span>
+//                 </div>
+
+//                 {deliveryMethod === "delivery" && (
+//                   <div className="flex justify-between">
+//                     <span>Delivery Fee</span>
+//                     <span
+//                       className={
+//                         deliveryFee === 0 ? "text-green-600 font-medium" : ""
+//                       }
+//                     >
+//                       {deliveryFee === 0 ? "Free" : `$${deliveryFee}`}
+//                     </span>
+//                   </div>
+//                 )}
+//                 <Separator />
+
+//                 <div className="flex justify-between text-lg font-semibold">
+//                   <span>Total</span>
+//                   <span>${deliveryMethod === "pickup" ? subtotal : total}</span>
+//                 </div>
+//               </div>
+
+//               {deliveryFee === 0 && deliveryMethod === "delivery" && (
+//                 <div className="flex items-center gap-2 !p-2 bg-green-50 border border-green-200 rounded-lg">
+//                   <CheckCircle className="size-4 text-green-600" />
+//                   <span className="text-sm text-green-700 font-medium">
+//                     Free delivery applied!
+//                   </span>
+//                 </div>
+//               )}
+
+//               <Button className="w-full !mt-6" size="lg" asChild>
+//                 <Link href="order/payment">
+//                   <CreditCard className="size-4 !mr-2" />
+//                   Proceed to Payment
+//                 </Link>
+//               </Button>
+
+//               <div className="text-center !mt-4">
+//                 <p className="text-xs text-muted-foreground">
+//                   By placing this order, you agree to our Terms of Service
+//                 </p>
+//               </div>
+//               {/* Restaurant Info */}
+//               <Card className="!mt-6">
+//                 <CardContent className="">
+//                   <div className="flex items-center gap-3">
+//                     <StoreIcon className="size-5 text-primary" />
+//                     <span className="text-sm">Order more from</span>
+//                     <Link
+//                       href="/seller"
+//                       className="font-semibold text-primary underline hover:text-primary/70 transition-colors"
+//                     >
+//                       Food Mania
+//                     </Link>
+//                   </div>
+//                 </CardContent>
+//               </Card>
+//             </CardContent>
+//           </Card>
+//         </div>
+//       </div>
+
+//       <div className="col-span-11 !mt-12">
+//         <h2 className="text-3xl font-semibold !pb-4 border-b">Similar Food</h2>
+//         {/* <div className="w-full grid sm:grid-cols-2 md:grid-cols-3 gap-6 !mt-6">
+//           {Array.from({ length: 8 }).map((_, i) => (
+//             <ProductCard key={i} />
+//           ))}
+//         </div> */}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  BikeIcon,
+  HandPlatterIcon,
+  MapPin,
+  MinusIcon,
+  PlusIcon,
+  StoreIcon,
+  Clock,
+  ShoppingCart,
+  CreditCard,
+  CheckCircle,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useMemo } from "react";
+import ProductCard from "@/components/core/prod-card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useParams } from "next/navigation";
+import { useGetFoodDetaisByIdQuery } from "@/redux/features/Seller/SellerApi";
+import { imageUrl } from "@/redux/baseApi";
+import { FoodItem } from "@/lib/types/api";
+
+// --- Main Component ---
+export default function Page() {
+  const { id } = useParams();
+  const { data, isLoading, isError } = useGetFoodDetaisByIdQuery(id as string, {
+    skip: !id,
+  });
+
+  const food = data?.data?.food;
+  const similarFoods = data?.data?.similar_foods;
+
+  // --- State Management ---
+  const [quantity, setQuantity] = useState(1);
+  // Set initial delivery method based on API data
+  const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">(
+    food?.delivery_option === "delivery" ? "delivery" : "pickup"
+  );
+
+
+  // --- Memoized Calculations ---
+  const { subtotal, calculatedDeliveryFee, total } = useMemo(() => {
+    const itemPrice = food?.price || 0;
+    const subtotal = quantity * itemPrice;
+    const deliveryFee = food?.delivery_fee || 0;
+    const minOrder = food?.minimum_order || Infinity;
+
+    // Calculate delivery fee only if delivery method is selected
+    const calculatedDeliveryFee =
+      deliveryMethod === "delivery"
+        ? subtotal >= minOrder
+          ? 0
+          : deliveryFee
+        : 0; // No fee for pickup
+
+    const total = subtotal + calculatedDeliveryFee;
+    return { subtotal, calculatedDeliveryFee, total };
+  }, [quantity, deliveryMethod, food]);
+
+  // --- Event Handlers ---
+  const incrementQuantity = () =>
+    setQuantity((prev) => Math.min(food?.quantity || prev, prev + 1));
+  const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+
+  // --- Render Logic ---
+  if (isLoading) {
+    return <div className="text-center p-8">Loading...</div>;
+  }
+
+  if (isError || !food) {
+    return <div className="text-center p-8">Failed to load food details.</div>;
+  }
+
+  // NOTE: Replace with your actual backend URL
+
+  const userRole = food?.user?.role;
+  console.log('userRole', userRole);
+  console.log('data', data);
+
+
+  return (
+    <div className="!py-8 !px-4 md:w-4/5 !mx-auto">
+      {/* Header */}
+      <div className="!mb-8 text-center">
+        <h1 className="text-3xl font-bold !mb-2">Checkout</h1>
+        <p className="text-muted-foreground">
+          Review your order and complete your purchase
+        </p>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Product Details - Left Side */}
+        <div className="lg:col-span-2 !space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShoppingCart className="size-5" />
+                Your Order
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="relative">
+                  <Image
+                    height={400}
+                    width={400}
+                    src={food.images?.[0] ? `${imageUrl + food.images?.[0]}` : "/image/placeholder.jpg"}
+                    alt={food.title}
+                    className="w-full aspect-square object-cover rounded-lg"
+                  />
+                </div>
+
+                <div className="!space-y-4">
+                  <div>
+                    <h2 className="text-2xl font-bold !mb-2">
+                      {food.title}
+                    </h2>
+                    <p className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="size-4" />
+                      {food.user?.address}
+                    </p>
+                    <p className="flex items-center gap-2 text-muted-foreground !mt-1">
+                      <Clock className="size-4" />
+                      Available: {food.delivery_time}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl font-bold text-primary">
+                      ${food.price}
+                    </span>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="!space-y-3">
+                    <label className="text-sm font-medium">Quantity</label>
+                    <div className="flex justify-end sm:justify-start items-center gap-3">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={decrementQuantity}
+                        disabled={quantity <= 1}
+                      >
+                        <MinusIcon className="size-4" />
+                      </Button>
+                      <span className="text-xl font-semibold !px-4">
+                        {quantity}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={incrementQuantity}
+                        disabled={quantity >= food.quantity}
+                      >
+                        <PlusIcon className="size-4" />
+                      </Button>
+                    </div>
+                    {quantity >= food.quantity && (
+                      <p className="text-sm text-red-500">Maximum quantity reached</p>
+                    )}
+                  </div>
+                  {calculatedDeliveryFee > 0 && deliveryMethod === "delivery" && (
+                    <div className="!mt-4 !p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-blue-700">
+                        <div className="size-2 bg-blue-500 rounded-full" />
+                        Add{" "}
+                        <span className="font-semibold">
+                          ${(food.minimum_order - subtotal).toFixed(2)}
+                        </span>{" "}
+                        more to get{" "}
+                        <span className="font-semibold">free delivery!</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Delivery Date</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Input type="date" defaultValue={new Date().toISOString().split('T')[0]} />
+            </CardContent>
+          </Card>
+
+          {/* Delivery Options */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Delivery Options</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                {(food.delivery_option === 'both' || food.delivery_option === 'pickup') && (
+                  <Button
+                    variant={deliveryMethod === "pickup" ? "default" : "outline"}
+                    className="h-auto !p-4 flex-col gap-2"
+                    onClick={() => setDeliveryMethod("pickup")}
+                  >
+                    <div className="flex items-center gap-2">
+                      <HandPlatterIcon className="size-5" />
+                      <span className="font-semibold">Pickup</span>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm opacity-80">Available today</p>
+                    </div>
+                  </Button>
+                )}
+                {(food.delivery_option === 'both' || food.delivery_option === 'delivery') && (
+                  <Button
+                    variant={deliveryMethod === "delivery" ? "default" : "outline"}
+                    className="h-auto !p-4 flex-col gap-2"
+                    onClick={() => setDeliveryMethod("delivery")}
+                  >
+                    <div className="flex items-center gap-2">
+                      <BikeIcon className="size-5" />
+                      <span className="font-semibold">Delivery</span>
+                    </div>
+                    <div className="text-center w-full">
+                      <p className="text-sm opacity-80">Estimated arrival time varies</p>
+                    </div>
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Order Summary - Right Side */}
+        <div className="lg:col-span-1">
+          <Card className="sticky top-4">
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="!space-y-4">
+              <div className="!space-y-3">
+                <div className="flex justify-between">
+                  <span>
+                    Subtotal ({quantity} item{quantity > 1 ? "s" : ""})
+                  </span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+
+                {deliveryMethod === "delivery" && (
+                  <div className="flex justify-between">
+                    <span>Delivery Fee</span>
+                    <span className={calculatedDeliveryFee === 0 ? "text-green-600 font-medium" : ""}>
+                      {calculatedDeliveryFee === 0 ? "Free" : `$${calculatedDeliveryFee.toFixed(2)}`}
+                    </span>
+                  </div>
+                )}
+                <Separator />
+
+                <div className="flex justify-between text-lg font-semibold">
+                  <span>Total</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {calculatedDeliveryFee === 0 && deliveryMethod === "delivery" && (
+                <div className="flex items-center gap-2 !p-2 bg-green-50 border border-green-200 rounded-lg">
+                  <CheckCircle className="size-4 text-green-600" />
+                  <span className="text-sm text-green-700 font-medium">
+                    Free delivery applied!
+                  </span>
+                </div>
+              )}
+
+              <Button className="w-full !mt-6" size="lg" asChild>
+                <Link href="/order/payment">
+                  <CreditCard className="size-4 !mr-2" />
+                  Proceed to Payment
+                </Link>
+              </Button>
+
+              <div className="text-center !mt-4">
+                <p className="text-xs text-muted-foreground">
+                  By placing this order, you agree to our Terms of Service
+                </p>
+              </div>
+
+              {/* Seller Info */}
+              <Card className="!mt-6">
+                <CardContent className="!pt-4">
+                  <div className="flex items-center gap-3">
+                    <StoreIcon className="size-5 text-primary" />
+                    <span className="text-sm">Order more from</span>
+                    <Link
+                      href={`${userRole === "SELLER" ? "/seller" : "/buyer"}/${food.user.id}`}
+                      className="font-semibold text-primary underline hover:text-primary/70 transition-colors"
+                    >
+                      {food.user.full_name}
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {similarFoods && similarFoods.length > 0 && (
+        <div className="col-span-11 !mt-12">
+          <h2 className="text-3xl font-semibold !pb-4 border-b">Similar Food</h2>
+          <div className="w-full grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !mt-6">
+            {similarFoods.map((item: FoodItem) => (
+              <ProductCard key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -127,9 +127,19 @@ export const SellerApi = api.injectEndpoints({
         }),
 
 
+        getuserDetailsById: builder.query<any, { id: any; search?: string; status?: number; page?: number; perPage?: number }>({
+            query: ({ id, status = 1 }) => `/user-food/${id}?&status=${status}`,
+        }),
+
+
+
+
+
+
+
 
 
     }),
 });
 
-export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation } = SellerApi;
+export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation, useGetuserDetailsByIdQuery } = SellerApi;

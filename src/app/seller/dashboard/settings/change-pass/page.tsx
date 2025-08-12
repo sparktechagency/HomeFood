@@ -59,12 +59,6 @@ export default function PasswordChangeForm() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // const formData = new FormData();
-    // formData.append("new_password", passwords?.new);
-    // formData.append("new_password_confirmation", passwords.confirm);
-    // formData.append("email", email);
-    // console.log('values', passwords?.new, passwords.confirm, email);
-
     try {
       const response = await changePassword({ new_password: passwords?.new, new_password_confirmation: passwords.confirm, email }).unwrap()
       console.log('response', response);

@@ -7,6 +7,7 @@ import CookieProv from "@/hooks/cookie-prov";
 import store from "../redux/store";
 
 import { Provider } from "react-redux";
+
 // export const metadata: Metadata = {
 //   title: "HomeFood",
 //   description: "Wew",
@@ -20,14 +21,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* <CartProvider > */}
         <Provider store={store}>
 
           <CookieProv>
+
             {children}
             <Toaster richColors />
           </CookieProv>
 
         </Provider>
+        {/* </CartProvider> */}
       </body>
     </html>
   );

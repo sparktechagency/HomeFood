@@ -26,9 +26,10 @@ type FoodItem = {
   images: string | null;
   user: {
     full_name: string;
-    address: string;
-    city: string;
-    profile: string;
+    address?: string; // optional
+    city?: string;
+    profile?: string;
+    role?: string;
   };
   category: {
     name: string;
@@ -46,8 +47,6 @@ interface ProductCardProps {
   refetch?: () => void;
 }
 
-const API_BASE_URL = "http://103.186.20.110:8123"; // IMPORTANT: Set your asset base URL
-
 export default function ProductCard({
   item,
   fromProfile,
@@ -62,8 +61,7 @@ export default function ProductCard({
   const [deleteFoodItem, { isLoading }] = useDeleteFoodItemMutation();
   const [activeOrDeactiveItem, { isLoading: activerLoading }] = useActiveOrDeactiveItemMutation();
   const [activeLoadingId, setActiveLoadingId] = useState(null);
-  console.log('item', item);
-  console.log('activer', activer);
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -75,6 +73,10 @@ export default function ProductCard({
 
 
   const userProfileUrl = imageUrl + item.user.profile
+
+  console.log('itemuser', item.user);
+
+  const userRole = item.user.role
   const isActive = item.status === 1;
 
   const handleDelete = async (id: any) => {
@@ -131,11 +133,11 @@ export default function ProductCard({
 
   return (
     <Card className="!pt-0 overflow-hidden flex flex-col h-full w-full max-w-sm sm:max-w-md md:max-w-full !mx-auto">
-      <Link href={`/seller/product/${item.id}`} className="block h-full">
+      <Link href={`${userRole === 'SELLER' ? '/seller' : '/buyer'}/product/${item.id}`} className="block h-full">
         <CardHeader className="!p-0 relative !gap-0">
           <div className="relative w-full aspect-video overflow-hidden">
             <Image
-              src={imageUrl + item.images?.[0]}
+              src={imageUrl + item.images}
               alt={item.title}
               fill
               className="object-cover w-full h-full"

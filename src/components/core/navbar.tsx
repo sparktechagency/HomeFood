@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { Menu, LogOut, User, Lock } from "lucide-react";
+import { Menu, LogOut, User, Lock, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -31,6 +31,7 @@ import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { imageUrl } from "@/redux/baseApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import MyCustomLogo from "../ui/MyCustomLogo";
+import CartPage from "./cart-section";
 
 
 
@@ -47,7 +48,14 @@ export default function Navbar() {
   const [cookies, , removeCookie] = useCookies(["token"]);
   const pathname = usePathname();
   const [signedIn, setSignedIn] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
 
+  useEffect(() => {
+    setSignedIn(!!cookies.token);
+    // Load cart from localStorage
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) setCartItems(JSON.parse(savedCart));
+  }, [cookies.token, pathname]);
   // This is your original logic for setting the signed-in state, which we are keeping.
   useEffect(() => {
     setSignedIn(!!cookies.token);
@@ -173,11 +181,28 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
 
+
         {/* Desktop Auth Section */}
         {isProfileLoading && <Skeleton className="h-10 w-10 rounded-full" />}
         {!isProfileLoading && signedIn ? (
           <>
-            <CartSection />
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {cartItems.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full bg-red-400 sm:w-96">
+                {/* The CartPage component goes in here */}
+                <CartPage />
+              </SheetContent>
+            </Sheet>
             <Popover>
               <PopoverTrigger className="cursor-pointer" asChild>
                 <Avatar>
@@ -189,6 +214,7 @@ export default function Navbar() {
                 <Button className="w-full" asChild>
                   <Link href={"/me"}>My Account</Link>
                 </Button>
+
                 <Button className="w-full" asChild>
                   <Link href={"/change-pass"}>Change Password</Link>
                 </Button>
@@ -239,3 +265,183 @@ export default function Navbar() {
     </nav>
   );
 }
+
+
+
+
+
+// "use client";
+
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
+// import { useState, useEffect } from "react";
+// import { useCookies } from "react-cookie";
+// import { Menu, LogOut, User, Lock, ShoppingCart } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import {
+//   Sheet,
+//   SheetContent,
+//   SheetHeader,
+//   SheetTitle,
+//   SheetTrigger,
+// } from "@/components/ui/sheet";
+// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+//   AlertDialogTrigger,
+// } from "@/components/ui/alert-dialog";
+// import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+// import { imageUrl } from "@/redux/baseApi";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import MyCustomLogo from "../ui/MyCustomLogo";
+// import CartPage from "./cart-section";
+
+// const navlinks = [
+//   { title: "How it works", to: "/how-it-works" },
+//   { title: "Seller", to: "/how-it-works-seller" },
+//   { title: "Listing", to: "/" },
+//   { title: "About Us", to: "/about" },
+//   { title: "Contact us", to: "/contact" },
+// ];
+
+// export default function Navbar() {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [cookies, , removeCookie] = useCookies(["token"]);
+//   const pathname = usePathname();
+//   const [signedIn, setSignedIn] = useState(false);
+//   const [cartItems, setCartItems] = useState([]);
+
+//   useEffect(() => {
+//     setSignedIn(!!cookies.token);
+//     // Load cart from localStorage
+//     const savedCart = localStorage.getItem('cart');
+//     if (savedCart) setCartItems(JSON.parse(savedCart));
+//   }, [cookies.token, pathname]);
+
+//   const { data: userInfo, isLoading: isProfileLoading } = useGetOwnprofileQuery({}, { skip: !signedIn });
+//   const userProfile = userInfo?.data;
+
+//   const getInitials = (name?: string) => {
+//     if (!name) return "U";
+//     return name.split(" ").map(n => n[0]).join("").toUpperCase();
+//   };
+
+//   const handleLogout = () => {
+//     removeCookie("token", { path: "/" });
+//     window.location.href = "/login";
+//   };
+
+//   return (
+//     <nav className="h-16 w-full bg-background flex justify-between items-center !px-4 md:!px-8 border-b fixed top-0 z-50">
+//       <MyCustomLogo />
+
+//       {/* Desktop Navigation */}
+//       <div className="hidden md:flex flex-1 justify-center">
+//         {navlinks.map((link, index) => (
+//           <Button key={index} className="font-semibold text-zinc-600" variant="ghost" asChild>
+//             <Link className="text-lg" href={link.to}>{link.title}</Link>
+//           </Button>
+//         ))}
+//       </div>
+
+//       {/* Right: Actions */}
+//       <div className="flex-shrink-0 flex items-center gap-2 md:gap-4">
+//         {/* Cart Button - Always visible */}
+// <Sheet>
+//   <SheetTrigger asChild>
+//     <Button variant="ghost" size="icon" className="relative">
+//       <ShoppingCart className="h-5 w-5" />
+//       {cartItems.length > 0 && (
+//         <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+//           {cartItems.length}
+//         </span>
+//       )}
+//     </Button>
+//   </SheetTrigger>
+//   <SheetContent className="w-full bg-red-400 sm:w-96">
+//     {/* The CartPage component goes in here */}
+//     <CartPage />
+//   </SheetContent>
+// </Sheet>
+
+//         {/* Mobile Menu */}
+//         <Sheet open={isOpen} onOpenChange={setIsOpen}>
+//           <SheetTrigger asChild>
+//             <Button variant="ghost" size="icon" className="md:hidden">
+//               <Menu className="h-5 w-5" />
+//               <span className="sr-only">Toggle menu</span>
+//             </Button>
+//           </SheetTrigger>
+//           <SheetContent side="right" className="!p-6 w-full">
+//             {/* Mobile menu content */}
+//           </SheetContent>
+//         </Sheet>
+
+//         {/* Desktop Profile Dropdown */}
+//         {isProfileLoading && <Skeleton className="h-10 w-10 rounded-full" />}
+//         {!isProfileLoading && signedIn && (
+//           <Popover>
+//             <PopoverTrigger className="cursor-pointer" asChild>
+//               <Avatar>
+//                 <AvatarImage src={userProfile ? `${imageUrl}${userProfile.profile}` : ""} alt={userProfile?.full_name} />
+//                 <AvatarFallback>{getInitials(userProfile?.full_name)}</AvatarFallback>
+//               </Avatar>
+//             </PopoverTrigger>
+//             <PopoverContent className="bg-background/10 backdrop-blur-xs space-y-2 w-48">
+//               <Button className="w-full" asChild variant="ghost">
+//                 <Link href="/me">My Account</Link>
+//               </Button>
+//               <Button className="w-full" asChild variant="ghost">
+//                 <Link href="/change-pass">Change Password</Link>
+//               </Button>
+//               <AlertDialog>
+//                 <AlertDialogTrigger asChild>
+//                   <Button variant="ghost" className="w-full text-destructive hover:bg-destructive/10">
+//                     Logout
+//                   </Button>
+//                 </AlertDialogTrigger>
+//                 <AlertDialogContent>
+//                   <AlertDialogHeader>
+//                     <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+//                     <AlertDialogDescription>
+//                       Are you sure you want to log out?
+//                     </AlertDialogDescription>
+//                   </AlertDialogHeader>
+//                   <AlertDialogFooter>
+//                     <AlertDialogCancel>Cancel</AlertDialogCancel>
+//                     <AlertDialogAction
+//                       onClick={handleLogout}
+//                       className="bg-destructive hover:bg-destructive/90"
+//                     >
+//                       Logout
+//                     </AlertDialogAction>
+//                   </AlertDialogFooter>
+//                 </AlertDialogContent>
+//               </AlertDialog>
+//             </PopoverContent>
+//           </Popover>
+//         )}
+
+//         {/* Desktop Auth Buttons */}
+//         {!isProfileLoading && !signedIn && (
+//           <div className="hidden md:flex items-center gap-4">
+//             <Button asChild variant="ghost">
+//               <Link href="/register">Sign up</Link>
+//             </Button>
+//             <Button asChild>
+//               <Link href="/login">Log in</Link>
+//             </Button>
+//           </div>
+//         )}
+//       </div>
+//     </nav>
+//   );
+// }

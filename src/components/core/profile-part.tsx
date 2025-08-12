@@ -12,26 +12,32 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import Image from "next/image";
-export default function ProfilePart() {
+import { User } from "@/lib/types/api";
+import { imageUrl } from "@/redux/baseApi";
+
+
+interface ProfilePartProps {
+  user: User;
+}
+
+
+export default function ProfilePart({ user }: ProfilePartProps) {
   return (
     <>
       <Avatar className="size-[140px] !mx-auto">
-        <AvatarImage src={"https://avatar.iran.liara.run/public"} />
-        <AvatarFallback>AV</AvatarFallback>
+        <AvatarImage src={`${imageUrl + user?.profile}`} alt={user?.full_name} />
+        <AvatarFallback>{user?.full_name.charAt(0)}</AvatarFallback>
       </Avatar>
       <div className="w-full !mt-2">
-        <h3 className="text-2xl font-bold text-center">Food Mania</h3>
+        <h3 className="text-2xl font-bold text-center">{user?.full_name}</h3>
         <div className="!space-y-2">
-          <div className=" flex flex-row justify-center items-center gap-1 text-muted-foreground">
+          <div className="flex flex-row justify-center items-center gap-1 text-muted-foreground">
             <MapPinIcon className="text-destructive size-4" />
-            <span className="text-ellipsis line-clamp-1 text-sm">
-              Olympiapark, Munich, EMEA 90763
-            </span>
+            <span className="text-ellipsis line-clamp-1 text-sm">{user?.address}</span>
           </div>
         </div>
-        <p className="!mt-12">
-          What’s up guys , welcome to Biryani House. Where we make Indian food
-          with a twist . Wer make traditional Biryani.
+        <p className="!mt-12 text-center">
+          Welcome to my kitchen! I'm excited to share my food with you.
         </p>
         <div className="!mt-12 flex flex-col justify-center items-center gap-4">
           <Dialog>
@@ -44,7 +50,7 @@ export default function ProfilePart() {
               </DialogHeader>
               <div className="">
                 <Image
-                  src="https://avatar.iran.liara.run/public"
+                  src={`${imageUrl + user.profile}`}
                   width={500}
                   height={500}
                   alt="icon"

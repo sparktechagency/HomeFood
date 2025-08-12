@@ -1,6 +1,208 @@
+// "use client";
+// import React, { useState } from "react";
+// import Categories from "./categories";
+// import { Button } from "@/components/ui/button";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { CalendarIcon, ChevronDown, FunnelIcon } from "lucide-react";
+
+// import { Checkbox } from "@/components/ui/checkbox";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import { format } from "date-fns";
+// import { Calendar } from "@/components/ui/calendar";
+// import { cn } from "@/lib/utils";
+// import { DualRangeSlider } from "@/components/ui/dual-slider";
+// import { sorts } from "./sorts";
+// import ProdSection from "./product-section";
+// import { Input } from "@/components/ui/input";
+
+// export default function Listing() {
+//   const [date, setDate] = React.useState<Date>();
+//   const [time, setTime] = React.useState("");
+//   const [values, setValues] = useState([0, 1000]);
+//   const [showFilters, setShowFilters] = useState(false);
+
+//   return (
+//     <>
+
+//       <section className="!mt-12">
+//         <div className="flex flex-row justify-end items-center sm:hidden">
+//           <Button
+//             variant="outline"
+//             className="border text-sm"
+//             onClick={() => setShowFilters((prev) => !prev)}
+//           >
+//             Filters <FunnelIcon />
+//           </Button>
+//         </div>
+//         <div
+//           className={`
+//           !py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-7 gap-2 
+//           ${showFilters ? "block" : "hidden"} sm:grid
+//         `}
+//         >
+//           {sorts.map((x, i) => (
+//             <div key={i} className="w-full">
+//               {x.kind ? (
+//                 x.kind === "date" ? (
+//                   <Popover>
+//                     <PopoverTrigger asChild>
+//                       <Button
+//                         variant={"secondary"}
+//                         className={cn(
+//                           "w-full justify-center text-center font-medium text-sm rounded-full",
+//                           !date && "text-muted-foreground"
+//                         )}
+//                       >
+//                         {date ? (
+//                           <>
+//                             <CalendarIcon className="!mr-2 h-4 w-4" />{" "}
+//                             {format(date, "PPP")}
+//                           </>
+//                         ) : (
+//                           <>
+//                             <span className="text-foreground">{x.title}</span>{" "}
+//                             <ChevronDown className="size-4 text-foreground" />
+//                           </>
+//                         )}
+//                       </Button>
+//                     </PopoverTrigger>
+//                     <PopoverContent className="w-auto !p-0">
+//                       <Calendar
+//                         mode="single"
+//                         selected={date}
+//                         onSelect={setDate}
+//                         initialFocus
+//                       />
+//                     </PopoverContent>
+//                   </Popover>
+//                 ) : x.kind === "dual-slider" ? (
+//                   <DropdownMenu>
+//                     <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+//                       {x.title} <ChevronDown className="size-4" />
+//                     </DropdownMenuTrigger>
+//                     <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
+//                       <div className="!mt-6 !px-4">
+//                         <DualRangeSlider
+//                           label={(value) => <span>${value}</span>}
+//                           value={values}
+//                           onValueChange={setValues}
+//                           min={0}
+//                           max={100}
+//                           step={1}
+//                         />
+//                       </div>
+//                       <div className="flex flex-row justify-center items-center !mt-6 !px-4">
+//                         <div className="!space-x-2 !py-1 !px-2 rounded-lg">
+//                           <span>${values[0]}</span>
+//                           <span>-</span>
+//                           <span>${values[1]}</span>
+//                         </div>
+//                       </div>
+//                     </DropdownMenuContent>
+//                   </DropdownMenu>
+//                 ) : x.kind === "time" ? (
+//                   <DropdownMenu>
+//                     <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+//                       {x.title} <ChevronDown className="size-4" />
+//                     </DropdownMenuTrigger>
+//                     <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
+//                       <div className="!mt-6 !px-4">
+//                         <h4 className="text-sm mb-4! font-medium">
+//                           Select Pickup time:
+//                         </h4>
+//                         <Input
+//                           type="time"
+//                           value={time}
+//                           onChange={(e) => {
+//                             setTime(e.target.value);
+//                           }}
+//                         />
+//                       </div>
+//                       <div className="flex flex-row justify-center items-center !mt-6 !px-4">
+//                         <div className="space-x-2 py-1 px-2 rounded-lg">
+//                           {time &&
+//                             (() => {
+//                               const [hours, minutes] = time
+//                                 .split(":")
+//                                 .map(Number);
+//                               const now = new Date();
+//                               const from = new Date(
+//                                 now.getFullYear(),
+//                                 now.getMonth(),
+//                                 now.getDate(),
+//                                 hours,
+//                                 minutes
+//                               );
+//                               const to = new Date(from);
+//                               to.setHours(to.getHours() + 1);
+
+//                               const format = (date: Date) =>
+//                                 date.toLocaleTimeString([], {
+//                                   hour: "2-digit",
+//                                   minute: "2-digit",
+//                                   hour12: false,
+//                                 });
+
+//                               return (
+//                                 <>
+//                                   <span>From: {format(from)}</span>
+//                                 </>
+//                               );
+//                             })()}
+//                         </div>
+//                       </div>
+//                     </DropdownMenuContent>
+//                   </DropdownMenu>
+//                 ) : (
+//                   <DropdownMenu>
+//                     <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+//                       {x.title} <ChevronDown className="size-4" />
+//                     </DropdownMenuTrigger>
+//                     <DropdownMenuContent className="w-[180px]">
+//                       {x.kind === "checkbox"
+//                         ? x.child?.map((item, i) => (
+//                           <DropdownMenuItem key={i}>
+//                             <Checkbox /> {item}
+//                           </DropdownMenuItem>
+//                         ))
+//                         : x.child?.map((item, i) => (
+//                           <DropdownMenuItem key={i}>{item}</DropdownMenuItem>
+//                         ))}
+//                     </DropdownMenuContent>
+//                   </DropdownMenu>
+//                 )
+//               ) : (
+//                 <Button
+//                   className="w-full rounded-full text-sm"
+//                   variant="secondary"
+//                 >
+//                   {x.title}
+//                 </Button>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       </section>
+//       <ProdSection />
+//     </>
+//   );
+// }
+
+
+// src/components/Listing.tsx
+// src/components/Listing.tsx
+
 "use client";
 import React, { useState } from "react";
-import Categories from "./categories";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,7 +211,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CalendarIcon, ChevronDown, FunnelIcon } from "lucide-react";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
@@ -20,19 +221,74 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { DualRangeSlider } from "@/components/ui/dual-slider";
-import { sorts } from "./sorts";
 import ProdSection from "./product-section";
 import { Input } from "@/components/ui/input";
+import { FilterParams } from "@/lib/types/api";
+
+
+// Your original filter configuration
+export const sorts = [
+  {
+    title: "Special Features",
+    child: ["Vegetarian", "Vegan", "Lactose-free", "Halal", "Gluten-free", "Keto"],
+    kind: "checkbox",
+    filterKey: "dietary_info",
+  },
+  { title: "Price", child: [0, 1000], kind: "dual-slider", filterKey: "price" },
+  { title: "Pickup Time", kind: "time", filterKey: "pickup_time" },
+  {
+    title: "Rating",
+    child: ["4", "3", "2", "1"],
+    kind: "checkbox",
+    filterKey: "min_rating",
+  },
+  { title: "Listing by Seller", child: null, kind: null, filterKey: "listing_by_seller" },
+  { title: "Listing by Buyer", child: null, kind: null, filterKey: "listing_by_buyer" },
+  {
+    title: "Sort By",
+    child: ["Price (lowest first)", "Price (highest first)", "Rating (high to low)"],
+    kind: "list",
+    filterKey: "sort_by"
+  },
+];
+
 
 export default function Listing() {
-  const [date, setDate] = React.useState<Date>();
-  const [time, setTime] = React.useState("");
-  const [values, setValues] = useState([0, 1000]);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Central state object for all filters
+  const [filters, setFilters] = useState<FilterParams>({
+    page: 1,
+    perPage: 12,
+    min_price: 0,
+    max_price: 1000,
+    pickup_time: "",
+    dietary_info: [], // Use array for checkboxes
+    min_rating: [], // Use array for checkboxes
+  });
+
+  // --- Filter Handlers ---
+
+  // Generic handler to update any filter
+  const handleFilterChange = (newValues: Partial<FilterParams>) => {
+    setFilters((prev: any) => ({ ...prev, ...newValues, page: 1 }));
+  };
+
+  // Specific handler for checkboxes to toggle values in an array
+  const handleCheckboxChange = (filterKey: 'dietary_info' | 'min_rating', value: string) => {
+    const currentValues = filters[filterKey] as string[] || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter((v) => v !== value)
+      : [...currentValues, value];
+    handleFilterChange({ [filterKey]: newValues });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setFilters((prev: any) => ({ ...prev, page: newPage }));
+  };
 
   return (
     <>
-
       <section className="!mt-12">
         <div className="flex flex-row justify-end items-center sm:hidden">
           <Button
@@ -40,159 +296,104 @@ export default function Listing() {
             className="border text-sm"
             onClick={() => setShowFilters((prev) => !prev)}
           >
-            Filters <FunnelIcon />
+            Filters <FunnelIcon className="ml-2 size-4" />
           </Button>
         </div>
-        <div
-          className={`
-          !py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-7 gap-2 
-          ${showFilters ? "block" : "hidden"} sm:grid
-        `}
-        >
+
+        {/* Dynamic Filter UI */}
+        <div className={`!py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-7 gap-2 ${showFilters ? "block" : "hidden"} sm:grid`}>
           {sorts.map((x, i) => (
             <div key={i} className="w-full">
-              {x.kind ? (
-                x.kind === "date" ? (
-                  <Popover>
-                    <PopoverTrigger asChild>
+              {(() => {
+                switch (x.kind) {
+                  case "dual-slider":
+                    return (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+                          {x.title} <ChevronDown className="size-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-[300px] p-4">
+                          <DualRangeSlider
+                            value={[filters.min_price || 0, filters.max_price || 1000]}
+                            onValueChange={(value) => handleFilterChange({ min_price: value[0], max_price: value[1] })}
+                            min={0} max={1000} step={10}
+                          />
+                          <div className="text-center mt-2">${filters.min_price} - ${filters.max_price}</div>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    );
+
+                  case "time":
+                    return (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+                          {filters.pickup_time ? filters.pickup_time : x.title} <ChevronDown className="size-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="p-2">
+                          <Input
+                            type="time"
+                            value={filters.pickup_time}
+                            onChange={(e) => handleFilterChange({ pickup_time: e.target.value })}
+                          />
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
+
+                  case "checkbox":
+                    return (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+                          {x.title} <ChevronDown className="size-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {x.child?.map((item: any) => (
+                            <DropdownMenuItem key={item} onSelect={(e) => e.preventDefault()}>
+                              <Checkbox
+                                id={item?.id}
+                                checked={(filters[x.filterKey as 'dietary_info' | 'min_rating'] as string[]).includes(item)}
+                                onCheckedChange={() => handleCheckboxChange(x.filterKey as 'dietary_info' | 'min_rating', item)}
+                              />
+                              <label htmlFor={item} className="pl-2">{x.filterKey === 'min_rating' ? `${item} star & up` : item}</label>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    );
+
+                  case "list":
+                    return (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
+                          {x.title} <ChevronDown className="size-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {x.child?.map((item) => (
+                            <DropdownMenuItem key={item} onSelect={() => handleFilterChange({ [x.filterKey]: item })}>
+                              {item}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
+
+                  default:
+                    return (
                       <Button
-                        variant={"secondary"}
-                        className={cn(
-                          "w-full justify-center text-center font-medium text-sm rounded-full",
-                          !date && "text-muted-foreground"
-                        )}
+                        className="w-full rounded-full text-sm"
+                        variant="secondary"
+                        onClick={() => handleFilterChange({ [x.filterKey]: true })}
                       >
-                        {date ? (
-                          <>
-                            <CalendarIcon className="!mr-2 h-4 w-4" />{" "}
-                            {format(date, "PPP")}
-                          </>
-                        ) : (
-                          <>
-                            <span className="text-foreground">{x.title}</span>{" "}
-                            <ChevronDown className="size-4 text-foreground" />
-                          </>
-                        )}
+                        {x.title}
                       </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto !p-0">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                ) : x.kind === "dual-slider" ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                      {x.title} <ChevronDown className="size-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
-                      <div className="!mt-6 !px-4">
-                        <DualRangeSlider
-                          label={(value) => <span>${value}</span>}
-                          value={values}
-                          onValueChange={setValues}
-                          min={0}
-                          max={100}
-                          step={1}
-                        />
-                      </div>
-                      <div className="flex flex-row justify-center items-center !mt-6 !px-4">
-                        <div className="!space-x-2 !py-1 !px-2 rounded-lg">
-                          <span>${values[0]}</span>
-                          <span>-</span>
-                          <span>${values[1]}</span>
-                        </div>
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : x.kind === "time" ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                      {x.title} <ChevronDown className="size-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
-                      <div className="!mt-6 !px-4">
-                        <h4 className="text-sm mb-4! font-medium">
-                          Select Pickup time:
-                        </h4>
-                        <Input
-                          type="time"
-                          value={time}
-                          onChange={(e) => {
-                            setTime(e.target.value);
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-row justify-center items-center !mt-6 !px-4">
-                        <div className="space-x-2 py-1 px-2 rounded-lg">
-                          {time &&
-                            (() => {
-                              const [hours, minutes] = time
-                                .split(":")
-                                .map(Number);
-                              const now = new Date();
-                              const from = new Date(
-                                now.getFullYear(),
-                                now.getMonth(),
-                                now.getDate(),
-                                hours,
-                                minutes
-                              );
-                              const to = new Date(from);
-                              to.setHours(to.getHours() + 1);
-
-                              const format = (date: Date) =>
-                                date.toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: false,
-                                });
-
-                              return (
-                                <>
-                                  <span>From: {format(from)}</span>
-                                </>
-                              );
-                            })()}
-                        </div>
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                      {x.title} <ChevronDown className="size-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-[180px]">
-                      {x.kind === "checkbox"
-                        ? x.child?.map((item, i) => (
-                          <DropdownMenuItem key={i}>
-                            <Checkbox /> {item}
-                          </DropdownMenuItem>
-                        ))
-                        : x.child?.map((item, i) => (
-                          <DropdownMenuItem key={i}>{item}</DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )
-              ) : (
-                <Button
-                  className="w-full rounded-full text-sm"
-                  variant="secondary"
-                >
-                  {x.title}
-                </Button>
-              )}
+                    );
+                }
+              })()}
             </div>
           ))}
         </div>
       </section>
-      {/* <ProdSection /> */}
+
+      <ProdSection filters={filters} onPageChange={handlePageChange} />
     </>
   );
 }
