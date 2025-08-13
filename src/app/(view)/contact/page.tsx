@@ -16,6 +16,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useCreateContactMutation } from "@/redux/features/AuthApi";
+
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string({ required_error: "Please input your name" }),
@@ -27,6 +30,8 @@ const formSchema = z.object({
 });
 
 export default function Page() {
+  const router = useRouter();
+  const [createContact, { isLoading }] = useCreateContactMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,13 +43,27 @@ export default function Page() {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast("Your message was sent to the admin successfully!");
-    form.reset();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('values', values);
+
+    try {
+      const response = await createContact(values).unwrap();
+      console.log('response', response);
+      if (response?.success) {
+        toast.success(response?.message || "otp verify success")
+        form.reset();
+        router.push('/');
+      }
+    } catch (error: any) {
+      console.log('error', error);
+      toast.error(error?.data?.message || "Something went wrong")
+
+    }
+
   }
 
   return (
-    <main className="!py-12 !px-4 md:!px-12">
+    <main className="!py-12 !px-4 md:!px-12 mt-18">
       <h1 className="text-center font-bold text-4xl text-primary">
         Contact Us
       </h1>

@@ -119,6 +119,16 @@ const AuthApi = api.injectEndpoints({
     }),
 
 
+    createContact: builder.mutation({
+      query: (body) => ({
+        url: `/contact-form`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["user"],
+    }),
+
+
 
 
   }),
@@ -134,4 +144,5 @@ export const {
   useCreateNewPassMutation,
   useUpdateProfileImageMutation,
   useChangePasswordMutation,
+  useCreateContactMutation
 } = AuthApi;

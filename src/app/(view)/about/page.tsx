@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Page() {
   return (
-    <main className="!py-12">
+    <main className="!py-12 mt-18">
       <h1 className="text-center font-bold text-4xl text-primary">About Us</h1>
       <Image
         src="/image/about.jpg"

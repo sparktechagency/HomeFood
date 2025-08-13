@@ -1,27 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { SendIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { SendIcon, MapPinIcon } from "lucide-react";
 import Link from "next/link";
-import { MapPinIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import Image from "next/image";
 import { User } from "@/lib/types/api";
 import { imageUrl } from "@/redux/baseApi";
-
+import { useCreateAReportMutation } from "@/redux/features/Seller/SellerApi";
+import { toast } from "sonner";
 
 interface ProfilePartProps {
   user: User;
 }
 
-
 export default function ProfilePart({ user }: ProfilePartProps) {
+  const [createAReport, { isLoading }] = useCreateAReportMutation();
+  // 1. State to hold the reason text and control modal visibility
+  const [reason, setReason] = useState("");
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  // 2. Handler function to log the reason and close the modal
+  const handleReportSubmit = async () => {
+    if (!reason.trim()) {
+      alert("Please enter a reason for the report.");
+      return;
+    }
+    const data = {
+      reason
+    }
+    try {
+      const response = await createAReport({ id: user?.id, data }).unwrap();
+      console.log('response', response);
+
+      if (response?.success) {
+        toast.success(response?.message || "Report sent successfully")
+        // Here you would typically send the report to your API
+        setIsReportModalOpen(false); // Close the modal
+        setReason(""); // Reset the textarea for next time
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong")
+    }
+  };
+
   return (
     <>
       <Avatar className="size-[140px] !mx-auto">
@@ -33,7 +65,9 @@ export default function ProfilePart({ user }: ProfilePartProps) {
         <div className="!space-y-2">
           <div className="flex flex-row justify-center items-center gap-1 text-muted-foreground">
             <MapPinIcon className="text-destructive size-4" />
-            <span className="text-ellipsis line-clamp-1 text-sm">{user?.address}</span>
+            <span className="text-ellipsis line-clamp-1 text-sm">
+              {user?.address}
+            </span>
           </div>
         </div>
         <p className="!mt-12 text-center">
@@ -59,20 +93,53 @@ export default function ProfilePart({ user }: ProfilePartProps) {
               </div>
             </DialogContent>
           </Dialog>
+
           <Button asChild>
             <Link href={"/seller/chat"}>
               Send Message <SendIcon />
             </Link>
           </Button>
+
           <Button asChild>
-            <Link href={"/seller/food-request"}>Food Request</Link>
+            <Link href={`/seller/food-request/${user.id}`}>Food Request</Link>
           </Button>
-          <Button
-            variant="secondary"
-            className="bg-zinc-700 hover:bg-zinc-600 text-background"
-          >
-            Report
-          </Button>
+
+          {/* --- REPORT MODAL IMPLEMENTATION --- */}
+          <Dialog open={isReportModalOpen} onOpenChange={setIsReportModalOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="secondary"
+                className="bg-zinc-700 hover:bg-zinc-600 text-background"
+              >
+                Report
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Report User</DialogTitle>
+                <DialogDescription>
+                  Please provide a reason for reporting this user. Your report is
+                  anonymous.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid w-full gap-1.5">
+                  <Label htmlFor="reason">Reason</Label>
+                  <Textarea
+                    placeholder="Type your reason here."
+                    id="reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" onClick={handleReportSubmit}>
+                  Submit Report
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </>

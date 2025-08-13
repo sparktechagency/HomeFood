@@ -132,6 +132,33 @@ export const SellerApi = api.injectEndpoints({
         }),
 
 
+        CreateReview: builder.mutation<any, any>({
+            query: ({ id, data }) => ({
+                url: `/create-review/${id}`,
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ["foodreview"],
+        }),
+
+
+
+        getFoodReviewById: builder.query<any, any>({
+            query: (id) => `/reviews/${id}`,
+            providesTags: ["foodreview"],
+        }),
+
+
+        createAReport: builder.mutation<any, any>({
+            query: ({ id, data }) => ({
+                url: `/create-report/${id}`,
+                method: "POST",
+                body: data
+            }),
+
+        }),
+
+
 
 
 
@@ -142,4 +169,4 @@ export const SellerApi = api.injectEndpoints({
     }),
 });
 
-export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation, useGetuserDetailsByIdQuery } = SellerApi;
+export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation, useGetuserDetailsByIdQuery, useCreateReviewMutation, useGetFoodReviewByIdQuery, useCreateAReportMutation } = SellerApi;

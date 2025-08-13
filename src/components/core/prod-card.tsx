@@ -18,6 +18,7 @@ type FoodItem = {
   id: number;
   title: string;
   price: number;
+  rating: number;
   description: string;
   ingredients: string;
   delivery_option: 'both' | 'pickup' | 'delivery';
@@ -30,6 +31,7 @@ type FoodItem = {
     city?: string;
     profile?: string;
     role?: string;
+    id?: number;
   };
   category: {
     name: string;
@@ -61,6 +63,7 @@ export default function ProductCard({
   const [deleteFoodItem, { isLoading }] = useDeleteFoodItemMutation();
   const [activeOrDeactiveItem, { isLoading: activerLoading }] = useActiveOrDeactiveItemMutation();
   const [activeLoadingId, setActiveLoadingId] = useState(null);
+  console.log('item', item);
 
 
   useEffect(() => {
@@ -74,7 +77,7 @@ export default function ProductCard({
 
   const userProfileUrl = imageUrl + item.user.profile
 
-  console.log('itemuser', item.user);
+
 
   const userRole = item.user.role
   const isActive = item.status === 1;
@@ -188,7 +191,11 @@ export default function ProductCard({
 
         <div className="!pt-2 !border-t border-border/50">
           <Link
-            href={requested ? "/buyer" : "/seller"}
+            href={
+              userRole === "SELLER"
+                ? `/seller/${item?.user?.id}`
+                : `/buyer/${item?.user?.id}`
+            }
             className="flex items-center justify-between group hover:bg-muted/50 !p-3 !-m-3 rounded-lg transition-all duration-200"
           >
             <div className="flex items-center !gap-3 min-w-0 flex-1">
@@ -208,7 +215,7 @@ export default function ProductCard({
               </div>
             </div>
             <div className="flex items-center !gap-1.5 text-sm font-medium flex-shrink-0 !ml-4">
-              <span className="text-foreground">4.8</span>
+              <span className="text-foreground">{item.rating}</span>
               <StarIcon className="size-4 fill-amber-400 text-amber-400" />
             </div>
           </Link>

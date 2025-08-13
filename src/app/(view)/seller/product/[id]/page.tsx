@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useGetFoodDetaisByIdQuery } from "@/redux/features/Seller/SellerApi";
+import { useCreateReviewMutation, useGetFoodDetaisByIdQuery, useGetFoodReviewByIdQuery } from "@/redux/features/Seller/SellerApi";
 import { imageUrl } from "@/redux/baseApi";
 import { toast } from "sonner";
 
@@ -22,14 +22,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 // Import Icons and Types
-import { MapPinIcon, ChevronDown, Clock, Calendar, Package, Info } from "lucide-react";
+import { MapPinIcon, ChevronDown, Clock, Calendar, Package, Info, Star, ThumbsUp, Quote, Send } from "lucide-react";
 import { FoodItem } from "@/lib/types/api";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function FoodDetailsPage() {
   const { id } = useParams();
   const { data, isLoading, isError } = useGetFoodDetaisByIdQuery(id as string, { skip: !id });
   const [mainImage, setMainImage] = useState<string | null>(null);
-
+  const { data: review, isLoading: reviewLoading, refetch } = useGetFoodReviewByIdQuery(id as string, { skip: !id });
+  const [CreateReview, { isLoading: isReviewLoading }] = useCreateReviewMutation();
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [text, setText] = useState("");
   const food = data?.data?.food;
   const similarFoods = data?.data?.similar_foods;
 
@@ -48,7 +59,32 @@ export default function FoodDetailsPage() {
   React.useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+  const handleSubmit = async () => {
+    // Basic validation
+    if (rating === 0 || text.trim() === "") {
+      alert("Please provide a rating and a comment.");
+      return;
+    }
+    const data = {
+      rating,
+      text,
+    };
+    try {
+      const response = await CreateReview({ data, id }).unwrap();
+      console.log('response', response);
+      if (response?.success) {
+        toast.success(response?.message || "Review added successfully")
+        refetch()
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong")
+    }
 
+
+    // Reset form after submission
+    setRating(0);
+    setText("");
+  };
   const handleAddToCart = () => {
     if (food) {
       const existingItem = cart.find(item => item.id === food.id);
@@ -247,10 +283,140 @@ export default function FoodDetailsPage() {
               {food.ingredients}
             </TabsContent>
             <TabsContent value="reviews" className="py-4 text-muted-foreground">
+
+              {/* handle create review form */}
+              <Card className="w-full mb-8">
+                <CardHeader>
+                  <CardTitle>Write a Review</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-6">
+                  {/* Star Rating Section */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="rating">Your Rating</Label>
+                    <div
+                      className="flex items-center gap-2"
+                      onMouseLeave={() => setHoverRating(0)} // Clear hover when mouse leaves
+                    >
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={cn(
+                            "h-8 w-8 cursor-pointer transition-colors",
+                            (hoverRating || rating) >= star
+                              ? "fill-yellow-400 text-yellow-500"
+                              : "fill-muted-foreground/20 text-muted-foreground"
+                          )}
+                          onMouseEnter={() => setHoverRating(star)} // Set hover rating
+                          onClick={() => setRating(star)} // Set permanent rating
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Text Review Section */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="review-text">Your Comment</Label>
+                    <Textarea
+                      id="review-text"
+                      placeholder="Tell us what you thought..."
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      rows={4}
+                      disabled={isLoading}
+                    />
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={rating === 0 || text.trim() === "" || isLoading}
+                    className="w-full gap-2"
+                  >
+                    {isReviewLoading ? "Submitting..." : "Submit Review"}
+                    {!isLoading && <Send className="h-4 w-4" />}
+                  </Button>
+                </CardFooter>
+              </Card>
+
+
               {food.review_count > 0 ? (
-                <div>Reviews will be displayed here</div>
+                <div className="space-y-6">
+                  {review?.data?.map((review: any) => {
+                    // Generate a fallback for the avatar from the user's name
+                    const avatarFallback = review.user.full_name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .substring(0, 2);
+
+                    return (
+                      <div key={review.id} className="border-b pb-4">
+                        <Card className="w-full overflow-hidden">
+                          {/* CARD HEADER: Contains user info and rating */}
+                          <CardHeader className="flex flex-row items-start justify-between gap-4 bg-muted/50 p-4">
+                            <div className="flex items-center gap-4">
+                              <Avatar className="h-12 w-12">
+                                <AvatarImage src={`${imageUrl}${review.user.profile}`} />
+                                <AvatarFallback>{avatarFallback}</AvatarFallback>
+                              </Avatar>
+                              <div className="grid gap-0.5">
+                                <p className="font-semibold text-foreground">
+                                  {review.user.full_name}
+                                </p>
+                                {/* Example of a 'Verified Purchase' badge */}
+                                <Badge variant="secondary" className="w-fit">
+                                  Verified Purchase
+                                </Badge>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={cn(
+                                    "h-5 w-5",
+                                    review.rating >= star
+                                      ? "fill-yellow-400 text-yellow-500"
+                                      : "fill-muted-foreground/20 text-muted-foreground"
+                                  )}
+                                />
+                              ))}
+                            </div>
+                          </CardHeader>
+
+                          {/* CARD CONTENT: The main review text and any replies */}
+                          <CardContent className="p-4 md:p-6 text-base">
+                            <div className="relative">
+                              <Quote className="absolute -top-2 -left-2 h-8 w-8 text-muted/50" />
+                              <p className="z-10 text-foreground/80">{review.text}</p>
+                            </div>
+
+
+                          </CardContent>
+
+                          {/* CARD FOOTER: Date and action buttons */}
+                          <CardFooter className="flex items-center justify-between bg-muted/50 p-4">
+                            <p className="text-xs text-muted-foreground">
+                              Reviewed on{" "}
+                              {new Date(review.created_at).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </p>
+                            {/* <Button variant="ghost" size="sm" className="gap-2">
+                              <ThumbsUp className="h-4 w-4" />
+                              Helpful
+                            </Button> */}
+                          </CardFooter>
+                        </Card>
+                      </div>
+                    );
+                  })}
+                </div>
               ) : (
-                <div className="text-center">No reviews yet.</div>
+                <div className="text-center py-8">No reviews yet. Be the first to review!</div>
               )}
             </TabsContent>
           </Tabs>

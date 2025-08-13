@@ -16,6 +16,8 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea"; // Assuming you have a Textarea component
+import { useParams } from "next/navigation";
+import { useGetuserDetailsByIdQuery } from "@/redux/features/Seller/SellerApi";
 
 const formSchema = z.object({
   dish_name: z
@@ -73,86 +75,96 @@ const formFieldsConfig: Array<{
     rhfOnChange: (...event: unknown[]) => void
   ) => void;
 }> = [
-  {
-    name: "dish_name",
-    label: "Dish Name",
-    component: Input,
-    placeholder: "e.g., Chicken Biryani",
-  },
-  {
-    name: "description",
-    label: "Description",
-    component: Textarea,
-    placeholder: "Brief description of the dish...",
-    inputClassName: "min-h-[140px]",
-    selfStartLabel: true,
-  },
-  {
-    name: "dietary",
-    label: "Dietary Info",
-    component: Input,
-    placeholder: "e.g., Vegetarian, Halal, Gluten-free",
-  },
-  {
-    name: "quantity",
-    label: "Quantity",
-    component: Input,
-    type: "number",
-    placeholder: "e.g., 5",
-  },
-  {
-    name: "price",
-    label: "Price",
-    component: Input,
-    type: "text", // Using text to allow flexible input, Zod regex validates
-    placeholder: "e.g., 12.99",
-  },
-  {
-    name: "date",
-    label: "Date",
-    component: Input,
-    type: "date",
-  },
-  {
-    name: "time",
-    label: "Time",
-    component: Input,
-    type: "time",
-  },
-  {
-    name: "location",
-    label: "Location",
-    component: Input,
-    placeholder: "e.g., City Center Park",
-  },
-  {
-    name: "link",
-    label: "External Link",
-    component: Input,
-    type: "url",
-    placeholder: "e.g., https://example.com",
-  },
-  {
-    name: "image",
-    label: "Image(s)",
-    component: Input,
-    type: "file",
-    inputProps: {
-      accept: "image/*",
-      multiple: true, // Allows selecting multiple files, aligning with Array.from logic
+    {
+      name: "dish_name",
+      label: "Dish Name",
+      component: Input,
+      placeholder: "e.g., Chicken Biryani",
     },
-    // Custom onChange handler for file input to provide File[] or undefined to RHF
-    customOnChange: (event, rhfOnChange) => {
-      rhfOnChange(
-        event.target.files && event.target.files.length > 0
-          ? Array.from(event.target.files)
-          : undefined
-      );
+    {
+      name: "description",
+      label: "Description",
+      component: Textarea,
+      placeholder: "Brief description of the dish...",
+      inputClassName: "min-h-[140px]",
+      selfStartLabel: true,
     },
-  },
-];
+    {
+      name: "dietary",
+      label: "Dietary Info",
+      component: Input,
+      placeholder: "e.g., Vegetarian, Halal, Gluten-free",
+    },
+    {
+      name: "quantity",
+      label: "Quantity",
+      component: Input,
+      type: "number",
+      placeholder: "e.g., 5",
+    },
+    {
+      name: "price",
+      label: "Price",
+      component: Input,
+      type: "text", // Using text to allow flexible input, Zod regex validates
+      placeholder: "e.g., 12.99",
+    },
+    {
+      name: "date",
+      label: "Date",
+      component: Input,
+      type: "date",
+    },
+    {
+      name: "time",
+      label: "Time",
+      component: Input,
+      type: "time",
+    },
+    {
+      name: "location",
+      label: "Location",
+      component: Input,
+      placeholder: "e.g., City Center Park",
+    },
+    {
+      name: "link",
+      label: "External Link",
+      component: Input,
+      type: "url",
+      placeholder: "e.g., https://example.com",
+    },
+    {
+      name: "image",
+      label: "Image(s)",
+      component: Input,
+      type: "file",
+      inputProps: {
+        accept: "image/*",
+        multiple: true, // Allows selecting multiple files, aligning with Array.from logic
+      },
+      // Custom onChange handler for file input to provide File[] or undefined to RHF
+      customOnChange: (event, rhfOnChange) => {
+        rhfOnChange(
+          event.target.files && event.target.files.length > 0
+            ? Array.from(event.target.files)
+            : undefined
+        );
+      },
+    },
+  ];
 
 export default function Page() {
+  const { id } = useParams();
+  const { data, isLoading, isError } = useGetuserDetailsByIdQuery(
+    { id },
+    {
+
+      skip: !id,
+    }
+  );
+  const user = data?.data?.user;
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -175,9 +187,9 @@ export default function Page() {
   }
 
   return (
-    <div className="!py-12 !px-4 md:!px-12 grid md:grid-cols-11 gap-6">
+    <div className="!py-12 !px-4 md:!px-12 grid md:grid-cols-11 gap-6 mt-18">
       <div className="md:col-span-3 border-2 rounded-lg !p-6 self-start">
-        <ProfilePart />
+        <ProfilePart user={user} />
       </div>
 
       <div className="!mt-12 md:!mt-0 md:col-span-8">
@@ -203,9 +215,8 @@ export default function Page() {
                     render={({ field }) => (
                       <FormItem className="flex flex-col md:grid md:grid-cols-7 items-start md:items-center">
                         <FormLabel
-                          className={`md:col-span-2 font-semibold ${
-                            config.selfStartLabel ? "self-start" : ""
-                          }`}
+                          className={`md:col-span-2 font-semibold ${config.selfStartLabel ? "self-start" : ""
+                            }`}
                         >
                           {config.label}:
                         </FormLabel>

@@ -18,7 +18,6 @@ interface ProdSectionProps {
 export default function ProdSection({ filters, onPageChange }: ProdSectionProps) {
   // Pass the entire filters object to the hook. RTK Query will refetch automatically when it changes.
   const { data, isLoading, isError, refetch } = useGetAllHomeFoodItemsQuery(filters);
-  console.log('data33333333333333333333', data);
 
   const [showGrid, setShowGrid] = useState(true);
   const [showMap, setShowMap] = useState(true);
@@ -48,6 +47,7 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
   if (!data || data.data.length === 0) {
     return <div className="text-center py-10">No products found matching your criteria.</div>;
   }
+  console.log('data', data);
 
 
   // return <p>lskjf</p>
@@ -95,9 +95,10 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
                     ingredients: food.ingredients,
                     delivery_option: food.delivery_option,
                     delivery_time: food.delivery_time,
+                    rating: food.rating,
                     status: food.status,
                     images: food.images,
-                    user: { full_name: food.user.full_name, address: food?.user?.address, city: food.user.city, profile: food.user.profile, role: food.user.role },
+                    user: { full_name: food.user.full_name, address: food?.user?.address, city: food.user.city, profile: food.user.profile, role: food.user.role, id: food.user.id },
                     category: food.category,
                   }}
 

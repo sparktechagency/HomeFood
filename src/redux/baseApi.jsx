@@ -26,6 +26,7 @@ export const api = createApi({
     "notification",
     "about",
     "privacy",
+    "foodreview",
   ],
   endpoints: () => ({}),
 });
