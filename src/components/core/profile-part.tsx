@@ -23,9 +23,10 @@ import { useState } from "react";
 
 interface ProfilePartProps {
   user: User;
+  isbuyer?: boolean
 }
 
-export default function ProfilePart({ user }: ProfilePartProps) {
+export default function ProfilePart({ user, isbuyer }: ProfilePartProps) {
   const [createAReport, { isLoading }] = useCreateAReportMutation();
   // 1. State to hold the reason text and control modal visibility
   const [reason, setReason] = useState("");
@@ -85,7 +86,7 @@ export default function ProfilePart({ user }: ProfilePartProps) {
               </DialogHeader>
               <div className="">
                 <Image
-                  src={`${imageUrl + user.profile}`}
+                  src={`${imageUrl + user?.profile}`}
                   width={500}
                   height={500}
                   alt="icon"
@@ -96,13 +97,13 @@ export default function ProfilePart({ user }: ProfilePartProps) {
           </Dialog>
 
           <Button asChild>
-            <Link href={"/seller/chat"}>
+            <Link href={`${isbuyer ? "/buyer" : "/seller"}/chat`}>
               Send Message <SendIcon />
             </Link>
           </Button>
 
           <Button asChild>
-            <Link href={`/seller/food-request/${user.id}`}>Food Request</Link>
+            <Link href={`${isbuyer ? "/buyer" : "/seller"}/food-request/${user?.id}`}>Food Request</Link>
           </Button>
 
           {/* --- REPORT MODAL IMPLEMENTATION --- */}

@@ -19,6 +19,7 @@ type FoodItem = {
   title: string;
   price: number;
   rating: number;
+  request_food_status: number;
   description: string;
   ingredients: string;
   delivery_option: 'both' | 'pickup' | 'delivery';
@@ -31,7 +32,7 @@ type FoodItem = {
     city?: string;
     profile?: string;
     role?: string;
-    id?: number;
+    id?: any;
   };
   category: {
     name: string;
@@ -46,6 +47,7 @@ interface ProductCardProps {
   control?: boolean;
   activer?: boolean;
   requested?: boolean;
+  isbuyer?: boolean
   refetch?: () => void;
 }
 
@@ -56,6 +58,7 @@ export default function ProductCard({
   control,
   activer,
   requested,
+  isbuyer,
   refetch
 }: ProductCardProps) {
   // ... (your existing state and handlers like `active`, `handleActive`, `isMounted`)
@@ -184,10 +187,18 @@ export default function ProductCard({
         <div className="flex items-start !gap-3">
           <MapPin className="text-destructive size-5 flex-shrink-0 !mt-0.5" />
           <span className="text-sm leading-relaxed text-muted-foreground line-clamp-1" title={`${item.user.address}, ${item.user.city}`}>
-            {item.user.address}, {item.user.city}
+            {item.user.address}
           </span>
         </div>
         <h4 className="text-base text-primary">${item.price.toFixed(2)}</h4>
+
+        {
+          item?.request_food_status === 1 && (
+            <div className="bg-[#3C8D60] !p-2 rounded-lg w-fit">
+              <p className="text-sm  text-white">Requested</p>
+            </div>
+          )
+        }
 
         <div className="!pt-2 !border-t border-border/50">
           <Link
@@ -226,7 +237,7 @@ export default function ProductCard({
         <CardFooter className="!p-4 pt-0">
           <CardAction className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
             <Button variant="outline" asChild className="w-full">
-              <Link href={`/seller/dashboard/food-items/edit/${item.id}`}>Edit</Link>
+              <Link href={`${isbuyer ? '/buyer' : '/seller'}/dashboard/food-items/edit/${item.id}`}>Edit</Link>
             </Button>
             <Button onClick={() => handleDelete(item?.id)} variant="destructive" className="w-full">
               {isLoading ? "Deleting..." : "Delete"}

@@ -209,3 +209,56 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom CSS for the price marker */
+.marker-price-tag {
+  background-color: #1b46b1;
+  padding: 4px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: white;
+  font-size: 18px;
+}
+
+/* Main container for the custom SVG marker. Important for positioning. */
+.custom-styled-marker {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+}
+
+/* The container for the pin itself */
+.custom-styled-marker .marker-pin-container {
+  width: 48px;
+  height: 48px;
+}
+
+/* The SVG element for the pin icon */
+.custom-styled-marker .marker-pin-svg {
+  width: 100%;
+  height: 100%;
+  fill: #1a237e; /* Dark blue color for the pin */
+  stroke: white; /* White outline */
+  stroke-width: 0.5;
+  filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.4)); /* Add a drop shadow */
+}
+
+/* The price label, positioned relative to the container */
+.custom-styled-marker .marker-price-label {
+  position: absolute;
+  bottom: 12px;
+  left: 90%; /* Position it to the right side of the pin */
+  transform: translateX(0);
+  background-color: #3c82f6; /* Blue background like the image */
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: sans-serif;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

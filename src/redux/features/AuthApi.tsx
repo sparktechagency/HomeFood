@@ -128,6 +128,19 @@ const AuthApi = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
 
+    getAllNotification: builder.query<any, any>({
+      query: ({ page = 1, perPage = 8 }) => `/notifications?per_page=${perPage}&page=${page}`,
+      providesTags: ["notification"],
+    }),
+
+    readNotificationById: builder.mutation<any, any>({
+      query: (id) => ({
+        url: `/notifications-read/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["notification"],
+    }),
+
 
 
 
@@ -144,5 +157,7 @@ export const {
   useCreateNewPassMutation,
   useUpdateProfileImageMutation,
   useChangePasswordMutation,
-  useCreateContactMutation
+  useCreateContactMutation,
+  useGetAllNotificationQuery,
+  useReadNotificationByIdMutation
 } = AuthApi;

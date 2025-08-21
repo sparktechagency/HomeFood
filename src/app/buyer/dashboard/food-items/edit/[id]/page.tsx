@@ -25,16 +25,22 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon, Upload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useAddAfooditemMutation } from "@/redux/features/Seller/SellerApi";
 import { toast } from "sonner";
 import { useGetAllCategorysQuery } from "@/redux/features/categorys/CategoryApi";
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import {
+  useGetFoodDetaisByIdQuery,
+  useUpdateFooditemMutation,
+} from "@/redux/features/Seller/SellerApi";
+import { imageUrl } from "@/redux/baseApi";
 
+// Zod schema for form validation
 const formSchema = z.object({
   category: z.string().min(1, "Please select a category"),
   title: z.string().min(1, "Please enter a title"),
@@ -49,27 +55,38 @@ const formSchema = z.object({
   deliveryOption: z.enum(["delivery", "pickup", "both"]),
   minimumOrder: z.string().min(1, "Please enter minimum order"),
   deliveryFee: z.string().min(1, "Please enter delivery fee"),
-  deliveryDate: z.date({
-    required_error: "Please select a delivery date",
-  }),
+  deliveryDate: z
+    .date({
+      required_error: "Please select a delivery date",
+    })
+    .optional(),
   deliveryTime: z.string(),
 });
 
 export default function Page() {
-
-  const [addAfooditem, { isLoading }] = useAddAfooditemMutation();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  // 1. Get the food item ID from the URL parameters
+  const params = useParams();
+  const id = params.id as string;
+  const router = useRouter();
+  // 2. Setup RTK Query hooks for API interaction
+  const { data: foodData, isLoading: isFetching } = useGetFoodDetaisByIdQuery(id);
+  const [updateFooditem, { isLoading: isUpdating }] = useUpdateFooditemMutation();
   const { data: allCategorys } = useGetAllCategorysQuery({});
-  console.log('allCategorys', allCategorys?.data?.data);
-  // This creates an array of objects, e.g., [{id: 1, name: "Vegetables"}, {id: 2, name: "Fruits"}]
-  const categories = allCategorys?.data?.data?.map((category: any) => ({
-    id: category.id,
-    name: category.name
-  })) || [];
 
+  // 3. State for handling new and existing images
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+  console.log('existingImageUrl', existingImageUrl);
+
+  const categories =
+    allCategorys?.data?.data?.map((category: any) => ({
+      id: category.id,
+      name: category.name,
+    })) || [];
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    // Default values are set once data is fetched inside useEffect
     defaultValues: {
       category: "",
       title: "",
@@ -87,68 +104,89 @@ export default function Page() {
     },
   });
 
+  // 4. useEffect to populate the form when the food data is loaded
+  useEffect(() => {
+    if (foodData?.data) {
+      const data = foodData.data;
+      form.reset({
+        category: String(data.category_id),
+        title: data.title,
+        ingredients: data.ingredients,
+        description: data.description,
+        dietaryInfo: data.dietary_info,
+        price: String(data.price),
+        quantityAvailability: String(data.quantity),
+        containerSize: data.container_size || "",
+        containerWeight: data.container_weight || "",
+        deliveryOption: data.delivery_option,
+        minimumOrder: String(data.minimum_order),
+        deliveryFee: String(data.delivery_fee),
+        deliveryTime: data.delivery_time,
+      });
+
+      if (data.images && data.images.length > 0) {
+        setExistingImageUrl(`${imageUrl}${data.images[0]}`);
+      }
+    }
+  }, [foodData, form]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedImage(file);
       form.setValue("image", file);
+      // Clear the existing image preview to show that a new image is selected
+      if (existingImageUrl) {
+        setExistingImageUrl(null);
+      }
     }
   };
 
-
+  // 5. Form submission handler
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formData = new FormData();
-
+    formData.append("_method", "PUT");
     formData.append("category_id", values.category);
     formData.append("title", values.title);
     formData.append("ingredients", values.ingredients);
     formData.append("description", values.description);
     formData.append("dietary_info", values.dietaryInfo);
-    formData.append("price", values.price.toString());
-    formData.append("quantity", values.quantityAvailability.toString());
-    formData.append("container_size", values.containerSize?.toString() || "");
-    formData.append("container_weight", values.containerWeight?.toString() || "");
+    formData.append("price", values.price);
+    formData.append("quantity", values.quantityAvailability);
+    formData.append("container_size", values.containerSize || "");
+    formData.append("container_weight", values.containerWeight || "");
     formData.append("delivery_option", values.deliveryOption);
-    formData.append("minimum_order", values.minimumOrder.toString());
-    formData.append("delivery_fee", values.deliveryFee.toString());
+    formData.append("minimum_order", values.minimumOrder);
+    formData.append("delivery_fee", values.deliveryFee);
     formData.append("delivery_time", values.deliveryTime);
 
-
+    // Only append a new image if the user has selected one
     if (selectedImage) {
       formData.append("images[]", selectedImage);
     }
 
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value, `(type: ${typeof value})`);
-    });
-
     try {
-
-
-      const response = await addAfooditem(formData).unwrap();
-      console.log('response', response);
-
+      const response = await updateFooditem({ id, formData }).unwrap();
       if (response?.success) {
-        toast.success(response?.message || "Registration successful!");
-        form.reset();
-
+        toast.success(response?.message || "Food item updated successfully!");
+        router.push("/seller/dashboard/food-items");
       } else {
-        toast.error(response?.message || "Registration failed. Please try again.");
+        toast.error(response?.message || "Update failed. Please try again.");
       }
-
-    } catch (error: any) {
-      console.log('error', error);
-      toast.error(error?.data?.message || "An error occurred. Please try again.");
-
+    } catch (error) {
+      console.error("Update failed:", error);
+      toast.error("An unexpected error occurred during the update.");
     }
   };
 
+  if (isFetching) {
+    return <div className="p-6">Loading food data...</div>;
+  }
 
   return (
     <div className="w-full p-6!">
       <div className="mb-6!">
-        <h1 className="text-2xl! font-bold!">Add your food item</h1>
+        <h1 className="text-2xl! font-bold!">Edit your food item</h1>
       </div>
 
       <Form {...form}>
@@ -159,35 +197,18 @@ export default function Page() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Select Category</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select your product category" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {/* Check if categories are loaded before trying to map */}
-                    {categories.length > 0 ? (
-                      categories.map((category: { id: number; name: string }) => (
-                        <SelectItem
-                          key={category.id}
-                          // The value submitted to the form must be the ID.
-                          // It's important to convert the ID to a string.
-                          value={String(category.id)}
-                        >
-                          {/* This is the name the user sees in the dropdown */}
-                          {category.name}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      // Optional: Show a loading or empty message
-                      <SelectItem value="loading" disabled>
-                        Loading categories...
+                    {categories.map((category: any) => (
+                      <SelectItem key={category.id} value={String(category.id)}>
+                        {category.name}
                       </SelectItem>
-                    )}
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -202,7 +223,7 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Please enter your full name" {...field} />
+                  <Input placeholder="Enter title of the food" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -243,10 +264,7 @@ export default function Page() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Select Dietary Info</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your dietary info" />
@@ -255,8 +273,8 @@ export default function Page() {
                   <SelectContent>
                     <SelectItem value="vegetarian">Vegetarian</SelectItem>
                     <SelectItem value="vegan">Vegan</SelectItem>
-                    <SelectItem value="gluten-free">Gluten Free</SelectItem>
-                    <SelectItem value="dairy-free">Dairy Free</SelectItem>
+                    <SelectItem value="gluten-free">Gluten-Free</SelectItem>
+                    <SelectItem value="dairy-free">Dairy-Free</SelectItem>
                     <SelectItem value="keto">Keto</SelectItem>
                     <SelectItem value="halal">Halal</SelectItem>
                     <SelectItem value="none">None</SelectItem>
@@ -275,9 +293,8 @@ export default function Page() {
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                   <Input
-
-                    placeholder="Please enter service price"
                     type="number"
+                    placeholder="Please enter food price"
                     {...field}
                   />
                 </FormControl>
@@ -293,7 +310,11 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Quantity Availability</FormLabel>
                 <FormControl>
-                  <Input placeholder="Please enter your quantity" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="Please enter available quantity"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -303,30 +324,44 @@ export default function Page() {
           <FormField
             control={form.control}
             name="image"
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Image of the Food</FormLabel>
+                {existingImageUrl && (
+                  <div className="my-4">
+                    <p className="text-sm font-medium mb-2">Current Image:</p>
+                    <Image
+                      src={existingImageUrl}
+                      alt="Current food item"
+                      width={150}
+                      height={150}
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
                 <div className="border-2! border-dashed! border-gray-300! rounded-lg! p-8!">
                   <div className="text-center!">
                     <p className="text-sm! text-gray-600! mb-4!">
-                      Add Food Image
+                      {selectedImage
+                        ? "New image selected"
+                        : "Upload new image to replace current one"}
                     </p>
-                    <div className="flex! justify-center!">
-                      <label htmlFor="image-upload" className="cursor-pointer!">
-                        <div className="flex! items-center! gap-2! bg-gray-100! hover:bg-gray-200! px-4! py-2! rounded-md! transition-colors!">
-                          <Upload className="w-4! h-4!" />
-                          <span className="text-sm!">Upload Image</span>
-                        </div>
-                        <input
-                          id="image-upload"
-                          type="file"
-                          accept="image/*"
-                          className="hidden!"
-                          onChange={handleImageChange}
-                        />
-                      </label>
-                    </div>
+                    <label
+                      htmlFor="image-upload"
+                      className="cursor-pointer!"
+                    >
+                      <div className="flex! items-center! gap-2! bg-gray-100! hover:bg-gray-200! px-4! py-2! rounded-md! transition-colors!">
+                        <Upload className="w-4! h-4!" />
+                        <span className="text-sm!">Upload Image</span>
+                      </div>
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden!"
+                        onChange={handleImageChange}
+                      />
+                    </label>
                     {selectedImage && (
                       <p className="text-sm! text-green-600! mt-2!">
                         {selectedImage.name}
@@ -345,8 +380,7 @@ export default function Page() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Container Size{" "}
-                  <span className="text-gray-500!">(optional)</span>
+                  Container Size <span className="text-gray-500!">(optional)</span>
                 </FormLabel>
                 <FormControl>
                   <Input placeholder="Please enter container size" {...field} />
@@ -385,26 +419,20 @@ export default function Page() {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                     className="flex! gap-6!"
                   >
                     <div className="flex! items-center! space-x-2!">
                       <RadioGroupItem value="delivery" id="delivery" />
-                      <label htmlFor="delivery" className="text-sm!">
-                        Delivery
-                      </label>
+                      <label htmlFor="delivery">Delivery</label>
                     </div>
                     <div className="flex! items-center! space-x-2!">
                       <RadioGroupItem value="pickup" id="pickup" />
-                      <label htmlFor="pickup" className="text-sm!">
-                        Pickup
-                      </label>
+                      <label htmlFor="pickup">Pickup</label>
                     </div>
                     <div className="flex! items-center! space-x-2!">
                       <RadioGroupItem value="both" id="both" />
-                      <label htmlFor="both" className="text-sm!">
-                        Both
-                      </label>
+                      <label htmlFor="both">Both</label>
                     </div>
                   </RadioGroup>
                 </FormControl>
@@ -420,7 +448,11 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Minimum Order for Delivery</FormLabel>
                 <FormControl>
-                  <Input placeholder="Please enter service price" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="Please enter minimum order quantity"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -434,7 +466,11 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Delivery Fee</FormLabel>
                 <FormControl>
-                  <Input placeholder="Please enter service price" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="Please enter delivery fee"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -471,9 +507,7 @@ export default function Page() {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date < new Date("1900-01-01")
-                      }
+                      disabled={(date) => date < new Date()}
                       initialFocus
                     />
                   </PopoverContent>
@@ -482,6 +516,7 @@ export default function Page() {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="deliveryTime"
@@ -500,8 +535,8 @@ export default function Page() {
             )}
           />
 
-          <Button type="submit" className="w-full! bg-primary">
-            {isLoading ? "Adding..." : "Add"}
+          <Button type="submit" className="w-full! bg-primary" disabled={isUpdating}>
+            {isUpdating ? "Updating..." : "Update Food Item"}
           </Button>
         </form>
       </Form>

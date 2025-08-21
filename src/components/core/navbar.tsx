@@ -87,7 +87,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="h-16 w-full bg-background flex justify-between items-center !px-4 md:!px-8 border-b fixed top-0 z-50 ">
+    <nav className="h-16 w-full bg-background flex justify-between items-center !px-4 md:!px-8 border-b fixed top-0 z-[999] ">
       <MyCustomLogo />
 
 
@@ -210,7 +210,7 @@ export default function Navbar() {
                   <AvatarFallback>{getInitials(userProfile?.full_name)}</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
-              <PopoverContent className="bg-background/10 backdrop-blur-xs space-y-2">
+              <PopoverContent className="bg-background/10 mt-4 backdrop-blur-xs space-y-2">
                 <Button className="w-full" asChild>
                   <Link href={"/me"}>My Account</Link>
                 </Button>

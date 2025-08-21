@@ -36,6 +36,19 @@ export const SellerApi = api.injectEndpoints({
             providesTags: ["food"],
         }),
 
+
+
+
+        getbuyerFooditems: builder.query<any, any>({
+            query: ({ page = 1, perPage = 8 }) => `/get-food?per_page=${perPage}&page=${page}`,
+            providesTags: ["food"],
+        }),
+
+
+
+
+
+
         getrequestedFoodItems: builder.query<any, any>({
             query: ({ page = 1, perPage = 8 }) => `/get-user-food-request?per_page=${perPage}&page=${page}`,
         }),
@@ -169,4 +182,4 @@ export const SellerApi = api.injectEndpoints({
     }),
 });
 
-export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation, useGetuserDetailsByIdQuery, useCreateReviewMutation, useGetFoodReviewByIdQuery, useCreateAReportMutation } = SellerApi;
+export const { useGetAllPendingRequestsQuery, useGetAllFoodItemsQuery, useGetrequestedFoodItemsQuery, useGetOrderHistoryQuery, useGetDashboardQuery, useGetsellerFooditemsQuery, useDeleteFoodItemMutation, useActiveOrDeactiveItemMutation, useAddAfooditemMutation, useGetFoodDetaisByIdQuery, useUpdateFooditemMutation, useApprovefooditemMutation, useDeleteFoodRequestMutation, useAcceptRequestedFooditemMutation, useRejectRequestedFooditemMutation, useUpdateDaliveryStatusMutation, useGetuserDetailsByIdQuery, useCreateReviewMutation, useGetFoodReviewByIdQuery, useCreateAReportMutation, useGetbuyerFooditemsQuery } = SellerApi;

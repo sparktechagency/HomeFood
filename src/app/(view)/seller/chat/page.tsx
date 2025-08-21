@@ -5,7 +5,7 @@ import React from "react";
 
 export default function Page() {
   return (
-    <div className="h-[90dvh] !p-4 md:!p-12">
+    <div className="h-[90dvh] !p-4 md:!p-12 mt-12">
       <div className="w-full h-full grid grid-cols-7 gap-6">
         <div className="h-full col-span-2 border rounded-lg">
           <div className="!p-4">

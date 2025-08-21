@@ -11,7 +11,7 @@ export interface User {
   email: string;
   email_verified_at: string;
   otp: string | null;
-  address?: string;
+  address?: any;
   city?: string;
   profile?: string;
   role?: string;
@@ -50,18 +50,17 @@ export interface Order {
 
 export interface FilterParams {
   search?: string;
-  dietary_info?: any;
-
-  pickup_time?: string;
+  dietary_info?: string[];
   min_price?: number;
   max_price?: number;
-  min_rating?: any;
-  max_rating?: number;
+  rating?: number;
+  listing_by_seller?: number;
+  listing_by_buyer?: number;
   sort_by?: string;
-  perPage?: number;
+  per_page?: number;
   page?: number;
+  pickup_time?: any;
 }
-
 export interface Category {
   id: number;
   name: string;
@@ -76,6 +75,7 @@ export interface FoodItem {
   user_id: number;
   title: string;
   slug: string;
+  request_food_status: number;
   ingredients: string; // Added
   description: string;
   dietary_info: string;

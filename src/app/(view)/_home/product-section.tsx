@@ -7,6 +7,8 @@ import ProductCard from "@/components/core/prod-card";
 import { Button } from "@/components/ui/button";
 import { useGetAllHomeFoodItemsQuery } from "@/redux/features/Foodsitems/FoodApi";
 import { FilterParams, FoodItem } from "@/lib/types/api";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import MapView from "@/components/MapView";
 
 
 // Define the props for this component
@@ -23,7 +25,7 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
 
   const [showGrid, setShowGrid] = useState(true);
   const [showMap, setShowMap] = useState(true);
-
+  const { location: userLocation, error: locationError } = useUserLocation();
   // Your existing toggle logic for grid/map view
   const handleToggleGrid = () => {
     if (showGrid && !showMap) return;
@@ -56,8 +58,8 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
 
   return (
     <section className="!mt-12">
-      <div className="flex flex-row justify-between items-center">
-        <h2 className="!pb-6 text-4xl font-semibold text-primary">Listings ({data.total} found)</h2>
+      <div className="flex flex-row justify-between items-center pb-4">
+        <h2 className="!pb-6 lg:text-4xl md:text-2xl text-xl font-semibold text-primary">Listings ({data.total} found)</h2>
         <div>
           <Button variant="ghost" className={`text-primary ${showGrid ? "bg-accent" : ""}`} onClick={handleToggleGrid}>
             <Grid3X3Icon />
@@ -93,6 +95,7 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
                     id: food.id,
                     title: food.title,
                     price: food.price,
+                    request_food_status: food.request_food_status,
                     description: food.description,
                     ingredients: food.ingredients,
                     delivery_option: food.delivery_option,
@@ -115,16 +118,12 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
         )}
 
         {showMap && (
-          <div className={`${showGrid ? "col-span-6 md:col-span-4 2xl:col-span-6" : "col-span-full"}`}>
-            <iframe
-              width="1200"
-              height="650"
-              loading="lazy"
-              className="border-0 w-full h-[80dvh] rounded-lg"
-              src="https://www.google.com/maps/embed/v1/search?q=Murfreesboro&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-            ></iframe>
+          <div className={`${showGrid ? "col-span-full md:col-span-4 2xl:col-span-6" : "col-span-full"}`}>
+            <MapView userLocation={userLocation} foodItems={data.data} />
           </div>
         )}
+
+
       </div>
 
       {/* Pagination Controls */}

@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,10 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useChangePasswordMutation, useCreateNewPassMutation, useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import { toast } from "sonner";
 
 export default function PasswordChangeForm() {
+  const { data: user } = useGetOwnprofileQuery({})
+  console.log('user', user);
+  const email = user?.data?.email
   const [passwords, setPasswords] = useState({
-    current: "",
     new: "",
     confirm: "",
   });
@@ -24,7 +27,7 @@ export default function PasswordChangeForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
-
+  const [changePassword, { isLoading: isCreateNewPassLoading }] = useChangePasswordMutation()
   const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
     setShowPasswords((prev) => ({
       ...prev,
@@ -35,9 +38,6 @@ export default function PasswordChangeForm() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!passwords.current) {
-      newErrors.current = "Current password is required";
-    }
 
     if (!passwords.new) {
       newErrors.new = "New password is required";
@@ -51,33 +51,29 @@ export default function PasswordChangeForm() {
       newErrors.confirm = "Passwords do not match";
     }
 
-    if (passwords.current === passwords.new && passwords.current) {
-      newErrors.new = "New password must be different from current password";
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
-    setIsLoading(true);
-
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await changePassword({ new_password: passwords?.new, new_password_confirmation: passwords.confirm, email }).unwrap()
+      console.log('response', response);
 
-      // Handle successful password change
-      console.log("Password changed successfully");
-      router.push("/settings?success=password-changed");
-    } catch {
-      setErrors({ submit: "Failed to change password. Please try again." });
-    } finally {
-      setIsLoading(false);
+      if (response?.success) {
+        toast.success(response?.message || "Password changed successfully")
+        setPasswords({ new: "", confirm: "" });
+        // router.push('/settings')
+      }
+    } catch (error: any) {
+      console.log('error', error);
+      toast.error(error?.data?.message || "Something went wrong")
     }
+
+
   };
 
   const handleInputChange = (field: keyof typeof passwords, value: string) => {
@@ -105,45 +101,8 @@ export default function PasswordChangeForm() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="!space-y-6">
-              {/* Current Password */}
-              <div className="space-y-2!">
-                <Label htmlFor="current-password">Current Password</Label>
-                <div className="relative">
-                  <Input
-                    id="current-password"
-                    type={showPasswords.current ? "text" : "password"}
-                    value={passwords.current}
-                    onChange={(e) =>
-                      handleInputChange("current", e.target.value)
-                    }
-                    placeholder="Enter current password"
-                    className={errors.current ? "border-red-500" : ""}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full !px-3 !py-2 hover:bg-transparent"
-                    onClick={() => togglePasswordVisibility("current")}
-                  >
-                    {showPasswords.current ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
-                    <span className="sr-only">
-                      {showPasswords.current
-                        ? "Hide password"
-                        : "Show password"}
-                    </span>
-                  </Button>
-                </div>
-                {errors.current && (
-                  <p className="text-sm text-red-600">{errors.current}</p>
-                )}
-              </div>
-
               {/* New Password */}
+
               <div className="!space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
                 <div className="relative">

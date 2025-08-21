@@ -12,13 +12,10 @@ export const FoodApi = api.injectEndpoints({
                 pickup_time = "",
                 min_price = "",
                 max_price = "",
-                min_rating = "",
-                max_rating = "",
                 sort_by = "",
-                perPage = 10,
                 page = 1,
             }) =>
-                `/get-food?search=${search}&dietary_info=${dietary_info}&pickup_time=${pickup_time}&min_price=${min_price}&max_price=${max_price}&min_rating=${min_rating}&max_rating=${max_rating}&sort_by=${sort_by}&per_page=${perPage}&page=${page}`,
+                `/get-food?search=${search}&dietary_info=${dietary_info}&pickup_time=${pickup_time}&min_price=${min_price}&max_price=${max_price}&sort_by=${sort_by}&per_page=10&page=${page}`,
 
             transformResponse: (response: foodapiResponse) => {
                 return response.data.foods;
@@ -26,7 +23,16 @@ export const FoodApi = api.injectEndpoints({
 
             providesTags: ["food"],
         }),
+
+
+        requestForAfood: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/food-request/${id}`,
+                method: "POST",
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetAllHomeFoodItemsQuery } = FoodApi;
+export const { useGetAllHomeFoodItemsQuery, useRequestForAfoodMutation } = FoodApi;

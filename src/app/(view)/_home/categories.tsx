@@ -33,8 +33,8 @@ export default function Categories() {
   const categories: Category[] = categoriesData?.data?.data || [];
 
   return (
-    <section className="py-8 md:py-12 bg-white dark:bg-gray-950">
-      <div className="container mx-auto px-4">
+    <section className="py-8 md:py-12 lg:px-12 md:px-8 px-2 bg-white dark:bg-gray-950">
+      <div className="">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">
           Browse Categories
         </h2>

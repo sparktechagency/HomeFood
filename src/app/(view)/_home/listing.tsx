@@ -1,6 +1,7 @@
+
 // "use client";
+
 // import React, { useState } from "react";
-// import Categories from "./categories";
 // import { Button } from "@/components/ui/button";
 // import {
 //   DropdownMenu,
@@ -8,200 +9,201 @@
 //   DropdownMenuItem,
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
-// import { CalendarIcon, ChevronDown, FunnelIcon } from "lucide-react";
-
+// import { ChevronDown, FunnelIcon } from "lucide-react";
 // import { Checkbox } from "@/components/ui/checkbox";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
-// import { format } from "date-fns";
-// import { Calendar } from "@/components/ui/calendar";
-// import { cn } from "@/lib/utils";
 // import { DualRangeSlider } from "@/components/ui/dual-slider";
-// import { sorts } from "./sorts";
-// import ProdSection from "./product-section";
 // import { Input } from "@/components/ui/input";
+// import { FilterParams } from "@/lib/types/api";
 
-// export default function Listing() {
-//   const [date, setDate] = React.useState<Date>();
-//   const [time, setTime] = React.useState("");
-//   const [values, setValues] = useState([0, 1000]);
+// // (Keep your sortByMap and sorts configuration array here)
+// const sortByMap: { [key: string]: string } = {
+//   "Price (lowest first)": "price_asc",
+//   "Price (highest first)": "price_desc",
+//   "Rating (high to low)": "rating_desc",
+//   "Rating (low to high)": "rating_asc",
+//   "Best Rated & Affordable": "best_rated_affordable",
+//   "New Arrivals": "new_arrivals",
+//   "Recently Added": "recently_added",
+// };
+
+// export const sorts = [
+//   {
+//     title: "Dietary Info",
+//     child: [
+//       "Vegetarian", "Vegan", "Bio", "Lactose-free", "Halal", "Gluten-free",
+//       "Alcohol-free", "Nut-free", "Sugar-free", "Low-carb / Keto",
+//       "High Protein", "Organic", "Low-fat", "Dairy-free", "Egg-free",
+//       "Soy-free", "No added preservatives", "Calorie-conscious",
+//     ],
+//     kind: "checkbox",
+//     filterKey: "dietary_info",
+//   },
+//   {
+//     title: "Price Range",
+//     child: [0, 1000],
+//     kind: "dual-slider",
+//     filterKey: "price",
+//   },
+//   {
+//     title: "Minimum Rating",
+//     child: ["5", "4", "3", "2", "1"],
+//     kind: "list",
+//     filterKey: "rating",
+//   },
+//   {
+//     title: "Listing by Seller",
+//     kind: "boolean_toggle",
+//     filterKey: "listing_by_seller",
+//   },
+//   {
+//     title: "Listing by Buyer",
+//     kind: "boolean_toggle",
+//     filterKey: "listing_by_buyer",
+//   },
+//   {
+//     title: "Sort By",
+//     child: Object.keys(sortByMap),
+//     kind: "list",
+//     filterKey: "sort_by",
+//   },
+// ];
+
+// // Define the props this component receives from its parent
+// interface ListingFiltersProps {
+//   filters: FilterParams;
+//   onFilterChange: (newValues: Partial<FilterParams>) => void;
+// }
+
+// export default function ListingFilters({ filters, onFilterChange }: ListingFiltersProps) {
+//   // This state is for UI only (showing/hiding filters on mobile) and is fine to keep here.
 //   const [showFilters, setShowFilters] = useState(false);
 
-//   return (
-//     <>
+//   // --- Handlers now correctly use the onFilterChange prop from the parent ---
 
-//       <section className="!mt-12">
-//         <div className="flex flex-row justify-end items-center sm:hidden">
+//   const handleCheckboxChange = (value: string) => {
+//     const currentValues = filters.dietary_info || [];
+//     const newValues = currentValues.includes(value)
+//       ? currentValues.filter((v) => v !== value)
+//       : [...currentValues, value];
+//     onFilterChange({ dietary_info: newValues });
+//   };
+
+//   const handleBooleanToggle = (filterKey: 'listing_by_seller' | 'listing_by_buyer') => {
+//     onFilterChange({ [filterKey]: !filters[filterKey] });
+//   };
+
+//   return (
+//     <section className="!mt-12">
+//       <div className="flex flex-col gap-4">
+//         <div className="flex flex-row justify-between items-center gap-4">
+//           {/* <Input
+//             placeholder="Search food by keyword..."
+//             value={filters.search}
+//             onChange={(e) => onFilterChange({ search: e.target.value })}
+//             className="max-w-xs"
+//           /> */}
 //           <Button
 //             variant="outline"
-//             className="border text-sm"
+//             className="border text-sm sm:hidden"
 //             onClick={() => setShowFilters((prev) => !prev)}
 //           >
-//             Filters <FunnelIcon />
+//             Filters <FunnelIcon className="ml-2 size-4" />
 //           </Button>
 //         </div>
-//         <div
-//           className={`
-//           !py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-7 gap-2 
-//           ${showFilters ? "block" : "hidden"} sm:grid
-//         `}
-//         >
-//           {sorts.map((x, i) => (
-//             <div key={i} className="w-full">
-//               {x.kind ? (
-//                 x.kind === "date" ? (
-//                   <Popover>
-//                     <PopoverTrigger asChild>
-//                       <Button
-//                         variant={"secondary"}
-//                         className={cn(
-//                           "w-full justify-center text-center font-medium text-sm rounded-full",
-//                           !date && "text-muted-foreground"
-//                         )}
-//                       >
-//                         {date ? (
-//                           <>
-//                             <CalendarIcon className="!mr-2 h-4 w-4" />{" "}
-//                             {format(date, "PPP")}
-//                           </>
-//                         ) : (
-//                           <>
-//                             <span className="text-foreground">{x.title}</span>{" "}
-//                             <ChevronDown className="size-4 text-foreground" />
-//                           </>
-//                         )}
-//                       </Button>
-//                     </PopoverTrigger>
-//                     <PopoverContent className="w-auto !p-0">
-//                       <Calendar
-//                         mode="single"
-//                         selected={date}
-//                         onSelect={setDate}
-//                         initialFocus
-//                       />
-//                     </PopoverContent>
-//                   </Popover>
-//                 ) : x.kind === "dual-slider" ? (
-//                   <DropdownMenu>
-//                     <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-//                       {x.title} <ChevronDown className="size-4" />
-//                     </DropdownMenuTrigger>
-//                     <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
-//                       <div className="!mt-6 !px-4">
+//       </div>
+
+//       {/* Dynamic Filter UI */}
+//       <div
+//         className={`!py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 ${showFilters ? "block" : "hidden"} sm:grid`}
+//       >
+//         {sorts.map((x, i) => (
+//           <div key={i} className="w-full">
+//             {(() => {
+//               switch (x.kind) {
+//                 case "dual-slider":
+//                   return (
+//                     <DropdownMenu>
+//                       <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2.5 px-4 rounded-full flex flex-row justify-center items-center gap-2">
+//                         {x.title} <ChevronDown className="size-4" />
+//                       </DropdownMenuTrigger>
+//                       <DropdownMenuContent className="w-[300px] p-4">
 //                         <DualRangeSlider
-//                           label={(value) => <span>${value}</span>}
-//                           value={values}
-//                           onValueChange={setValues}
-//                           min={0}
-//                           max={100}
-//                           step={1}
+//                           value={[filters.min_price ?? 0, filters.max_price ?? 1000]}
+//                           onValueChange={(value) => onFilterChange({ min_price: value[0], max_price: value[1] })}
+//                           min={0} max={1000} step={10}
 //                         />
-//                       </div>
-//                       <div className="flex flex-row justify-center items-center !mt-6 !px-4">
-//                         <div className="!space-x-2 !py-1 !px-2 rounded-lg">
-//                           <span>${values[0]}</span>
-//                           <span>-</span>
-//                           <span>${values[1]}</span>
-//                         </div>
-//                       </div>
-//                     </DropdownMenuContent>
-//                   </DropdownMenu>
-//                 ) : x.kind === "time" ? (
-//                   <DropdownMenu>
-//                     <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-//                       {x.title} <ChevronDown className="size-4" />
-//                     </DropdownMenuTrigger>
-//                     <DropdownMenuContent className="w-[400px] !pt-12 !pb-8">
-//                       <div className="!mt-6 !px-4">
-//                         <h4 className="text-sm mb-4! font-medium">
-//                           Select Pickup time:
-//                         </h4>
-//                         <Input
-//                           type="time"
-//                           value={time}
-//                           onChange={(e) => {
-//                             setTime(e.target.value);
-//                           }}
-//                         />
-//                       </div>
-//                       <div className="flex flex-row justify-center items-center !mt-6 !px-4">
-//                         <div className="space-x-2 py-1 px-2 rounded-lg">
-//                           {time &&
-//                             (() => {
-//                               const [hours, minutes] = time
-//                                 .split(":")
-//                                 .map(Number);
-//                               const now = new Date();
-//                               const from = new Date(
-//                                 now.getFullYear(),
-//                                 now.getMonth(),
-//                                 now.getDate(),
-//                                 hours,
-//                                 minutes
-//                               );
-//                               const to = new Date(from);
-//                               to.setHours(to.getHours() + 1);
+//                         <div className="text-center mt-2">${filters.min_price} - ${filters.max_price}</div>
+//                       </DropdownMenuContent>
+//                     </DropdownMenu>
+//                   );
 
-//                               const format = (date: Date) =>
-//                                 date.toLocaleTimeString([], {
-//                                   hour: "2-digit",
-//                                   minute: "2-digit",
-//                                   hour12: false,
-//                                 });
-
-//                               return (
-//                                 <>
-//                                   <span>From: {format(from)}</span>
-//                                 </>
-//                               );
-//                             })()}
-//                         </div>
-//                       </div>
-//                     </DropdownMenuContent>
-//                   </DropdownMenu>
-//                 ) : (
-//                   <DropdownMenu>
-//                     <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-//                       {x.title} <ChevronDown className="size-4" />
-//                     </DropdownMenuTrigger>
-//                     <DropdownMenuContent className="w-[180px]">
-//                       {x.kind === "checkbox"
-//                         ? x.child?.map((item, i) => (
-//                           <DropdownMenuItem key={i}>
-//                             <Checkbox /> {item}
+//                 case "checkbox":
+//                   return (
+//                     <DropdownMenu>
+//                       <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2.5 px-4 rounded-full flex flex-row justify-center items-center gap-2">
+//                         {x.title} <ChevronDown className="size-4" />
+//                       </DropdownMenuTrigger>
+//                       <DropdownMenuContent className="max-h-80 overflow-y-auto">
+//                         {x.child?.map((item: any) => (
+//                           <DropdownMenuItem key={item} onSelect={(e) => e.preventDefault()}>
+//                             <Checkbox
+//                               id={item}
+//                               checked={filters.dietary_info?.includes(item)}
+//                               onCheckedChange={() => handleCheckboxChange(item)}
+//                             />
+//                             <label htmlFor={item} className="pl-2 cursor-pointer">{item}</label>
 //                           </DropdownMenuItem>
-//                         ))
-//                         : x.child?.map((item, i) => (
-//                           <DropdownMenuItem key={i}>{item}</DropdownMenuItem>
 //                         ))}
-//                     </DropdownMenuContent>
-//                   </DropdownMenu>
-//                 )
-//               ) : (
-//                 <Button
-//                   className="w-full rounded-full text-sm"
-//                   variant="secondary"
-//                 >
-//                   {x.title}
-//                 </Button>
-//               )}
-//             </div>
-//           ))}
-//         </div>
-//       </section>
-//       <ProdSection />
-//     </>
+//                       </DropdownMenuContent>
+//                     </DropdownMenu>
+//                   );
+
+//                 case "list":
+//                   return (
+//                     <DropdownMenu>
+//                       <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2.5 px-4 rounded-full flex flex-row justify-center items-center gap-2">
+//                         {x.title} <ChevronDown className="size-4" />
+//                       </DropdownMenuTrigger>
+//                       <DropdownMenuContent>
+//                         {x.child?.map((item) => (
+//                           <DropdownMenuItem
+//                             key={item}
+//                             onSelect={() => onFilterChange({
+//                               [x.filterKey]: x.filterKey === 'sort_by' ? sortByMap[item] : Number(item),
+//                             })}
+//                           >
+//                             {x.filterKey === 'rating' ? `${item} ★ & up` : item}
+//                           </DropdownMenuItem>
+//                         ))}
+//                       </DropdownMenuContent>
+//                     </DropdownMenu>
+//                   );
+
+//                 case "boolean_toggle":
+//                   return (
+//                     <Button
+//                       className="w-full rounded-full text-sm"
+//                       variant={filters[x.filterKey as 'listing_by_seller' | 'listing_by_buyer'] ? "default" : "secondary"}
+//                       onClick={() => handleBooleanToggle(x.filterKey as 'listing_by_seller' | 'listing_by_buyer')}
+//                     >
+//                       {x.title}
+//                     </Button>
+//                   );
+
+//                 default:
+//                   return null;
+//               }
+//             })()}
+//           </div>
+//         ))}
+//       </div>
+//     </section>
 //   );
 // }
 
 
-// src/components/Listing.tsx
-// src/components/Listing.tsx
-
 "use client";
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -210,190 +212,185 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CalendarIcon, ChevronDown, FunnelIcon } from "lucide-react";
+import { ChevronDown, FunnelIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
 import { DualRangeSlider } from "@/components/ui/dual-slider";
-import ProdSection from "./product-section";
 import { Input } from "@/components/ui/input";
 import { FilterParams } from "@/lib/types/api";
 
+// (Keep your sortByMap and sorts configuration array here)
+const sortByMap: { [key: string]: string } = {
+  "Price (lowest first)": "price_asc",
+  "Price (highest first)": "price_desc",
+  "Rating (high to low)": "rating_desc",
+  "Rating (low to high)": "rating_asc",
+  "Best Rated & Affordable": "best_rated_affordable",
+  "New Arrivals": "new_arrivals",
+  "Recently Added": "recently_added",
+};
 
-// Your original filter configuration
 export const sorts = [
   {
-    title: "Special Features",
-    child: ["Vegetarian", "Vegan", "Lactose-free", "Halal", "Gluten-free", "Keto"],
+    title: "Dietary Info",
+    child: [
+      "Vegetarian", "Vegan", "Bio", "Lactose-free", "Halal", "Gluten-free",
+      "Alcohol-free", "Nut-free", "Sugar-free", "Low-carb / Keto",
+      "High Protein", "Organic", "Low-fat", "Dairy-free", "Egg-free",
+      "Soy-free", "No added preservatives", "Calorie-conscious",
+    ],
     kind: "checkbox",
     filterKey: "dietary_info",
   },
-  { title: "Price", child: [0, 1000], kind: "dual-slider", filterKey: "price" },
-  { title: "Pickup Time", kind: "time", filterKey: "pickup_time" },
   {
-    title: "Rating",
-    child: ["4", "3", "2", "1"],
-    kind: "checkbox",
-    filterKey: "min_rating",
+    title: "Price Range",
+    child: [0, 1000],
+    kind: "dual-slider",
+    filterKey: "price",
   },
-  { title: "Listing by Seller", child: null, kind: null, filterKey: "listing_by_seller" },
-  { title: "Listing by Buyer", child: null, kind: null, filterKey: "listing_by_buyer" },
+  {
+    title: "Minimum Rating",
+    child: ["5", "4", "3", "2", "1"],
+    kind: "list",
+    filterKey: "rating",
+  },
+  {
+    title: "Listing by Seller",
+    kind: "boolean_toggle",
+    filterKey: "listing_by_seller",
+  },
+  {
+    title: "Listing by Buyer",
+    kind: "boolean_toggle",
+    filterKey: "listing_by_buyer",
+  },
   {
     title: "Sort By",
-    child: ["Price (lowest first)", "Price (highest first)", "Rating (high to low)"],
+    child: Object.keys(sortByMap),
     kind: "list",
-    filterKey: "sort_by"
+    filterKey: "sort_by",
   },
 ];
 
+interface ListingFiltersProps {
+  filters: FilterParams;
+  onFilterChange: (newValues: Partial<FilterParams>) => void;
+}
 
-export default function Listing() {
+export default function ListingFilters({ filters, onFilterChange }: ListingFiltersProps) {
   const [showFilters, setShowFilters] = useState(false);
 
-  // Central state object for all filters
-  const [filters, setFilters] = useState<FilterParams>({
-    page: 1,
-    perPage: 12,
-    min_price: 0,
-    max_price: 1000,
-    pickup_time: "",
-    dietary_info: [], // Use array for checkboxes
-    min_rating: [], // Use array for checkboxes
-  });
-
-  // --- Filter Handlers ---
-
-  // Generic handler to update any filter
-  const handleFilterChange = (newValues: Partial<FilterParams>) => {
-    setFilters((prev: any) => ({ ...prev, ...newValues, page: 1 }));
-  };
-
-  // Specific handler for checkboxes to toggle values in an array
-  const handleCheckboxChange = (filterKey: 'dietary_info' | 'min_rating', value: string) => {
-    const currentValues = filters[filterKey] as string[] || [];
+  const handleCheckboxChange = (value: string) => {
+    const currentValues = filters.dietary_info || [];
     const newValues = currentValues.includes(value)
       ? currentValues.filter((v) => v !== value)
       : [...currentValues, value];
-    handleFilterChange({ [filterKey]: newValues });
+    onFilterChange({ dietary_info: newValues });
   };
 
-  const handlePageChange = (newPage: number) => {
-    setFilters((prev: any) => ({ ...prev, page: newPage }));
+  // --- MODIFIED HANDLER ---
+  // This function now toggles between 1 (selected) and undefined (not selected).
+  const handleBooleanToggle = (filterKey: 'listing_by_seller' | 'listing_by_buyer') => {
+    const currentValue = filters[filterKey];
+    const newValue = currentValue === 1 ? undefined : 1;
+    onFilterChange({ [filterKey]: newValue });
   };
 
   return (
-    <>
-      <section className="!mt-12">
-        <div className="flex flex-row justify-end items-center sm:hidden">
+    <section className="!mt-12">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-row justify-end items-center gap-4 sm:justify-between">
+          {/* You can add your Search input back here if you need it */}
+          <div /> {/* Empty div to push the button to the right on mobile */}
           <Button
             variant="outline"
-            className="border text-sm"
+            className="border text-sm sm:hidden"
             onClick={() => setShowFilters((prev) => !prev)}
           >
             Filters <FunnelIcon className="ml-2 size-4" />
           </Button>
         </div>
+      </div>
 
-        {/* Dynamic Filter UI */}
-        <div className={`!py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 2xl:grid-cols-7 gap-2 ${showFilters ? "block" : "hidden"} sm:grid`}>
-          {sorts.map((x, i) => (
-            <div key={i} className="w-full">
-              {(() => {
-                switch (x.kind) {
-                  case "dual-slider":
-                    return (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                          {x.title} <ChevronDown className="size-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-[300px] p-4">
-                          <DualRangeSlider
-                            value={[filters.min_price || 0, filters.max_price || 1000]}
-                            onValueChange={(value) => handleFilterChange({ min_price: value[0], max_price: value[1] })}
-                            min={0} max={1000} step={10}
-                          />
-                          <div className="text-center mt-2">${filters.min_price} - ${filters.max_price}</div>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    );
-
-                  case "time":
-                    return (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                          {filters.pickup_time ? filters.pickup_time : x.title} <ChevronDown className="size-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="p-2">
-                          <Input
-                            type="time"
-                            value={filters.pickup_time}
-                            onChange={(e) => handleFilterChange({ pickup_time: e.target.value })}
-                          />
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )
-
-                  case "checkbox":
-                    return (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                          {x.title} <ChevronDown className="size-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          {x.child?.map((item: any) => (
-                            <DropdownMenuItem key={item} onSelect={(e) => e.preventDefault()}>
-                              <Checkbox
-                                id={item?.id}
-                                checked={(filters[x.filterKey as 'dietary_info' | 'min_rating'] as string[]).includes(item)}
-                                onCheckedChange={() => handleCheckboxChange(x.filterKey as 'dietary_info' | 'min_rating', item)}
-                              />
-                              <label htmlFor={item} className="pl-2">{x.filterKey === 'min_rating' ? `${item} star & up` : item}</label>
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    );
-
-                  case "list":
-                    return (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2 rounded-full flex flex-row justify-center items-center gap-2">
-                          {x.title} <ChevronDown className="size-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          {x.child?.map((item) => (
-                            <DropdownMenuItem key={item} onSelect={() => handleFilterChange({ [x.filterKey]: item })}>
-                              {item}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )
-
-                  default:
-                    return (
-                      <Button
-                        className="w-full rounded-full text-sm"
-                        variant="secondary"
-                        onClick={() => handleFilterChange({ [x.filterKey]: true })}
-                      >
-                        {x.title}
-                      </Button>
-                    );
-                }
-              })()}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <ProdSection filters={filters} onPageChange={handlePageChange} />
-    </>
+      <div
+        className={`!py-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 ${showFilters ? "block" : "hidden"} sm:grid`}
+      >
+        {sorts.map((x, i) => (
+          <div key={i} className="w-full">
+            {(() => {
+              switch (x.kind) {
+                case "dual-slider":
+                  return (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2.5 px-4 rounded-full flex flex-row justify-center items-center gap-2">
+                        {x.title} <ChevronDown className="size-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-[300px] p-4">
+                        <DualRangeSlider
+                          value={[filters.min_price ?? 0, filters.max_price ?? 1000]}
+                          onValueChange={(value) => onFilterChange({ min_price: value[0], max_price: value[1] })}
+                          min={0} max={1000} step={10}
+                        />
+                        <div className="text-center mt-2">${filters.min_price} - ${filters.max_price}</div>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  );
+                case "checkbox":
+                  return (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2.5 px-4 rounded-full flex flex-row justify-center items-center gap-2">
+                        {x.title} <ChevronDown className="size-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="max-h-80 overflow-y-auto">
+                        {x.child?.map((item: any) => (
+                          <DropdownMenuItem key={item} onSelect={(e) => e.preventDefault()}>
+                            <Checkbox
+                              id={item}
+                              checked={filters.dietary_info?.includes(item)}
+                              onCheckedChange={() => handleCheckboxChange(item)}
+                            />
+                            <label htmlFor={item} className="pl-2 cursor-pointer">{item}</label>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  );
+                case "list":
+                  return (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="bg-secondary w-full text-sm !py-2.5 px-4 rounded-full flex flex-row justify-center items-center gap-2">
+                        {x.title} <ChevronDown className="size-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {x.child?.map((item) => (
+                          <DropdownMenuItem
+                            key={item}
+                            onSelect={() => onFilterChange({
+                              [x.filterKey]: x.filterKey === 'sort_by' ? sortByMap[item] : Number(item),
+                            })}
+                          >
+                            {x.filterKey === 'rating' ? `${item} ★ & up` : item}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  );
+                case "boolean_toggle":
+                  return (
+                    <Button
+                      className="w-full rounded-full text-sm"
+                      variant={filters[x.filterKey as 'listing_by_seller' | 'listing_by_buyer'] === 1 ? "default" : "secondary"}
+                      onClick={() => handleBooleanToggle(x.filterKey as 'listing_by_seller' | 'listing_by_buyer')}
+                    >
+                      {x.title}
+                    </Button>
+                  );
+                default:
+                  return null;
+              }
+            })()}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
