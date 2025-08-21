@@ -254,11 +254,11 @@ export default function Page() {
 
       <div className="col-span-11 !mt-12">
         <h2 className="text-3xl font-semibold !pb-4 border-b">Similar Food</h2>
-        <div className="w-full grid sm:grid-cols-2 md:grid-cols-3 gap-6 !mt-6">
+        {/* <div className="w-full grid sm:grid-cols-2 md:grid-cols-3 gap-6 !mt-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <ProductCard key={i} />
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

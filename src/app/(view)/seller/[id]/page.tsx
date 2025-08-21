@@ -85,6 +85,7 @@ export default function Page() {
                       ingredients: product.ingredients,
                       price: product.price,
                       images: product.images,
+                      rating: product.rating,
 
                       user: {
                         full_name: user?.full_name,

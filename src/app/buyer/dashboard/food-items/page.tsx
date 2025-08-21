@@ -8,11 +8,11 @@ export default function Page() {
   return (
     <>
       {" "}
-      <div className="grid grid-cols-4 gap-6 !pb-12">
+      {/* <div className="grid grid-cols-4 gap-6 !pb-12">
         {Array.from({ length: 6 }).map((_, i) => (
           <ProductCard key={i} control activer />
         ))}
-      </div>
+      </div> */}
       <Button className="fixed bottom-4 right-4" asChild>
         <Link href={"/seller/dashboard/food-items/add"}>
           <PlusIcon /> Add Service

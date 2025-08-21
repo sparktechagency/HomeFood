@@ -19,6 +19,8 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
   // Pass the entire filters object to the hook. RTK Query will refetch automatically when it changes.
   const { data, isLoading, isError, refetch } = useGetAllHomeFoodItemsQuery(filters);
 
+  console.log('data', data);
+
   const [showGrid, setShowGrid] = useState(true);
   const [showMap, setShowMap] = useState(true);
 

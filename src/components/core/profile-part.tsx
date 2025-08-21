@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+"use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ import { User } from "@/lib/types/api";
 import { imageUrl } from "@/redux/baseApi";
 import { useCreateAReportMutation } from "@/redux/features/Seller/SellerApi";
 import { toast } from "sonner";
+import { useState } from "react";
 
 interface ProfilePartProps {
   user: User;
