@@ -64,7 +64,12 @@ export default function LoginForm() {
         // If 'rememberMe' is false, the cookie will be a session cookie (no maxAge)
         setCookie("token", response.data.token, cookieOptions);
 
-        router.push("/");
+        if (response.data.user.role === "ADMIN") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/");
+        }
+        // router.push("/");
       } else {
         // Handle cases where the API responds 200 OK but doesn't provide a token
         toast.error(response.message || "Login failed: No token received.");

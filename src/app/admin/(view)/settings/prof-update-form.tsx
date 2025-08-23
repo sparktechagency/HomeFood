@@ -132,7 +132,7 @@ export default function Page() {
   if (!profileData) {
     return (
       <div className="mt-20 text-center text-destructive">
-        Error: Could not load user profile.
+        Profile data not available.
       </div>
     );
   }

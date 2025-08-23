@@ -55,7 +55,7 @@ export default function Navbar() {
     // Load cart from localStorage
     const savedCart = localStorage.getItem('cart');
     if (savedCart) setCartItems(JSON.parse(savedCart));
-  }, [cookies.token, pathname]);
+  }, [cookies.token, pathname, cartItems.length]);
   // This is your original logic for setting the signed-in state, which we are keeping.
   useEffect(() => {
     setSignedIn(!!cookies.token);
