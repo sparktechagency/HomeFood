@@ -19,7 +19,7 @@ export default function Page() {
   // RTK Query will omit the 'status' parameter if its value is undefined, which is
   // perfect for fetching 'all' items.
   const status = filter === "active" ? 1 : filter === "inactive" ? 0 : undefined;
-  console.log('status', status);
+
 
   const { data, isLoading, isError } = useGetuserDetailsByIdQuery(
     { id, status },

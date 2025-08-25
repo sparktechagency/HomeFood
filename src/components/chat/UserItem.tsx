@@ -1,0 +1,80 @@
+"use client";
+
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format } from "date-fns";
+import { Badge } from "../ui/badge";
+import { useMarkAsReadMessageMutation } from "@/redux/features/chat/ChatApi";
+import { toast } from "sonner";
+import { imageUrl } from "@/redux/baseApi";
+
+
+
+export default function UserItem({ user, onClick, showLastMessage = false }: any) {
+
+
+    const [markAsReadMessage] = useMarkAsReadMessageMutation();
+
+    const handleUserClick = async () => {
+        // Only call the API if there are unread messages
+        if (user?.id && Number(user.unread_messages_count) > 0) {
+            try {
+
+                const response = await markAsReadMessage({ id: user.sender_id }).unwrap();
+                console.log('response', response);
+                console.log('sernder_id', user.sender_id);
+
+
+                if (response?.ok) {
+                    toast.success(response?.message);
+                }
+            } catch (error) {
+                console.error("Failed to mark as read:", error);
+                toast.error("Failed to mark as read.");
+            }
+        }
+
+        onClick(user);
+    };
+
+    return (
+        <div
+            className="flex flex-row justify-start items-center gap-6 !px-6 !py-3 border-b cursor-pointer hover:bg-gray-50"
+            onClick={handleUserClick}
+        >
+            <Avatar className="!size-12">
+                <AvatarImage src={imageUrl + user.profile || "/image/icon/user.jpeg"} />
+                <AvatarFallback>
+                    {user.full_name?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+            </Avatar>
+            <div className="overflow-hidden flex-1">
+                <div className="flex justify-between items-start relative">
+                    <h3 className="text-sm font-semibold">{user.full_name}</h3>
+                    {showLastMessage && user.lastMessageTime && (
+                        <span className="text-xs text-gray-500">
+                            {format(new Date(user.lastMessageTime), 'HH:mm')}
+                        </span>
+                    )}
+                    {Number(user?.unread_messages_count) > 0 && (
+                        <Badge variant="destructive" className="absolute top-0 right-12">
+                            {user?.unread_messages_count}
+                        </Badge>
+                    )}
+                </div>
+                {showLastMessage ? (
+                    <p className="text-sm text-gray-500 truncate">
+                        {user?.lastMessage}
+                    </p>
+                ) : (
+                    <p className="text-sm text-purple-500 font-bold truncate">
+                        {user.role_label || "User"}
+                    </p>
+                )}
+                {user.phone && !showLastMessage && (
+                    <p className="text-xs text-gray-500 truncate">{user.phone}</p>
+                )}
+            </div>
+        </div>
+    );
+}

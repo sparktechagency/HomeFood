@@ -69,7 +69,7 @@ export default function Navbar() {
 
   // Extract nested user data
   const userProfile = userInfo?.data;
-  console.log('userProfile', userProfile);
+
 
   // Helper function to get initials from a full name
   const getInitials = (name?: string) => {

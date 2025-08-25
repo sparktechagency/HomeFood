@@ -20,6 +20,8 @@ import { imageUrl } from "@/redux/baseApi";
 import { useCreateAReportMutation } from "@/redux/features/Seller/SellerApi";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useLazyChatseassionCreateQuery } from "@/redux/features/chat/ChatApi";
+import { useRouter } from "next/navigation";
 
 interface ProfilePartProps {
   user: User;
@@ -31,6 +33,8 @@ export default function ProfilePart({ user, isbuyer }: ProfilePartProps) {
   // 1. State to hold the reason text and control modal visibility
   const [reason, setReason] = useState("");
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  const router = useRouter();
 
   // 2. Handler function to log the reason and close the modal
   const handleReportSubmit = async () => {
@@ -53,6 +57,16 @@ export default function ProfilePart({ user, isbuyer }: ProfilePartProps) {
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Something went wrong")
+    }
+  };
+
+  const [triggerChatSession] = useLazyChatseassionCreateQuery();
+
+  const handleSendMessage = async () => {
+    const { data } = await triggerChatSession(user?.id);
+    if (data?.success) {
+      toast.success(data?.message)
+      router.push(`/chat`)
     }
   };
 
@@ -96,10 +110,12 @@ export default function ProfilePart({ user, isbuyer }: ProfilePartProps) {
             </DialogContent>
           </Dialog>
 
-          <Button asChild>
-            <Link href={`${isbuyer ? "/buyer" : "/seller"}/chat`}>
-              Send Message <SendIcon />
-            </Link>
+          <Button onClick={handleSendMessage} asChild>
+            <span>
+              <SendIcon /> Send Message
+            </span>
+
+
           </Button>
 
           <Button asChild>
