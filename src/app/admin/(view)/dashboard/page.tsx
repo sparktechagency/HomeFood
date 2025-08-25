@@ -1,85 +1,117 @@
+'use client'
+
 import React from "react";
 import { ChartPart } from "./chart-part";
 import { StatCard } from "@/components/core/stat-card";
+import { useGetoverviewQuery } from "@/redux/features/admin/dashboard";
+import { DashboardData, TotalOrders } from "@/lib/types/api";
+
+
+// Fallback data with proper typing
+const fallbackData: DashboardData = {
+  seller_count: 0,
+  buyer_count: 0,
+  total_orders: {
+    pending: 0,
+    preparing: 0,
+    shipped: 0,
+    delivered: 0,
+    cancelled: 0
+  },
+  total_reports: 0,
+  total_reviews: 0
+};
+
 export default function Page() {
-  const mockStats = [
+  const { data: overView } = useGetoverviewQuery({});
+  console.log('overview', overView);
+
+  // Extract data from API response with proper typing
+  const dashboardData: DashboardData = overView?.data || fallbackData;
+
+  // Helper function to calculate total orders with proper typing
+  const calculateTotalOrders = (orders: TotalOrders): number => {
+    return Object.values(orders).reduce((sum: number, count: number) => sum + count, 0);
+  };
+
+  const stats = [
     {
-      id: "total-buyers",
+      id: "total-sellers",
       icon: "Users",
-      value: "37k",
+      value: dashboardData.seller_count.toString(),
       trend: {
         direction: "up" as const,
         percentage: 12,
       },
       title: "Registered Sellers",
-      description: "0.5k increase than last 7 days",
+      description: `${dashboardData.seller_count} total sellers`,
     },
     {
-      id: "total-revenue",
-      icon: "DollarSign",
-      value: "14k",
+      id: "total-buyers",
+      icon: "UserCheck",
+      value: dashboardData.buyer_count.toString(),
       trend: {
         direction: "up" as const,
         percentage: 8,
       },
       title: "Registered Buyers",
-      description: "$12k increase than last month",
+      description: `${dashboardData.buyer_count} total buyers`,
     },
     {
-      id: "active-users",
-      icon: "UserCheck",
-      value: "2.4k",
-      trend: {
-        direction: "down" as const,
-        percentage: 3,
-      },
-      title: "Active Users",
-      description: "120 decrease than yesterday",
-    },
-    {
-      id: "conversion-rate",
-      icon: "TrendingUp",
-      value: "32k",
+      id: "total-orders",
+      icon: "ShoppingCart",
+      value: calculateTotalOrders(dashboardData.total_orders).toString(),
       trend: {
         direction: "up" as const,
         percentage: 15,
       },
-      title: "Listing Created",
-      description: "0.4% increase than last week",
+      title: "Total Orders",
+      description: "All order statuses combined",
     },
     {
-      id: "bounce-rate",
-      icon: "MousePointer",
-      value: "23k",
+      id: "pending-orders",
+      icon: "Clock",
+      value: dashboardData.total_orders.pending.toString(),
       trend: {
-        direction: "down" as const,
-        percentage: 5,
+        direction: dashboardData.total_orders.pending > 0 ? "up" : "neutral" as const,
+        percentage: 0,
       },
-      title: "Active Listings",
-      description: "2% decrease than last month",
+      title: "Pending Orders",
+      description: "Awaiting processing",
     },
     {
-      id: "avg-session",
-      icon: "AlignVerticalDistributeEnd",
-      value: "37k",
+      id: "delivered-orders",
+      icon: "PackageCheck",
+      value: dashboardData.total_orders.delivered.toString(),
       trend: {
         direction: "up" as const,
-        percentage: 0,
+        percentage: 10,
       },
-      title: "Food Request by Buyers",
-      description: "No change from last week",
+      title: "Delivered Orders",
+      description: "Successfully completed",
     },
     {
-      id: "avg-session",
-      icon: "Clock",
-      value: "15k",
+      id: "total-reports",
+      icon: "AlertTriangle",
+      value: dashboardData.total_reports.toString(),
       trend: {
-        direction: "neutral" as const,
+        direction: dashboardData.total_reports > 0 ? "up" : "neutral" as const,
         percentage: 0,
       },
-      title: "Total value in €",
-      description: "No change from last week",
+      title: "Total Reports",
+      description: "Issues reported by users",
     },
+    {
+      id: "total-reviews",
+      icon: "Star",
+      value: dashboardData.total_reviews.toString(),
+      trend: {
+        direction: "up" as const,
+        percentage: 5,
+      },
+      title: "Total Reviews",
+      description: "Customer feedback received",
+    }
   ];
 
   return (
@@ -87,21 +119,42 @@ export default function Page() {
       <div className="!pb-6 ">
         <h3 className="text-lg font-semibold">Overview</h3>
         <p className="text-sm text-muted-foreground font-medium">
-          Activities summary at a glance{" "}
+          {overView?.message || "Loading dashboard data..."}
         </p>
       </div>
-      <div className="space-y-6!">
+      <div className="space-y-6">
         <div className="grid grid-cols-3 gap-6 !pr-6">
-          {mockStats.slice(0, 3).map((x, i) => (
-            <StatCard data={x} key={i} />
+          {stats.slice(0, 3).map((x, i) => (
+            <StatCard
+              data={{
+                id: x.id,
+                icon: x.icon,
+                value: x.value,
+
+                title: x.title,
+                description: x.description,
+              }}
+              key={i}
+            />
           ))}
         </div>
         <div className="grid grid-cols-4 gap-6 !pr-6">
-          {mockStats.slice(3, 7).map((x, i) => (
-            <StatCard data={x} key={i} />
+          {stats.slice(3, 7).map((x, i) => (
+            <StatCard
+              data={{
+                id: x.id,
+                icon: x.icon,
+                value: x.value,
+
+                title: x.title,
+                description: x.description,
+              }}
+              key={i}
+            />
           ))}
         </div>
       </div>
+
       <div className="!mt-6 !pr-6">
         <ChartPart />
       </div>

@@ -154,3 +154,19 @@ export interface FoodDetailsResponse {
     similar_foods: FoodItem[];
   };
 }
+
+export interface TotalOrders {
+  pending: number;
+  preparing: number;
+  shipped: number;
+  delivered: number;
+  cancelled: number;
+}
+
+export interface DashboardData {
+  seller_count: number;
+  buyer_count: number;
+  total_orders: TotalOrders;
+  total_reports: number;
+  total_reviews: number;
+}

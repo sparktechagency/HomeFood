@@ -8,10 +8,6 @@ interface StatCardProps {
     id: string;
     icon: string;
     value: string;
-    trend: {
-      direction: "up" | "down" | "neutral";
-      percentage: number;
-    };
     title: string;
     description: string;
   };
@@ -19,21 +15,12 @@ interface StatCardProps {
 }
 
 export function StatCard({ data, className }: StatCardProps) {
-  const { icon, value, trend, title, description } = data;
+  const { icon, value, title, description } = data;
 
   // Dynamically get the icon component
   const IconComponent = ((Icons as any)[icon] as LucideIcon) || Icons.BarChart3;
 
-  const getTrendIcon = () => {
-    switch (trend.direction) {
-      case "up":
-        return <TrendingUp className="h-4 w-4" />;
-      case "down":
-        return <TrendingDown className="h-4 w-4" />;
-      default:
-        return <Minus className="h-4 w-4" />;
-    }
-  };
+
 
   return (
     <Card
@@ -51,7 +38,7 @@ export function StatCard({ data, className }: StatCardProps) {
 
         <div className="space-y-2!">
           <div className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            {value} {getTrendIcon()}
+            {value}
           </div>
           <div>
             <h3

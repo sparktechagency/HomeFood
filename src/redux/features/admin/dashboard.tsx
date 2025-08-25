@@ -77,7 +77,13 @@ export const dashboardSlice = api.injectEndpoints({
         body,
       }),
       invalidatesTags: ["privacy"],
-    })
+    }),
+
+
+    getoverview: builder.query<any, any>({
+      query: () => `/admin-dashbaord`,
+      providesTags: ["overview"],
+    }),
 
 
 
@@ -90,4 +96,4 @@ export const dashboardSlice = api.injectEndpoints({
 });
 
 
-export const { useGetDashboardQuery, useGetbyersQuery, useDeleteBuyerMutation, useGetSelersQuery, useDeleteSellerMutation, useGetAllFaqQuery, useCreateFaqMutation, useGetAboutQuery, useCreateAboutMutation, useGetPrivacyQuery, useCreatePrivacyMutation } = dashboardSlice;
+export const { useGetDashboardQuery, useGetbyersQuery, useDeleteBuyerMutation, useGetSelersQuery, useDeleteSellerMutation, useGetAllFaqQuery, useCreateFaqMutation, useGetAboutQuery, useCreateAboutMutation, useGetPrivacyQuery, useCreatePrivacyMutation, useGetoverviewQuery } = dashboardSlice;

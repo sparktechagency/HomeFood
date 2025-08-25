@@ -28,6 +28,7 @@ export const api = createApi({
     "privacy",
     "foodreview",
     "message",
+    "overview",
   ],
   endpoints: () => ({}),
 });
