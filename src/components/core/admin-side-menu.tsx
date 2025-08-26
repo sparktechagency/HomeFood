@@ -64,6 +64,11 @@ export default function AdminSideMenu() {
       key: "content",
       icon: <NewsletterIcon className="size-6" />,
     },
+    {
+      label: "Category management",
+      key: "category",
+      icon: <CategoriesIcon className="size-6" />,
+    },
     // { label: "Chat", key: "chat", icon: <ChatsIcon className="size-6" /> },
     {
       label: "Settings",

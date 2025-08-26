@@ -31,9 +31,13 @@ import { Input } from "@/components/ui/input";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 export default function FoodDetailsPage() {
   const { id } = useParams();
+  const { data: user } = useGetOwnprofileQuery({});
+  console.log('user', user);
+
   const { data, isLoading, isError } = useGetFoodDetaisByIdQuery(id as string, { skip: !id });
   const [mainImage, setMainImage] = useState<string | null>(null);
   const { data: review, isLoading: reviewLoading, refetch } = useGetFoodReviewByIdQuery(id as string, { skip: !id });
@@ -60,6 +64,11 @@ export default function FoodDetailsPage() {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
   const handleSubmit = async () => {
+
+
+    if (!user?.data) {
+      return toast.error("Please login to add review")
+    }
     // Basic validation
     if (rating === 0 || text.trim() === "") {
       alert("Please provide a rating and a comment.");
@@ -71,7 +80,6 @@ export default function FoodDetailsPage() {
     };
     try {
       const response = await CreateReview({ data, id }).unwrap();
-      console.log('response', response);
       if (response?.success) {
         toast.success(response?.message || "Review added successfully")
         refetch()
@@ -131,15 +139,19 @@ export default function FoodDetailsPage() {
             />
             <div className="grid grid-cols-4 gap-4">
               {images.map((img: string, index: number) => (
-                <button key={index} onClick={() => setMainImage(`${imageUrl}${img}`)}>
+                <button
+                  key={index}
+                  onClick={() => setMainImage(`${imageUrl}${img}`)}
+                  className="relative h-[120px] w-[150px] bg-black rounded-xl overflow-hidden"
+                >
                   <Image
                     src={`${imageUrl}${img}`}
-                    height={150}
-                    width={200}
                     alt={`${food.title} thumbnail ${index + 1}`}
-                    className="object-cover rounded-xl cursor-pointer hover:opacity-80 transition-opacity"
+                    fill
+                    className="object-cover cursor-pointer hover:opacity-80 transition-opacity"
                   />
                 </button>
+
               ))}
             </div>
           </div>
@@ -154,6 +166,7 @@ export default function FoodDetailsPage() {
               <h4 className="text-primary font-bold text-3xl">${food.price.toFixed(2)}</h4>
             </div>
             <h5><span className="font-semibold">Available Quantity:</span> {food.quantity} portions</h5>
+            <h5><span className="font-semibold">Availability time :</span> {food.delivery_time}</h5>
             <h5><span className="font-semibold">Packaging:</span> {food.container_size}</h5>
             <div className="flex gap-2 items-center">
               <span className="font-semibold">Dietary Aspects: </span>
@@ -161,83 +174,84 @@ export default function FoodDetailsPage() {
             </div>
 
             {/* Order and Delivery Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="w-full" asChild>
-                <Button className="rounded-full flex justify-between items-center font-semibold" size="lg">
-                  <span>Order and Delivery</span> <ChevronDown className="size-5 " />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[calc(100vw-2rem)] md:w-[400px] ">
-                <div className="p-4 space-y-4">
 
-                  <div className="space-y-2">
-                    <h2 className="font-semibold flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      Available Dates
-                    </h2>
-                    <div className="flex gap-2">
-                      {availableDates.map((date) => (
-                        <Badge key={date.label} variant="outline">
-                          {date.label}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="font-semibold flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      Pickup Time
-                    </h2>
-                    <p className="text-sm text-muted-foreground">{food.delivery_time || "11:00 AM - 9:00 PM"}</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="font-semibold flex items-center gap-2">
-                      <Info className="w-4 h-4" />
-                      Advance Order
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      Recommended for orders &gt;4 portions
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="font-semibold flex items-center gap-2">
-                      <Package className="w-4 h-4" />
-                      Packaging
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {food.container_size || "Eco-friendly containers"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="font-semibold flex items-center gap-2">
-                      Delivery Options
-                    </h2>
-                    <div className="flex items-center gap-2">
-                      {food.delivery_option.includes('pickup') || food.delivery_option.includes('both') ? (
-                        <Badge>Pickup</Badge>
-                      ) : null}
-                      {food.delivery_option.includes('delivery') || food.delivery_option.includes('both') ? (
-                        <Badge variant="outline">Delivery</Badge>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* Action Buttons */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
+              {/* <Button
                 size="lg"
                 className="rounded-full"
                 onClick={handleAddToCart}
               >
                 Add to Cart
-              </Button>
+              </Button> */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="w-full" asChild>
+                  <Button className="rounded-full flex justify-between items-center font-semibold" size="lg">
+                    <span>Order and Delivery</span> <ChevronDown className="size-5 " />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[calc(100vw-2rem)] md:w-[400px] ">
+                  <div className="p-4 space-y-4">
+
+                    <div className="space-y-2">
+                      <h2 className="font-semibold flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        Available Dates
+                      </h2>
+                      <div className="flex gap-2">
+                        {availableDates.map((date) => (
+                          <Badge key={date.label} variant="outline">
+                            {date.label}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h2 className="font-semibold flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        Pickup Time
+                      </h2>
+                      <p className="text-sm text-muted-foreground">{food.delivery_time || "11:00 AM - 9:00 PM"}</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h2 className="font-semibold flex items-center gap-2">
+                        <Info className="w-4 h-4" />
+                        Advance Order
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        Recommended for orders &gt;4 portions
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h2 className="font-semibold flex items-center gap-2">
+                        <Package className="w-4 h-4" />
+                        Packaging
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        {food.container_size || "Eco-friendly containers"}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h2 className="font-semibold flex items-center gap-2">
+                        Delivery Options
+                      </h2>
+                      <div className="flex items-center gap-2">
+                        {food.delivery_option.includes('pickup') || food.delivery_option.includes('both') ? (
+                          <Badge>Pickup</Badge>
+                        ) : null}
+                        {food.delivery_option.includes('delivery') || food.delivery_option.includes('both') ? (
+                          <Badge variant="outline">Delivery</Badge>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button
                 size="lg"
                 className="rounded-full"
@@ -278,8 +292,16 @@ export default function FoodDetailsPage() {
 
             <TabsContent value="description" className="py-4 text-muted-foreground">
               {food.description}
+              <div className="flex gap-2 mt-4 items-center">
+                <span className="font-semibold">Dietary Aspects: </span>
+                <Badge>{food.dietary_info}</Badge>
+              </div>
             </TabsContent>
             <TabsContent value="ingredients" className="py-4 text-muted-foreground">
+              <div className="flex gap-2 my-4 items-center">
+                <span className="font-semibold">Dietary Aspects: </span>
+                <Badge>{food.dietary_info}</Badge>
+              </div>
               {food.ingredients}
             </TabsContent>
             <TabsContent value="reviews" className="py-4 text-muted-foreground">

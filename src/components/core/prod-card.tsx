@@ -142,12 +142,27 @@ export default function ProductCard({
       <Link href={`${userRole === 'SELLER' ? '/seller' : '/buyer'}/product/${item.id}`} className="block h-full">
         <CardHeader className="!p-0 relative !gap-0">
           <div className="relative w-full aspect-video overflow-hidden">
-            <Image
-              src={imageUrl + item.images}
-              alt={item.title}
-              fill
-              className="object-cover w-full h-full"
-            />
+            {Array.isArray(item.images) ? (
+              // যদি array হয়
+              item.images.map((img, idx) => (
+                <Image
+                  key={idx}
+                  src={imageUrl + img}
+                  alt={item.title}
+                  fill
+                  className="object-cover w-full h-full"
+                />
+              ))
+            ) : (
+              // যদি string হয়
+              <Image
+                src={imageUrl + item.images}
+                alt={item.title}
+                fill
+                className="object-cover w-full h-full"
+              />
+            )}
+
           </div>
           <div className="hidden md:block absolute top-0 left-0 text-background text-[10px] !p-2 bg-[#FF6A0050] rounded-br-lg z-10">
             {item.delivery_time}

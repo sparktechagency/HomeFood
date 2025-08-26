@@ -187,8 +187,10 @@ export default function Navbar() {
         {!isProfileLoading && signedIn ? (
           <>
 
+
+            {/* ADD TO CARD ICON ------------------------ */}
             <Sheet>
-              <SheetTrigger asChild>
+              {/* <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <ShoppingCart className="h-5 w-5" />
                   {cartItems.length > 0 && (
@@ -197,7 +199,7 @@ export default function Navbar() {
                     </span>
                   )}
                 </Button>
-              </SheetTrigger>
+              </SheetTrigger> */}
               <SheetContent className="w-full bg-red-400 sm:w-96">
                 {/* The CartPage component goes in here */}
                 <CartPage />

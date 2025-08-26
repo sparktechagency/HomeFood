@@ -60,6 +60,7 @@ export interface FilterParams {
   per_page?: number;
   page?: number;
   pickup_time?: any;
+  delivery_time?: any;
 }
 export interface Category {
   id: number;

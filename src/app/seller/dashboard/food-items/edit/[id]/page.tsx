@@ -1,4 +1,6 @@
+
 "use client";
+
 import {
   Form,
   FormControl,
@@ -17,19 +19,11 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon, Upload } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useGetAllCategorysQuery } from "@/redux/features/categorys/CategoryApi";
 import { useParams, useRouter } from "next/navigation";
@@ -40,7 +34,7 @@ import {
 } from "@/redux/features/Seller/SellerApi";
 import { imageUrl } from "@/redux/baseApi";
 
-// Zod schema for form validation
+// --- 1. UPDATED ZOD SCHEMA FOR TIME AND IMAGES ---
 const formSchema = z.object({
   category: z.string().min(1, "Please select a category"),
   title: z.string().min(1, "Please enter a title"),
@@ -49,34 +43,30 @@ const formSchema = z.object({
   dietaryInfo: z.string().min(1, "Please select dietary info"),
   price: z.string().min(1, "Please enter a price"),
   quantityAvailability: z.string().min(1, "Please enter quantity"),
-  image: z.any().optional(),
+  image: z.array(z.any()).optional(), // For new uploads
   containerSize: z.string().optional(),
   containerWeight: z.string().optional(),
   deliveryOption: z.enum(["delivery", "pickup", "both"]),
   minimumOrder: z.string().min(1, "Please enter minimum order"),
   deliveryFee: z.string().min(1, "Please enter delivery fee"),
-  deliveryDate: z
-    .date({
-      required_error: "Please select a delivery date",
-    })
-    .optional(),
-  deliveryTime: z.string(),
+  // Separate fields for time inputs
+  deliveryStartTime: z.string().min(1, "Start time is required"),
+  deliveryEndTime: z.string().min(1, "End time is required"),
 });
 
 export default function Page() {
-  // 1. Get the food item ID from the URL parameters
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
-  // 2. Setup RTK Query hooks for API interaction
-  const { data: foodData, isLoading: isFetching } = useGetFoodDetaisByIdQuery(id);
+
+  const { data: foodResponse, isLoading: isFetching } = useGetFoodDetaisByIdQuery(id);
   const [updateFooditem, { isLoading: isUpdating }] = useUpdateFooditemMutation();
   const { data: allCategorys } = useGetAllCategorysQuery({});
 
-  // 3. State for handling new and existing images
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
-  console.log('existingImageUrl', existingImageUrl);
+  // --- 2. ADVANCED STATE FOR IMAGE MANAGEMENT ---
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
 
   const categories =
     allCategorys?.data?.data?.map((category: any) => ({
@@ -86,7 +76,6 @@ export default function Page() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // Default values are set once data is fetched inside useEffect
     defaultValues: {
       category: "",
       title: "",
@@ -100,69 +89,122 @@ export default function Page() {
       deliveryOption: "delivery",
       minimumOrder: "",
       deliveryFee: "",
-      deliveryTime: "",
+      deliveryStartTime: "",
+      deliveryEndTime: "",
+      image: [],
     },
   });
 
-  // 4. useEffect to populate the form when the food data is loaded
+  // --- 3. HELPER FUNCTION TO PARSE 12-HOUR TIME TO 24-HOUR FORMAT ---
+  const parse12HourTime = (timeStr: string): string => {
+    if (!timeStr) return "";
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (hours === "12") {
+      hours = "00";
+    }
+    if (modifier.toUpperCase() === "PM") {
+      hours = (parseInt(hours, 10) + 12).toString();
+    }
+    return `${hours.padStart(2, "0")}:${minutes}`;
+  };
+
+  // --- 4. USEEFFECT TO POPULATE FORM WITH EXISTING DATA ---
   useEffect(() => {
-    if (foodData?.data) {
-      const data = foodData.data;
+    if (foodResponse?.data?.food) {
+      const foodData = foodResponse.data.food;
+
+      // Parse delivery time
+      const [startTime12, endTime12] = foodData.delivery_time.split(" - ");
+      const startTime24 = parse12HourTime(startTime12);
+      const endTime24 = parse12HourTime(endTime12);
+
       form.reset({
-        category: String(data.category_id),
-        title: data.title,
-        ingredients: data.ingredients,
-        description: data.description,
-        dietaryInfo: data.dietary_info,
-        price: String(data.price),
-        quantityAvailability: String(data.quantity),
-        containerSize: data.container_size || "",
-        containerWeight: data.container_weight || "",
-        deliveryOption: data.delivery_option,
-        minimumOrder: String(data.minimum_order),
-        deliveryFee: String(data.delivery_fee),
-        deliveryTime: data.delivery_time,
+        category: String(foodData.category_id),
+        title: foodData.title,
+        ingredients: foodData.ingredients,
+        description: foodData.description,
+        dietaryInfo: foodData.dietary_info,
+        price: String(foodData.price),
+        quantityAvailability: String(foodData.quantity),
+        containerSize: foodData.container_size || "",
+        containerWeight: foodData.container_weight || "",
+        deliveryOption: foodData.delivery_option,
+        minimumOrder: String(foodData.minimum_order),
+        deliveryFee: String(foodData.delivery_fee),
+        deliveryStartTime: startTime24,
+        deliveryEndTime: endTime24,
       });
 
-      if (data.images && data.images.length > 0) {
-        setExistingImageUrl(`${imageUrl}${data.images[0]}`);
+      if (foodData.images) {
+        setExistingImages(foodData.images);
       }
     }
-  }, [foodData, form]);
+  }, [foodResponse, form]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      form.setValue("image", file);
-      // Clear the existing image preview to show that a new image is selected
-      if (existingImageUrl) {
-        setExistingImageUrl(null);
-      }
+  const handleNewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setNewImages((prev) => [...prev, ...filesArray]);
     }
   };
 
-  // 5. Form submission handler
+  const handleRemoveExistingImage = (imageUrlToRemove: string) => {
+    setExistingImages((prev) => prev.filter((img) => img !== imageUrlToRemove));
+    setImagesToRemove((prev) => [...prev, imageUrlToRemove]);
+  };
+
+  const handleRemoveNewImage = (imageNameToRemove: string) => {
+    setNewImages((prev) => prev.filter((img) => img.name !== imageNameToRemove));
+  };
+
+  // --- 5. UPDATED SUBMISSION HANDLER ---
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // Format time back to 12-hour format for the API
+    const formatTime = (time24: string) => {
+      if (!time24) return "";
+      const [hours, minutes] = time24.split(":");
+      let h = parseInt(hours, 10);
+      const ampm = h >= 12 ? "PM" : "AM";
+      h %= 12;
+      h = h || 12;
+      return `${String(h).padStart(2, '0')}:${minutes} ${ampm}`;
+    };
+
+    const finalDeliveryTime = `${formatTime(values.deliveryStartTime)} - ${formatTime(values.deliveryEndTime)}`;
+
     const formData = new FormData();
     formData.append("_method", "PUT");
-    formData.append("category_id", values.category);
-    formData.append("title", values.title);
-    formData.append("ingredients", values.ingredients);
-    formData.append("description", values.description);
-    formData.append("dietary_info", values.dietaryInfo);
-    formData.append("price", values.price);
-    formData.append("quantity", values.quantityAvailability);
-    formData.append("container_size", values.containerSize || "");
-    formData.append("container_weight", values.containerWeight || "");
-    formData.append("delivery_option", values.deliveryOption);
-    formData.append("minimum_order", values.minimumOrder);
-    formData.append("delivery_fee", values.deliveryFee);
-    formData.append("delivery_time", values.deliveryTime);
+    // Append all text fields
+    Object.entries(values).forEach(([key, value]) => {
+      if (key !== 'image' && key !== 'deliveryStartTime' && key !== 'deliveryEndTime' && value !== undefined) {
+        const apiKeys: { [key: string]: string } = {
+          category: 'category_id',
+          quantityAvailability: 'quantity',
+          dietaryInfo: 'dietary_info',
+          containerSize: 'container_size',
+          containerWeight: 'container_weight',
+          deliveryOption: 'delivery_option',
+          minimumOrder: 'minimum_order',
+          deliveryFee: 'delivery_fee'
+        };
+        formData.append(apiKeys[key] || key, String(value));
+      }
+    });
 
-    // Only append a new image if the user has selected one
-    if (selectedImage) {
-      formData.append("images[]", selectedImage);
+    formData.append("delivery_time", finalDeliveryTime);
+
+    // Append new images
+    newImages.forEach((file) => {
+      formData.append("images[]", file);
+    });
+
+    // Append images marked for removal
+    if (imagesToRemove.length > 0) {
+      imagesToRemove.forEach((imgUrl) => {
+        formData.append("remove_images[]", imgUrl);
+      });
     }
 
     try {
@@ -171,11 +213,11 @@ export default function Page() {
         toast.success(response?.message || "Food item updated successfully!");
         router.push("/seller/dashboard/food-items");
       } else {
-        toast.error(response?.message || "Update failed. Please try again.");
+        toast.error(response?.message || "Update failed.");
       }
     } catch (error) {
       console.error("Update failed:", error);
-      toast.error("An unexpected error occurred during the update.");
+      toast.error("An unexpected error occurred.");
     }
   };
 
@@ -188,9 +230,9 @@ export default function Page() {
       <div className="mb-6!">
         <h1 className="text-2xl! font-bold!">Edit your food item</h1>
       </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6!">
+          {/* Other Form Fields (Category, Title, etc.) remain here... */}
           <FormField
             control={form.control}
             name="category"
@@ -320,59 +362,76 @@ export default function Page() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="image"
-            render={() => (
-              <FormItem>
-                <FormLabel>Image of the Food</FormLabel>
-                {existingImageUrl && (
-                  <div className="my-4">
-                    <p className="text-sm font-medium mb-2">Current Image:</p>
-                    <Image
-                      src={existingImageUrl}
-                      alt="Current food item"
-                      width={150}
-                      height={150}
-                      className="rounded-lg object-cover"
-                    />
-                  </div>
-                )}
-                <div className="border-2! border-dashed! border-gray-300! rounded-lg! p-8!">
-                  <div className="text-center!">
-                    <p className="text-sm! text-gray-600! mb-4!">
-                      {selectedImage
-                        ? "New image selected"
-                        : "Upload new image to replace current one"}
-                    </p>
-                    <label
-                      htmlFor="image-upload"
-                      className="cursor-pointer!"
-                    >
-                      <div className="flex! items-center! gap-2! bg-gray-100! hover:bg-gray-200! px-4! py-2! rounded-md! transition-colors!">
-                        <Upload className="w-4! h-4!" />
-                        <span className="text-sm!">Upload Image</span>
-                      </div>
-                      <input
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden!"
-                        onChange={handleImageChange}
-                      />
-                    </label>
-                    {selectedImage && (
-                      <p className="text-sm! text-green-600! mt-2!">
-                        {selectedImage.name}
-                      </p>
-                    )}
-                  </div>
+          {/* --- 6. ADVANCED IMAGE UPLOAD UI --- */}
+          <FormItem>
+            <FormLabel>Food Images</FormLabel>
+            {/* Display Existing Images */}
+            <div className="my-2 flex flex-wrap gap-4">
+              {existingImages.map((imgUrl) => (
+                <div key={imgUrl} className="relative">
+                  <Image
+                    src={`${imageUrl + imgUrl}`}
+                    alt="Existing food item"
+                    width={100}
+                    height={100}
+                    className="rounded-lg object-cover"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                    onClick={() => handleRemoveExistingImage(imgUrl)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              ))}
+            </div>
+            {/* Display New Images to be Uploaded */}
+            <div className="my-2 flex flex-wrap gap-4">
+              {newImages.map((file, index) => (
+                <div key={index} className="relative">
+                  <Image
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    width={100}
+                    height={100}
+                    className="rounded-lg object-cover"
+                    onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)} // Clean up object URL
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                    onClick={() => handleRemoveNewImage(file.name)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            {/* Upload Area */}
+            <div className="border-2! border-dashed! border-gray-300! rounded-lg! p-8!">
+              <div className="text-center!">
+                <label htmlFor="image-upload" className="cursor-pointer!">
+                  <div className="flex! items-center! justify-center! gap-2! bg-gray-100! hover:bg-gray-200! px-4! py-2! rounded-md! transition-colors!">
+                    <Upload className="w-4! h-4!" />
+                    <span className="text-sm!">Add More Images</span>
+                  </div>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden!"
+                    multiple
+                    onChange={handleNewImageChange}
+                  />
+                </label>
+              </div>
+            </div>
+          </FormItem>
 
           <FormField
             control={form.control}
@@ -477,63 +536,35 @@ export default function Page() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="deliveryDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full! pl-3! text-left! font-normal!",
-                          !field.value && "text-muted-foreground!"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto! h-4! w-4! opacity-50!" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto! p-0!" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="deliveryTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery Time</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Please enter delivery time"
-                    {...field}
-                    type="time"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* --- 7. UPDATED DELIVERY TIME FIELDS --- */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="deliveryStartTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Delivery Start Time</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="deliveryEndTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Delivery End Time</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <Button type="submit" className="w-full! bg-primary" disabled={isUpdating}>
             {isUpdating ? "Updating..." : "Update Food Item"}

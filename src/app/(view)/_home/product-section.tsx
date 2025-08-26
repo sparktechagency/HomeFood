@@ -19,13 +19,16 @@ interface ProdSectionProps {
 
 export default function ProdSection({ filters, onPageChange }: ProdSectionProps) {
   // Pass the entire filters object to the hook. RTK Query will refetch automatically when it changes.
-  const { data, isLoading, isError, refetch } = useGetAllHomeFoodItemsQuery(filters);
+  const { data, isLoading, refetch } = useGetAllHomeFoodItemsQuery(filters);
+  console.log('filters', filters);
 
-  console.log('data', data);
+  console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaa', data);
 
   const [showGrid, setShowGrid] = useState(true);
   const [showMap, setShowMap] = useState(true);
   const { location: userLocation, error: locationError } = useUserLocation();
+
+
   // Your existing toggle logic for grid/map view
   const handleToggleGrid = () => {
     if (showGrid && !showMap) return;
@@ -42,10 +45,7 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
     return <div className="text-center py-10">Loading products...</div>;
   }
 
-  // Render error state
-  if (isError) {
-    return <div className="text-center py-10 text-red-500">Failed to load products. Please try again.</div>;
-  }
+
 
   // Render empty state
   if (!data || data.data.length === 0) {
@@ -119,7 +119,7 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
 
         {showMap && (
           <div className={`${showGrid ? "col-span-full md:col-span-4 2xl:col-span-6" : "col-span-full"}`}>
-            <MapView userLocation={userLocation} foodItems={data.data} />
+            <MapView />
           </div>
         )}
 

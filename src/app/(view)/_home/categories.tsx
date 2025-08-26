@@ -48,8 +48,8 @@ export default function Categories() {
           <CarouselContent className="-ml-2 md:-ml-4">
             {/* Handle Loading State */}
             {isLoading &&
-              Array.from({ length: 8 }).map((_, i) => (
-                <CarouselItem key={`skeleton-${i}`} className="pl-2 md:pl-4 basis-1/4 md:basis-1/8">
+              Array.from({ length: 18 }).map((_, i) => (
+                <CarouselItem key={`skeleton-${i}`} className="pl-2 md:pl-4 basis-1/4 md:basis-1/16">
                   <div className="flex flex-col items-center gap-2">
                     <Skeleton className="h-20 w-20 rounded-lg" />
                     <Skeleton className="h-4 w-16" />
@@ -65,20 +65,20 @@ export default function Categories() {
               categories.map((category) => (
                 <CarouselItem
                   key={category.id}
-                  className="pl-2 md:pl-4 basis-1/4 sm:basis-1/6 md:basis-1/8"
+                  className="pl-2 md:pl-4 basis-1/4 sm:basis-1/6 md:basis-1/16"
                 >
                   <div
                     // href={`/listing?category=${category.slug}`}
                     className="group cursor-pointer flex flex-col items-center gap-2 text-center p-1"
                   >
-                    <div className="relative h-20 w-20 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
+                    <div className="relative h-14 w-14 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
                       {category.image ? (
                         <Image
                           src={`${imageUrl + category.image}`}
                           alt={category.name}
                           fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 25vw, 12.5vw"
+                          className="object-cover "
+                          sizes="(max-width: 758px) 20vw, 10.5vw "
                         />
                       ) : (
                         <div className="text-gray-400 text-3xl font-bold">
