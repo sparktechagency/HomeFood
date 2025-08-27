@@ -21,7 +21,7 @@ export const chatApi = api.injectEndpoints({
         }),
 
         getAllmesageByid: builder.query({
-            query: ({ page, per_page, id }) => `/chat-messages/${id}&per_page=${per_page}&page=${page}`,
+            query: ({ page, per_page, id }) => `/chat-messages/${id}?per_page=${per_page}&page=${page}`,
             providesTags: ["message"],
         }),
 

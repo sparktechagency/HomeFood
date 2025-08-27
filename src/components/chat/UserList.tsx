@@ -18,6 +18,10 @@ export default function UserList({
 }: any) {
 
 
+    // console.log('users', users);
+
+
+
 
     return (
         <div className="col-span-2 border rounded-lg flex flex-col h-[calc(100vh-100px)]">

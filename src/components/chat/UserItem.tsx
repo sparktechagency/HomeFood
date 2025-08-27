@@ -11,6 +11,7 @@ import { imageUrl } from "@/redux/baseApi";
 
 
 export default function UserItem({ user, onClick, showLastMessage = false }: any) {
+    // console.log('user', user);
 
 
     const [markAsReadMessage] = useMarkAsReadMessageMutation();
