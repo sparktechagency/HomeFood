@@ -248,7 +248,7 @@ export const sorts = [
     title: "Price Range",
     kind: "dual-slider",
     filterKey: "price",
-    child: [0, 1000],
+    child: [0, 1000000],
   },
   {
     title: "Pickup Time",
@@ -418,11 +418,11 @@ export default function ListingFilters({ filters, onFilterChange }: ListingFilte
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-[300px] p-4">
                         <DualRangeSlider
-                          value={[filters.min_price ?? 0, filters.max_price ?? 1000]}
+                          value={[filters.min_price ?? 0, filters.max_price ?? 1000000]}
                           onValueChange={(value) => onFilterChange({ min_price: value[0], max_price: value[1] })}
-                          min={0} max={1000} step={10}
+                          min={0} max={1000000} step={1}
                         />
-                        <div className="text-center mt-2">${filters.min_price ?? 0} - ${filters.max_price ?? 1000}</div>
+                        <div className="text-center mt-2">${filters.min_price ?? 0} - ${filters.max_price ?? 1000000}</div>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   );

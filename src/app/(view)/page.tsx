@@ -44,7 +44,7 @@ export default function SearchPage() {
     per_page: 10,
     search: "",
     min_price: 0,
-    max_price: 1000,
+    max_price: 1000000,
     dietary_info: [],
     rating: undefined,
     listing_by_seller: 0,

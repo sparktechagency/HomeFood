@@ -27,7 +27,6 @@ export default function Page() {
     const [allMessages, setAllMessages] = useState<any>([]);
     const [hasMore, setHasMore] = useState(true);
     const [isSending, setIsSending] = useState(false);
-    console.log('allmessages', allMessages);
     // Refs
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -68,7 +67,7 @@ export default function Page() {
                 sender_id: firstChat.sender_id
             });
         }
-    }, [chatlistData, searchData, isSearchActive, selectedUser]);
+    }, [chatlistData, searchData, isSearchActive, selectedUser, userInfo?.data?.id]);
     // Track when search is active
     useEffect(() => {
         setIsSearchActive(searchQuery.length >= 2);

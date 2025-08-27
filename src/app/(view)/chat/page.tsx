@@ -34,6 +34,7 @@ export default function Page() {
 
     // API calls
     const { data: chatlistData, isLoading: chatListLoading, refetch: refetchChat } = useGetChatlistQuery();
+    console.log('chatlistData', chatlistData);
 
     const { data: searchData, isLoading: isSearchLoading } = useSearchuserQuery(
         { search: searchQuery },
@@ -189,6 +190,7 @@ export default function Page() {
 
     const displayUsers = isSearchActive ? searchData?.data || [] : chatListUsers;
     const showEmptyState = displayUsers.length === 0 && !chatListLoading && !isSearchLoading;
+    console.log('displayUsers', displayUsers);
 
 
     return (
