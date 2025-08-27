@@ -46,11 +46,9 @@ export default function Page() {
     const { data: userInfo } = useGetOwnprofileQuery({});
     const [sendMessage] = useSendMessageMutation();
 
+
     // Socket connection
     const socket = getSocket();
-
-    // Auto-select first user logic
-    // Auto-select first user logic
     useEffect(() => {
         // When search is active and we have search results
         if (isSearchActive && searchData?.data?.length > 0) {
@@ -83,7 +81,7 @@ export default function Page() {
         if (isSocketConnected() && userInfo?.data?.id) {
             socket?.emit("join", { userId: userInfo?.data?.id });
 
-            socket?.on("message", (data) => {
+            socket?.on("sendMessage", (data) => {
                 refetchChat();
                 fetachMessage();
             });
@@ -92,7 +90,7 @@ export default function Page() {
         }
 
         return () => {
-            socket?.off("message");
+            socket?.off("sendMessage");
         };
     }, [selectedUser?.id, socket]);
 
@@ -128,26 +126,49 @@ export default function Page() {
     };
 
     // Message sending handler
+    // In your Page component
+
     const handleSendMessage = async (message: string) => {
         if (!selectedUser || !message.trim() || isSending) return;
 
-        setIsSending(true);
+        // 1. Create a temporary message object for the UI
+        // This object should match the structure of your other messages
+        const optimisticMessage = {
+            id: Date.now(), // A temporary, unique ID for the React key
+            chat_id: selectedUser.id,
+            message: message,
+            is_send: true, // Assuming this flag means it's from the current user
+            created_at: new Date().toISOString(), // Use current time
+            // Add any other properties your MessageBubble component needs
+            sender: {
+                id: userInfo?.data?.id,
+                full_name: userInfo?.data?.full_name,
+                profile: userInfo?.data?.profile,
+            }
+        };
+
+        // 2. Immediately add the new message to your local state
+        setAllMessages((prevMessages: any) => [...prevMessages, optimisticMessage]);
+
+        // 3. Send the message to the server in the background
         try {
-            const response = await sendMessage({
+            await sendMessage({
                 chat_id: selectedUser.id,
                 message
             }).unwrap();
-            console.log('response', response);
 
-            if (response?.status) {
-                fetachMessage();
-            }
-            socket?.emit("message", {
-                receiverId: selectedUser.id,
+            // Optional: After success, you can refetch to sync, but it's often not needed.
+            // fetachMessage(); // You can remove this line to prevent the redundant fetch.
+
+            socket?.emit("sendMessage", {
+                chat_id: selectedUser.id,
                 message: message
             });
+
         } catch (error) {
             console.error("Error sending message:", error);
+            // Handle the error: maybe show a "failed to send" icon next to the message
+            // You could update the state to mark this specific message as failed.
         } finally {
             setIsSending(false);
         }
