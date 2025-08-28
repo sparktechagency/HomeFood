@@ -139,7 +139,6 @@ export default function Page() {
         };
 
         setAllMessages((prevMessages) => [...prevMessages, optimisticMessage]);
-
         try {
             await sendMessage({
                 chat_id: selectedUser.id,

@@ -106,7 +106,7 @@ export default function Navbar() {
       </div>
 
       {/* Right: Actions */}
-      <div className="flex-shrink-0 flex items-center gap-2 md:gap-4">
+      <div className="flex-shrink-0 flex items-center gap-2 md:gap-4 ">
         {/* Mobile Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
@@ -115,11 +115,11 @@ export default function Navbar() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="!p-6 w-full">
+          <SheetContent side="right" className="!p-6 mt-16 w-full">
             <SheetHeader className="hidden">
               <SheetTitle></SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col gap-4 !mt-8">
+            <div className="flex flex-col gap-4 ">
               <Link href="/" className="text-3xl font-extrabold tracking-tight flex items-center space-x-1">
                 <span className="text-gray-900">Home</span>
                 <span className="text-[#4F986F]">Food</span>

@@ -1,7 +1,169 @@
-// src/components/product-section.tsx
+
+
+// "use client";
+
+// import React, { useState } from "react";
+// import { Grid3X3Icon, MapPinIcon } from "lucide-react";
+// import ProductCard from "@/components/core/prod-card";
+// import { Button } from "@/components/ui/button";
+// import { useGetAllHomeFoodItemsQuery } from "@/redux/features/Foodsitems/FoodApi";
+// import { FilterParams, FoodItem } from "@/lib/types/api";
+// import { useUserLocation } from "@/hooks/useUserLocation";
+// import MapView from "@/components/MapView";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// // Define the props for this component
+// interface ProdSectionProps {
+//   filters: FilterParams;
+//   onPageChange: (newPage: number) => void;
+// }
+
+// export default function ProdSection({ filters, onPageChange }: ProdSectionProps) {
+//   const { data, isLoading, refetch } = useGetAllHomeFoodItemsQuery(filters);
+
+//   // State for desktop view (grid, map, or both)
+//   const [showGrid, setShowGrid] = useState(true);
+//   const [showMap, setShowMap] = useState(true);
+
+//   // Dedicated state for mobile view (either grid or map)
+//   const [activeMobileView, setActiveMobileView] = useState<'grid' | 'map'>('grid');
+
+//   const { location: userLocation, error: locationError } = useUserLocation();
+
+//   // Desktop toggle logic
+//   const handleToggleGrid = () => {
+//     if (showGrid && !showMap) return; // Prevent hiding the last visible element
+//     setShowGrid(!showGrid);
+//   };
+
+//   const handleToggleMap = () => {
+//     if (showMap && !showGrid) return; // Prevent hiding the last visible element
+//     setShowMap(!showMap);
+//   };
+
+//   // A much better loading state using skeletons
+//   if (isLoading) {
+//     return (
+//       <section className="!mt-12">
+//         <div className="flex justify-between items-center pb-4">
+//           <Skeleton className="h-10 w-48" />
+//           <div className="flex gap-2">
+//             <Skeleton className="h-10 w-10" />
+//             <Skeleton className="h-10 w-10" />
+//           </div>
+//         </div>
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//           {Array.from({ length: 8 }).map((_, i) => (
+//             <div key={i} className="space-y-2">
+//               <Skeleton className="h-48 w-full rounded-lg" />
+//               <Skeleton className="h-6 w-3/4" />
+//               <Skeleton className="h-4 w-1/2" />
+//             </div>
+//           ))}
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   // Improved empty state
+//   if (!data || data.data.length === 0) {
+//     return <div className="text-center py-20 text-muted-foreground">No products found matching your criteria.</div>;
+//   }
+
+//   // --- CHANGE 1: Modified ProductGrid to accept a 'gridClass' prop for flexible layouts ---
+//   // It defaults to the original 3-column layout.
+//   const ProductGrid = ({ gridClass = "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" }) => (
+//     <div className={`grid ${gridClass} gap-6`}>
+//       {data?.data.map((food: FoodItem) => (
+//         <ProductCard
+//           key={food.id}
+//           item={food}
+//           refetch={refetch}
+//         />
+//       ))}
+//     </div>
+//   );
+
+//   return (
+//     <section className="!mt-12">
+//       <div className="flex flex-row justify-between items-center pb-4">
+//         <h2 className="!pb-6 lg:text-4xl md:text-2xl text-xl font-semibold text-primary">Listings ({data.total} found)</h2>
+
+//         {/* Mobile View Toggle */}
+//         <div className="md:hidden">
+//           <Button variant="ghost" className={`text-primary ${activeMobileView === 'grid' ? "bg-accent" : ""}`} onClick={() => setActiveMobileView('grid')}>
+//             <Grid3X3Icon />
+//           </Button>
+//           <Button variant="ghost" className={`text-primary ${activeMobileView === 'map' ? "bg-accent" : ""}`} onClick={() => setActiveMobileView('map')}>
+//             <MapPinIcon />
+//           </Button>
+//         </div>
+
+//         {/* Desktop View Toggle */}
+//         <div className="hidden md:block">
+//           <Button variant="ghost" className={`text-primary ${showGrid ? "bg-accent" : ""}`} onClick={handleToggleGrid}>
+//             <Grid3X3Icon />
+//           </Button>
+//           <Button variant="ghost" className={`text-primary ${showMap ? "bg-accent" : ""}`} onClick={handleToggleMap}>
+//             <MapPinIcon />
+//           </Button>
+//         </div>
+//       </div>
+
+//       {/* Mobile Content Area */}
+//       <div className="md:hidden">
+//         {activeMobileView === 'grid' ? <ProductGrid /> : <MapView />}
+//       </div>
+
+//       {/* Desktop Content Area */}
+//       <div className="hidden md:block my-4">
+//         {showGrid && showMap && (
+//           <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
+//             <div className="md:col-span-5">
+//               {/* This view uses the default 3-column grid */}
+//               <ProductGrid />
+//             </div>
+//             <div className="md:col-span-5 h-[80vh] sticky top-24">
+//               <MapView />
+//             </div>
+//           </div>
+//         )}
+
+//         {/* --- CHANGE 2: When map is hidden, use a new grid class for 6 columns on large screens --- */}
+//         {showGrid && !showMap && (
+//           <ProductGrid gridClass="grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6" />
+//         )}
+
+//         {showMap && !showGrid && <MapView />}
+//       </div>
+
+//       {/* Pagination Controls */}
+//       {data.last_page > 1 && (
+//         <div className="flex justify-center items-center gap-4 mt-12">
+//           <Button
+//             onClick={() => onPageChange(data.current_page - 1)}
+//             disabled={data.current_page <= 1}
+//           >
+//             Previous
+//           </Button>
+//           <span>Page {data.current_page} of {data.last_page}</span>
+//           <Button
+//             onClick={() => onPageChange(data.current_page + 1)}
+//             disabled={data.current_page >= data.last_page}
+//           >
+//             Next
+//           </Button>
+//         </div>
+//       )}
+//     </section>
+//   );
+// }
+
+
 
 "use client";
-import React, { useState } from "react";
+
+
 import { Grid3X3Icon, MapPinIcon } from "lucide-react";
 import ProductCard from "@/components/core/prod-card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +171,8 @@ import { useGetAllHomeFoodItemsQuery } from "@/redux/features/Foodsitems/FoodApi
 import { FilterParams, FoodItem } from "@/lib/types/api";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import MapView from "@/components/MapView";
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { useState } from "react";
 
 // Define the props for this component
 interface ProdSectionProps {
@@ -18,49 +181,87 @@ interface ProdSectionProps {
 }
 
 export default function ProdSection({ filters, onPageChange }: ProdSectionProps) {
-  // Pass the entire filters object to the hook. RTK Query will refetch automatically when it changes.
   const { data, isLoading, refetch } = useGetAllHomeFoodItemsQuery(filters);
-  console.log('filters', filters);
 
-  console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaa', data);
-
+  // State for desktop view (grid, map, or both)
   const [showGrid, setShowGrid] = useState(true);
   const [showMap, setShowMap] = useState(true);
+
+  // Dedicated state for mobile view (either grid or map)
+  const [activeMobileView, setActiveMobileView] = useState<'grid' | 'map'>('grid');
+
   const { location: userLocation, error: locationError } = useUserLocation();
 
-
-  // Your existing toggle logic for grid/map view
+  // Desktop toggle logic
   const handleToggleGrid = () => {
-    if (showGrid && !showMap) return;
+    if (showGrid && !showMap) return; // Prevent hiding the last visible element
     setShowGrid(!showGrid);
   };
 
   const handleToggleMap = () => {
-    if (showMap && !showGrid) return;
+    if (showMap && !showGrid) return; // Prevent hiding the last visible element
     setShowMap(!showMap);
   };
 
-  // Render loading state
+  // --- CHANGE 3: Skeleton loader now matches the responsive full-width grid layout ---
   if (isLoading) {
-    return <div className="text-center py-10">Loading products...</div>;
+    return (
+      <section className="!mt-12">
+        <div className="flex justify-between items-center pb-4">
+          <Skeleton className="h-10 w-48" />
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-10" />
+            <Skeleton className="h-10 w-10" />
+          </div>
+        </div>
+        {/* This grid mimics the final layout to prevent content shifting */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-48 w-full rounded-lg" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
   }
 
-
-
-  // Render empty state
   if (!data || data.data.length === 0) {
-    return <div className="text-center py-10">No products found matching your criteria.</div>;
+    return <div className="text-center py-20 text-muted-foreground">No products found matching your criteria.</div>;
   }
-  console.log('data', data);
 
-
-  // return <p>lskjf</p>
+  // --- CHANGE 1: Default gridClass is now more responsive for mobile and split-desktop views ---
+  const ProductGrid = ({ gridClass = "grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3" }) => (
+    <div className={`grid ${gridClass} gap-6`}>
+      {data?.data.map((food: FoodItem) => (
+        <ProductCard
+          key={food.id}
+          item={food}
+          refetch={refetch}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <section className="!mt-12">
       <div className="flex flex-row justify-between items-center pb-4">
         <h2 className="!pb-6 lg:text-4xl md:text-2xl text-xl font-semibold text-primary">Listings ({data.total} found)</h2>
-        <div>
+
+        {/* --- Mobile View Toggle --- */}
+        <div className="md:hidden">
+          <Button variant="ghost" className={`text-primary ${activeMobileView === 'grid' ? "bg-accent" : ""}`} onClick={() => setActiveMobileView('grid')}>
+            <Grid3X3Icon />
+          </Button>
+          <Button variant="ghost" className={`text-primary ${activeMobileView === 'map' ? "bg-accent" : ""}`} onClick={() => setActiveMobileView('map')}>
+            <MapPinIcon />
+          </Button>
+        </div>
+
+        {/* --- Desktop View Toggle --- */}
+        <div className="hidden md:block">
           <Button variant="ghost" className={`text-primary ${showGrid ? "bg-accent" : ""}`} onClick={handleToggleGrid}>
             <Grid3X3Icon />
           </Button>
@@ -70,79 +271,54 @@ export default function ProdSection({ filters, onPageChange }: ProdSectionProps)
         </div>
       </div>
 
-      <div className={`grid ${showGrid && showMap ? "lg:grid-cols-10 md:gap-2 lg:gap-10" : showGrid ? "col-span-full" : showMap ? "grid-cols-1" : ""}`}>
-        {showGrid && (
-          <div className={`${showMap ? "col-span-full md:col-span-6 2xl:col-span-4 grid grid-cols-1 sm:grid-cols-2" : "col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"} gap-6 lg:gap-12 self-start`}>
-            {/* Map over the actual API data */}
-            {data?.data.map((food: FoodItem) => {
-              // Safely parse image URL
-              let imageUrl = "/default-image.png"; // A fallback image
-              try {
-                const images = JSON.parse(food.images);
-                if (Array.isArray(images) && images.length > 0) {
-                  // Make sure to prepend your base URL if the path is relative
-                  imageUrl = `http://103.186.20.110:8123/${images[0]}`;
-                }
-              } catch (e) {
-                console.error("Failed to parse images JSON:", food.images);
-              }
+      {/* --- Mobile Content Area --- */}
+      <div className="md:hidden">
+        {activeMobileView === 'grid' ? <ProductGrid /> : <MapView />}
+      </div>
 
-              return (
-                <ProductCard
-
-                  key={food.id}
-                  item={{
-                    id: food.id,
-                    title: food.title,
-                    price: food.price,
-                    request_food_status: food.request_food_status,
-                    description: food.description,
-                    ingredients: food.ingredients,
-                    delivery_option: food.delivery_option,
-                    delivery_time: food.delivery_time,
-                    rating: food.rating,
-                    status: food.status,
-                    images: food.images,
-                    user: { full_name: food.user.full_name, address: food?.user?.address, city: food.user.city, profile: food.user.profile, role: food.user.role, id: food.user.id },
-                    category: food.category,
-                  }}
-
-
-                  refetch={refetch}
-                // fromProfile={false}
-                // control={false}
-                />
-              )
-            })}
+      {/* --- Desktop Content Area --- */}
+      <div className="hidden md:block my-4">
+        {/* View: Grid + Map */}
+        {showGrid && showMap && (
+          <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
+            <div className="md:col-span-5">
+              {/* Uses the responsive default: 2 cols on md, 3 on lg */}
+              <ProductGrid />
+            </div>
+            <div className="md:col-span-5 h-[80vh] sticky top-24">
+              <MapView />
+            </div>
           </div>
         )}
 
-        {showMap && (
-          <div className={`${showGrid ? "col-span-full md:col-span-4 2xl:col-span-6" : "col-span-full"}`}>
-            <MapView />
-          </div>
+        {/* --- CHANGE 2: Full-width grid now has more breakpoints for better responsiveness --- */}
+        {/* View: Grid Only */}
+        {showGrid && !showMap && (
+          <ProductGrid gridClass="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6" />
         )}
 
-
+        {/* View: Map Only */}
+        {showMap && !showGrid && <MapView />}
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center items-center gap-4 mt-12">
-        <Button
-          onClick={() => onPageChange(data.current_page - 1)}
-          disabled={data.current_page <= 1}
-        >
-          Previous
-        </Button>
-        <span>Page {data.current_page} of {data.last_page}</span>
-        <Button
-          onClick={() => onPageChange(data.current_page + 1)}
-          disabled={data.current_page >= data.last_page}
-        >
-          Next
-        </Button>
-      </div>
-
+      {/* --- Pagination Controls --- */}
+      {data.last_page > 1 && (
+        <div className="flex justify-start items-center gap-4 ">
+          <Button
+            onClick={() => onPageChange(data.current_page - 1)}
+            disabled={data.current_page <= 1}
+          >
+            Previous
+          </Button>
+          <span>Page {data.current_page} of {data.last_page}</span>
+          <Button
+            onClick={() => onPageChange(data.current_page + 1)}
+            disabled={data.current_page >= data.last_page}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </section>
   );
 }

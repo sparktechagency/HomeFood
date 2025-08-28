@@ -65,7 +65,7 @@ export default function Categories() {
               categories.map((category) => (
                 <CarouselItem
                   key={category.id}
-                  className="pl-2 md:pl-4 basis-1/4 sm:basis-1/6 md:basis-1/16"
+                  className="pl-2 md:pl-4 basis-1/4 sm:basis-1/6 md:basis-1/8 lg:basis-1/15"
                 >
                   <div
                     // href={`/listing?category=${category.slug}`}
