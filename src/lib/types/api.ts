@@ -50,6 +50,7 @@ export interface Order {
 
 export interface FilterParams {
   search?: string;
+  date?: string;
   dietary_info?: string[];
   min_price?: number;
   max_price?: number;

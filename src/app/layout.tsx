@@ -1,17 +1,11 @@
-'use client'
+"use client";
 
-import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import CookieProv from "@/hooks/cookie-prov";
 import store from "../redux/store";
-
 import { Provider } from "react-redux";
-
-// export const metadata: Metadata = {
-//   title: "HomeFood",
-//   description: "Wew",
-// };
+import Head from "next/head"; // <-- import Head
 
 export default function RootLayout({
   children,
@@ -20,18 +14,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <title>HomeFood</title>
+        <meta name="description" content="Wew" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Add other meta tags as needed */}
+      </Head>
       <body>
-        {/* <CartProvider > */}
         <Provider store={store}>
-
           <CookieProv>
-
             {children}
             <Toaster richColors />
           </CookieProv>
-
         </Provider>
-        {/* </CartProvider> */}
       </body>
     </html>
   );

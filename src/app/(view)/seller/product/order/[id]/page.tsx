@@ -74,6 +74,8 @@ export default function Page() {
     "pickup" // Default to pickup
   );
 
+  console.log('delivery method', deliveryMethod);
+
   // --- Memoized Calculations ---
   const { subtotal, calculatedDeliveryFee, total } = useMemo(() => {
     const itemPrice = food?.price || 0;
@@ -120,7 +122,7 @@ export default function Page() {
       order_status: deliveryMethod,
     };
 
-    // --- 2. Conditionally add the delivery address property ---
+
     if (deliveryMethod === "delivery") {
       // NOTE: This address should come from a form input or user's profile
       body.delivery_address = "Dhaka, Bangladesh";
