@@ -26,10 +26,8 @@ export default function Page() {
   const { data: overView } = useGetoverviewQuery({});
   console.log('overview', overView);
 
-  // Extract data from API response with proper typing
   const dashboardData: DashboardData = overView?.data || fallbackData;
 
-  // Helper function to calculate total orders with proper typing
   const calculateTotalOrders = (orders: TotalOrders): number => {
     return Object.values(orders).reduce((sum: number, count: number) => sum + count, 0);
   };

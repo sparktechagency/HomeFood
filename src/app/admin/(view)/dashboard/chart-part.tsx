@@ -423,7 +423,6 @@ export function ChartPart() {
                 />
               }
             />
-            {/* 7. Replaced the two <Area> components with a single one for 'revenue'. */}
             <Area
               dataKey="revenue"
               type="natural"

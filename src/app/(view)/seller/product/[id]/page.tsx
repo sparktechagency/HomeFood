@@ -8,7 +8,6 @@ import { useCreateReviewMutation, useGetFoodDetaisByIdQuery, useGetFoodReviewByI
 import { imageUrl } from "@/redux/baseApi";
 import { toast } from "sonner";
 
-// Import UI components
 import ProfilePart from "@/components/core/profile-part";
 import ProductCard from "@/components/core/prod-card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Import Icons and Types
 import { MapPinIcon, ChevronDown, Clock, Calendar, Package, Info, Star, ThumbsUp, Quote, Send } from "lucide-react";
 import { FoodItem } from "@/lib/types/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,18 +46,13 @@ export default function FoodDetailsPage() {
   const food = data?.data?.food;
   const similarFoods = data?.data?.similar_foods;
 
-  // Cart functionality
   const [cart, setCart] = useState<FoodItem[]>([]);
-
-  // Load cart from localStorage on mount
   React.useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
   }, []);
-
-  // Save to localStorage whenever cart changes
   React.useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -69,7 +62,6 @@ export default function FoodDetailsPage() {
     if (!user?.data) {
       return toast.error("Please login to add review")
     }
-    // Basic validation
     if (rating === 0 || text.trim() === "") {
       alert("Please provide a rating and a comment.");
       return;
@@ -88,8 +80,6 @@ export default function FoodDetailsPage() {
       toast.error(error?.data?.message || "Something went wrong")
     }
 
-
-    // Reset form after submission
     setRating(0);
     setText("");
   };
@@ -111,7 +101,7 @@ export default function FoodDetailsPage() {
   const images = food.images || [];
   const primaryImage = mainImage || (images.length > 0 ? `${imageUrl}${images[0]}` : "/placeholder.jpg");
 
-  // Available dates for ordering
+
   const availableDates = [
     { label: "Today", value: new Date().toLocaleDateString() },
     { label: "Tomorrow", value: new Date(Date.now() + 86400000).toLocaleDateString() },
@@ -456,7 +446,6 @@ export default function FoodDetailsPage() {
   );
 }
 
-// Skeleton component for a better loading experience
 const PageSkeleton = () => (
   <div className="!py-12 mt-18 !px-4 md:!px-12 grid md:grid-cols-11 gap-8">
     <div className="md:col-span-3"><Skeleton className="h-96 w-full rounded-lg" /></div>

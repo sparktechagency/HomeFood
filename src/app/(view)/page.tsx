@@ -12,7 +12,6 @@ import ProdSection from "./_home/product-section";
 import Categories from "./_home/categories";
 
 export default function SearchPage() {
-  // The single source of truth for all filters
   const [filters, setFilters] = useState<FilterParams>({
     page: 1,
     per_page: 10,
@@ -27,7 +26,6 @@ export default function SearchPage() {
     pickup_time: "",
   });
 
-  // A single function to update any part of the filter state
   const handleFilterChange = (newValues: Partial<FilterParams>) => {
     setFilters((prev) => ({ ...prev, ...newValues, page: 1 }));
   };
@@ -48,7 +46,7 @@ export default function SearchPage() {
       <section className="!mt-12">
         <Categories />
       </section>
-      {/* 2. Listing Filters and Results Section */}
+
       <Listing
         filters={filters}
         onFilterChange={handleFilterChange}

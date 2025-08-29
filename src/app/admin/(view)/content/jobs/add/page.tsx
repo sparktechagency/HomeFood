@@ -11,26 +11,25 @@ export default function Page() {
   const searchParams = useSearchParams();
   const contentType = searchParams.get("type");
 
-  // State for the editor's content
+
   const [text, setText] = useState<string>("");
 
-  // Fetch existing content for 'operational_roles'
+
   const { data: existingData, isLoading: isFetching } = useGetContentQuery({
     type: contentType,
   });
 
-  // Initialize the mutation hook for updating content
   const [createContent, { isLoading: isUpdating, isSuccess, isError }] =
     useCreateContentMutation();
 
-  // Populate the editor with fetched data
+
   useEffect(() => {
     if (existingData && existingData.success && existingData.data) {
       setText(existingData.data.content || "");
     }
   }, [existingData]);
 
-  // Handle the form submission
+
   const handleUpdate = async () => {
     if (!text) {
       toast.error("Content cannot be empty.");
@@ -45,7 +44,7 @@ export default function Page() {
     await createContent(payload);
   };
 
-  // Handle success and error feedback for the update mutation
+
   useEffect(() => {
     if (isSuccess) {
       toast.success("Content updated successfully!");
@@ -55,7 +54,7 @@ export default function Page() {
     }
   }, [isSuccess, isError]);
 
-  // Optional: Display a loading state while fetching initial content
+
   if (isFetching) {
     return <div className="p-6">Loading content...</div>;
   }

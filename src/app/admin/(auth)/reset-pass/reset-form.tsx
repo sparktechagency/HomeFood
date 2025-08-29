@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 
-// schema with validation
+
 const formSchema = z
   .object({
     newPass: z
@@ -43,7 +43,6 @@ export default function ResetForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Submitted data:", values);
-    // implement password reset logic here
 
     navig.push("/admin/dashboard");
   }

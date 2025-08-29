@@ -16,17 +16,17 @@ export default function Page() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
-  // Chat message state
+
   const [page, setPage] = useState(1);
   const [allMessages, setAllMessages] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isSending, setIsSending] = useState(false);
 
-  // Refs
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // API calls
+
   const { data: chatlistData, isLoading: chatListLoading, refetch: refetchChat } = useGetChatlistQuery();
   const { data: searchData, isLoading: isSearchLoading } = useSearchuserQuery(
     { search: searchQuery },
@@ -36,13 +36,12 @@ export default function Page() {
   const { data: userInfo } = useGetOwnprofileQuery({});
   const [sendMessage] = useSendMessageMutation();
 
-  // Socket instance
+
   const socket = getSocket();
 
 
 
 
-  // Effect to set the initial selected user from chat list or search
   useEffect(() => {
     if (isSearchActive && searchData?.data?.length > 0) {
       setSelectedUser(searchData.data[0]);
@@ -59,24 +58,17 @@ export default function Page() {
     }
   }, [chatlistData, searchData, isSearchActive, selectedUser]);
 
-  // Effect to track when search is active
   useEffect(() => {
     setIsSearchActive(searchQuery.length >= 2);
   }, [searchQuery]);
 
-  // Effect to initialize socket and join the user's room
   useEffect(() => {
-    // First, ensure the socket object is created.
     if (!socket) {
       initiateSocket();
-      // Return early because the socket is being created.
-      // This effect will re-run when the socket is ready.
       return;
     }
 
-    // Now that we know 'socket' is not null, we can proceed.
     if (isSocketConnected()) {
-      // We are safely inside this block, so we can use 'socket' directly.
       socket.on(`chat:${selectedUser?.id}`, (data) => {
         fetchMessage();
         setPage(2);
@@ -90,8 +82,6 @@ export default function Page() {
 
   }, [socket,
     selectedUser?.id,]);
-  // Effect to listen for incoming messages
-
 
   const fetchMessage = () => {
     if (!selectedUser) return;
@@ -103,15 +93,12 @@ export default function Page() {
       setAllMessages(res?.data?.data?.data || []);
     });
   };
-
-  // Effect to fetch messages when a user is selected
   useEffect(() => {
 
     fetchMessage();
     setPage(2);
   }, [selectedUser?.id, getMessageData]);
 
-  // Handler to select a user from the list
   const handleUserSelect = (user: any) => {
     if (selectedUser?.id === user.id) return;
     setSelectedUser(user);
@@ -120,7 +107,7 @@ export default function Page() {
     setHasMore(true);
   };
 
-  // Handler to send a message
+
   const handleSendMessage = async (message: string) => {
     if (!selectedUser || !message.trim() || isSending) return;
 
@@ -145,22 +132,16 @@ export default function Page() {
         message
       }).unwrap();
 
-      // console.log(selectedUser);
-
-
       socket?.emit("message", {
         chat_id: selectedUser.id,
         message: message
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      // Optional: Implement logic to show message failed to send
     } finally {
       setIsSending(false);
     }
   };
-
-  // Prepare user lists for display
   const chatListUsers = chatlistData?.data?.map((item: any) => ({
     id: item.id,
     full_name: item.receiver.full_name,

@@ -22,11 +22,11 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import ProductCard from "@/components/core/prod-card";
 import { Input } from "@/components/ui/input";
-import { useParams, useRouter } from "next/navigation"; // --- 1. Import useRouter for redirection
+import { useParams, useRouter } from "next/navigation";
 
 import { imageUrl } from "@/redux/baseApi";
 import { FoodItem } from "@/lib/types/api";
-import { toast } from "sonner"; // --- 3. Import a notification library (optional but recommended)
+import { toast } from "sonner";
 import { useGetFoodDetaisByIdQuery } from "@/redux/features/Seller/SellerApi";
 import { useOrderFoodMutation } from "@/redux/features/Foodsitems/FoodApi";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
@@ -41,42 +41,23 @@ type OrderData = {
 // --- Main Component ---
 export default function Page() {
   const { id } = useParams();
-  const router = useRouter(); // For redirecting after successful order
+  const router = useRouter();
 
   const { data, isLoading, isError } = useGetFoodDetaisByIdQuery(id as string, {
     skip: !id,
   });
 
-
-  console.log('food details', data);
-
-
   const userId = data?.data?.food?.user_id;
-  console.log('user id', userId);
-
-
-
-
-
-  // --- 4. Initialize the mutation hook ---
-  // Renamed `isLoading` to `isOrdering` to avoid conflicts with the query's loading state.
   const [orderFood, { isLoading: isOrdering }] = useOrderFoodMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
-
-
   const food = data?.data?.food;
   const similarFoods = data?.data?.similar_foods;
-
-  // --- State Management ---
   const [quantity, setQuantity] = useState(1);
   const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">(
-    "pickup" // Default to pickup
+    "pickup"
   );
 
-  console.log('delivery method', deliveryMethod);
-
-  // --- Memoized Calculations ---
   const { subtotal, calculatedDeliveryFee, total } = useMemo(() => {
     const itemPrice = food?.price || 0;
     const subtotal = quantity * itemPrice;
@@ -94,12 +75,11 @@ export default function Page() {
     return { subtotal, calculatedDeliveryFee, total };
   }, [quantity, deliveryMethod, food]);
 
-  // --- Event Handlers ---
   const incrementQuantity = () =>
     setQuantity((prev) => Math.min(food?.quantity || prev, prev + 1));
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
-  // --- 5. Handle the API call on button click ---
+
   const handleProceedToPayment = async () => {
     if (!id) {
       toast.error("Food item not found.");
@@ -108,44 +88,35 @@ export default function Page() {
     if (!deliveryMethod) {
       return toast.error("Please select a delivery method.");
     }
-
-    // --- 1. Create a plain JavaScript object for the body ---
-    // The backend likely expects arrays for food_id and quantity.
     const body: {
       food_id: string[];
       quantity: number[];
       order_status: "delivery" | "pickup";
       delivery_address?: string; // Optional property
     } = {
-      food_id: [id as string], // Send as an array with one item
-      quantity: [quantity],    // Send as an array with one item
+      food_id: [id as string],
+      quantity: [quantity],
       order_status: deliveryMethod,
     };
 
 
     if (deliveryMethod === "delivery") {
-      // NOTE: This address should come from a form input or user's profile
       body.delivery_address = "Dhaka, Bangladesh";
     }
 
     try {
-      // --- 3. Call the mutation with the JSON object ---
-      // RTK Query will automatically stringify this and set the correct JSON headers.
       const res = await orderFood({ body, id: userId }).unwrap();
       console.log('res', res);
 
-      setOrderData(res.data); // Store the order data
-      setIsModalOpen(true);   // Open the modal
+      setOrderData(res.data);
+      setIsModalOpen(true);
       toast.success(res.message || "Order placed successfully");
-      // Optional: Redirect to a success page or the user's order history
-      // router.push("/my-orders");
     } catch (err) {
       toast.error("Failed to place order. Please try again.");
       console.error("Order failed:", err);
     }
   };
 
-  // --- Render Logic ---
   if (isLoading) {
     return <div className="text-center p-8">Loading...</div>;
   }

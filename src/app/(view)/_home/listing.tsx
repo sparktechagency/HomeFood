@@ -16,14 +16,12 @@ import { DualRangeSlider } from "@/components/ui/dual-slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FilterParams } from "@/lib/types/api";
-
-// --- STEP 1: Helper function to format 24-hour time to 12-hour AM/PM format ---
 const formatTimeToAMPM = (time24: string): string => {
   if (!time24) return "";
   const [hours, minutes] = time24.split(":");
   let h = parseInt(hours, 10);
   const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12; // Convert hour to 12-hour format (0 becomes 12)
+  h = h % 12 || 12;
   return `${h}:${minutes} ${ampm}`;
 };
 
@@ -37,7 +35,6 @@ const sortByMap: { [key: string]: string } = {
   "Recently Added": "recently_added",
 };
 
-// --- STEP 2: Update the sorts configuration to include the time picker ---
 export const sorts = [
   {
     title: "Dietary Info",
@@ -92,11 +89,10 @@ interface ListingFiltersProps {
 
 export default function ListingFilters({ filters, onFilterChange }: ListingFiltersProps) {
   const [showFilters, setShowFilters] = useState(false);
-  // Local state for the time picker inputs
+
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  // Handler for the time picker's "Apply" button
   const handleApplyTimeRange = () => {
     if (startTime && endTime) {
       const formattedStart = formatTimeToAMPM(startTime);
@@ -109,14 +105,12 @@ export default function ListingFilters({ filters, onFilterChange }: ListingFilte
     }
   };
 
-  // Handler for the time picker's "Clear" button
   const handleClearTimeRange = () => {
     setStartTime("");
     setEndTime("");
     onFilterChange({ delivery_time: undefined });
   };
 
-  // Handlers for your other filter types
   const handleCheckboxChange = (value: string) => {
     const currentValues = filters.dietary_info || [];
     const newValues = currentValues.includes(value)

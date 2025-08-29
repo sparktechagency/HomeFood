@@ -78,7 +78,6 @@ export default function PasswordChangeForm() {
 
   const handleInputChange = (field: keyof typeof passwords, value: string) => {
     setPasswords((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
@@ -101,7 +100,6 @@ export default function PasswordChangeForm() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="!space-y-6">
-              {/* New Password */}
 
               <div className="!space-y-2">
                 <Label htmlFor="new-password">New Password</Label>

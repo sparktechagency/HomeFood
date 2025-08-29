@@ -5,7 +5,7 @@ import { useCreateCategoryMutation, useDeleteCategoryMutation, useGetAllCategory
 import { imageUrl } from "@/redux/baseApi";
 import { toast } from "sonner";
 
-// Define a more specific type for your category data if you know the structure
+
 interface Category {
     id: number;
     name: string;
@@ -18,18 +18,15 @@ interface ImageFile {
 }
 
 function Page() {
-    // State for the form inputs
     const [categoryName, setCategoryName] = useState<string>("");
     const [image, setImage] = useState<ImageFile | null>(null);
 
-    // RTK Query Hooks
     const { data: categoryData, isLoading: isFetching, refetch } = useGetAllCategorysQuery({});
     const [createCategory, { isLoading: isCreating }] = useCreateCategoryMutation();
     const [deleteCategory] = useDeleteCategoryMutation();
 
     const categories: Category[] = categoryData?.data?.data || [];
 
-    // Handle image selection and create a preview URL
     const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -38,7 +35,6 @@ function Page() {
         }
     };
 
-    // Handle creating a new category
     const handleAddCategory = async () => {
         if (!categoryName || !image?.file) {
             alert("Please provide both a category name and an image.");
@@ -54,7 +50,6 @@ function Page() {
 
             if (res?.success) {
                 toast.success(res?.message || "Category created successfully");
-                // Reset form fields on successful creation
                 setCategoryName("");
                 setImage(null);
                 refetch();
@@ -65,7 +60,6 @@ function Page() {
         }
     };
 
-    // Handle deleting a category
     const handleDelete = async (id: number) => {
         try {
             const resp = await deleteCategory(id).unwrap();
@@ -82,11 +76,10 @@ function Page() {
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="max-w-4xl mx-auto">
-                {/* Add Category Section */}
                 <div className="bg-white rounded-2xl shadow p-6 mb-8">
                     <h2 className="text-2xl font-semibold mb-4">Add New Category</h2>
                     <div className="grid gap-4 md:grid-cols-3">
-                        {/* Category Name Input */}
+
                         <input
                             type="text"
                             placeholder="Category Name"
@@ -96,7 +89,7 @@ function Page() {
                             disabled={isCreating}
                         />
 
-                        {/* Image Upload Input */}
+
                         <label className="flex items-center justify-center border-2 border-dashed rounded-xl p-4 cursor-pointer hover:bg-gray-50 transition">
                             <Upload className="w-6 h-6 text-gray-500" />
                             <span className="ml-2 text-sm text-gray-600">
@@ -111,7 +104,7 @@ function Page() {
                             />
                         </label>
 
-                        {/* Add Button with Loading State */}
+
                         <button
                             onClick={handleAddCategory}
                             className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition disabled:bg-indigo-400"
@@ -126,7 +119,7 @@ function Page() {
                         </button>
                     </div>
 
-                    {/* Image Preview */}
+
                     {image && (
                         <div className="mt-4 flex items-center gap-4">
                             <img
@@ -139,7 +132,7 @@ function Page() {
                     )}
                 </div>
 
-                {/* Category List Section */}
+
                 <div className="bg-white rounded-2xl shadow p-6">
                     <h2 className="text-2xl font-semibold mb-4">Category List</h2>
                     {isFetching ? (

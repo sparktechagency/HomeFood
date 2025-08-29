@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import CookieProv from "@/hooks/cookie-prov";
 import store from "../redux/store";
 import { Provider } from "react-redux";
-import Head from "next/head"; // <-- import Head
+import Head from "next/head";
 
 export default function RootLayout({
   children,
@@ -18,7 +18,6 @@ export default function RootLayout({
         <title>HomeFood</title>
         <meta name="description" content="Wew" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Add other meta tags as needed */}
       </Head>
       <body>
         <Provider store={store}>
