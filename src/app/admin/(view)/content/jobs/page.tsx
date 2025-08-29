@@ -18,17 +18,17 @@ export default function Page() {
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/add?type=technical">
+              <Link href="/admin/content/jobs/add?type=technical_support">
                 Technical & Support Roles
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/add?type=marketing">
+              <Link href="/admin/content/jobs/add?type=marketing_business">
                 Marketing & Business Roles
               </Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/jobs/add?type=finance">
+              <Link href="/admin/content/jobs/add?type=finance_legal">
                 Finance & Legal Roles
               </Link>
             </Button>

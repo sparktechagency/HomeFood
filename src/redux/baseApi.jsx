@@ -30,6 +30,7 @@ export const api = createApi({
     "message",
     "overview",
     "category",
+    "content",
   ],
   endpoints: () => ({}),
 });

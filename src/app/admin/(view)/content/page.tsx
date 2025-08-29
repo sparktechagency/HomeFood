@@ -15,11 +15,15 @@ export default function Page() {
             <Button className="w-full text-sm" variant="outline" asChild>
               <Link href="/admin/content/add?type=about">Manage About Us</Link>
             </Button>
+
+
             <Button className="w-full text-sm" variant="outline" asChild>
               <Link href="/admin/content/add?type=privacy">
                 Manage Data Privacy
               </Link>
             </Button>
+
+
             <Button className="w-full text-sm" variant="outline" asChild>
               <Link href="/admin/content/add?type=faq">Manage FAQ</Link>
             </Button>
@@ -38,7 +42,7 @@ export default function Page() {
               <Link href="/admin/content/add?type=seller">Manage Seller</Link>
             </Button>
             <Button className="w-full text-sm" variant="outline" asChild>
-              <Link href="/admin/content/add?type=terms">Manage Terms and Conditions</Link>
+              <Link href="/admin/content/add?type=term_and_condition">Manage Terms and Conditions</Link>
             </Button>
           </CardContent>
         </CardHeader>

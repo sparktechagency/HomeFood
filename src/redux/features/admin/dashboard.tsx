@@ -87,6 +87,21 @@ export const dashboardSlice = api.injectEndpoints({
 
 
 
+    createContent: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `/manage-content`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["content"],
+    }),
+
+    getContent: builder.query<any, any>({
+      query: ({ type }) => `/get-content?content_type=${type}`,
+      providesTags: ["content"],
+    })
+
+
 
 
 
@@ -96,4 +111,4 @@ export const dashboardSlice = api.injectEndpoints({
 });
 
 
-export const { useGetDashboardQuery, useGetbyersQuery, useDeleteBuyerMutation, useGetSelersQuery, useDeleteSellerMutation, useGetAllFaqQuery, useCreateFaqMutation, useGetAboutQuery, useCreateAboutMutation, useGetPrivacyQuery, useCreatePrivacyMutation, useGetoverviewQuery } = dashboardSlice;
+export const { useGetDashboardQuery, useGetbyersQuery, useDeleteBuyerMutation, useGetSelersQuery, useDeleteSellerMutation, useGetAllFaqQuery, useCreateFaqMutation, useGetAboutQuery, useCreateAboutMutation, useGetPrivacyQuery, useCreatePrivacyMutation, useGetoverviewQuery, useCreateContentMutation, useGetContentQuery } = dashboardSlice;

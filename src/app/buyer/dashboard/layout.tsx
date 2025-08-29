@@ -1,21 +1,32 @@
+'use client';
+
 import Sidebar from "@/components/core/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import NotificationButton from "@/components/ui/NotificationButton";
 import UserAvater from "@/components/ui/UserAvater";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { BellIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-export const metadata: Metadata = {
-  title: "HomeFood Seller Panel",
-  description: "Create and Manage your own profile and foods",
-};
+import { useRouter } from "next/navigation";
+
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const { data: user, isLoading } = useGetOwnprofileQuery({});
+  const router = useRouter();
+  if (isLoading) return <div>Loading...</div>;
+
+
+  if (user?.data?.role !== "BUYER") {
+    return router.back();
+  }
+
   return (
     <>
       <main className="grid grid-cols-11">
